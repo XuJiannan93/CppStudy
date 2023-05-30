@@ -1,0 +1,3 @@
+﻿  client.cpp
+G:\_projects\CppStudy\src\Server1.0\Server\EasyTcpClient\client.cpp(41,39): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  EasyTcpClient.vcxproj -> G:\_projects\CppStudy\src\Server1.0\bin\x64\Debug\EasyTcpClient.exe
