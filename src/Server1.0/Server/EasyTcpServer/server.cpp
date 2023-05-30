@@ -190,16 +190,18 @@ int main()
 			_client = accept(_sock, (sockaddr*)&clientAddr, &nAddrLen);
 			if (_client == INVALID_SOCKET)
 				printf("[ERROR]accept socket failed.\n");
-
-			for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+			else
 			{
-				NewUserJoin join = {};
-				join.sock = (int)_client;
-				send(g_clients[n], (const char*)&join, sizeof(NewUserJoin), 0);
-			}
+				for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+				{
+					NewUserJoin join = {};
+					join.sock = (int)_client;
+					send(g_clients[n], (const char*)&join, sizeof(NewUserJoin), 0);
+				}
 
-			g_clients.push_back(_client);
-			printf("new client[%d][IP : %s] linked in.\n", (int)_client, inet_ntoa(clientAddr.sin_addr));
+				g_clients.push_back(_client);
+				printf("new client[%d][IP : %s] linked in.\n", (int)_client, inet_ntoa(clientAddr.sin_addr));
+			}
 		}
 
 		for (int n = 0; n < fdRead.fd_count; n++)
@@ -214,7 +216,7 @@ int main()
 			}
 		}
 
-		printf("do something else...\n");
+		//printf("do something else...\n");
 	}
 
 	for (int n = (int)g_clients.size() - 1; n >= 0; n--)

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <WinSock2.h>
+#include <thread>
 
 enum CMD
 {
@@ -127,6 +128,51 @@ int processor(SOCKET _sock)
 	}
 }
 
+bool g_bRun = true;
+void cmdThread(SOCKET _sock)
+{
+	char cmdbuf[128] = {};
+	while (true)
+	{
+
+		scanf("%s", cmdbuf);
+		if (strcmp(cmdbuf, "exit") == 0)
+		{
+			g_bRun = false;
+			printf("exit the thread.\n");
+			break;
+		}
+		else if (strcmp(cmdbuf, "login") == 0)
+		{
+			Login login;
+			strcpy(login.username, "xjn");
+			strcpy(login.password, "123456");
+			send(_sock, (const char*)&login, sizeof(Login), 0);
+
+			LoginResult rst = {};
+			recv(_sock, (char*)&rst, sizeof(LoginResult), 0);
+
+			printf("LoginResult %d \n", rst.result);
+		}
+		else if (strcmp(cmdbuf, "logout") == 0)
+		{
+			Logout logout;
+			strcpy(logout.username, "xjn");
+			send(_sock, (const char*)&logout, sizeof(Logout), 0);
+
+			LogoutResult rst = {};
+			recv(_sock, (char*)&rst, sizeof(LogoutResult), 0);
+
+			printf("LogoutResult %d \n", rst.result);
+		}
+		else
+		{
+			printf("???\n");
+		}
+
+	}
+}
+
 int main()
 {
 	WORD ver = MAKEWORD(2, 2);
@@ -148,8 +194,10 @@ int main()
 	else
 		printf("connect socket succeed.\n");
 
-	char cmdbuf[128] = {};
-	while (true)
+	std::thread t1(cmdThread, _sock);
+	t1.detach();
+
+	while (g_bRun)
 	{
 		fd_set fdReads;
 		FD_ZERO(&fdReads);
@@ -173,43 +221,7 @@ int main()
 			}
 		}
 
-		printf("do some else...\n");
-
-		Login login;
-		strcpy(login.username, "xjn");
-		strcpy(login.password, "123456");
-		send(_sock, (char*)&login, sizeof(Login), 0);
-		Sleep(1000);
-		/*	scanf("%s", cmdbuf);
-			if (strcmp(cmdbuf, "exit") == 0)
-				break;
-			else if (strcmp(cmdbuf, "login") == 0)
-			{
-				Login login;
-				strcpy(login.username, "xjn");
-				strcpy(login.password, "123456");
-				send(_sock, (const char*)&login, sizeof(Login), 0);
-
-				LoginResult rst = {};
-				recv(_sock, (char*)&rst, sizeof(LoginResult), 0);
-
-				printf("LoginResult %d \n", rst.result);
-			}
-			else if (strcmp(cmdbuf, "logout") == 0)
-			{
-				Logout logout;
-				strcpy(logout.username, "xjn");
-				send(_sock, (const char*)&logout, sizeof(Logout), 0);
-
-				LogoutResult rst = {};
-				recv(_sock, (char*)&rst, sizeof(LogoutResult), 0);
-
-				printf("LogoutResult %d \n", rst.result);
-			}
-			else
-			{
-				printf("???\n");
-			}*/
+		//printf("do some else...\n");
 	}
 
 	closesocket(_sock);
