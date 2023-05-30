@@ -100,9 +100,10 @@ int main()
 
 	while (true)
 	{
-		DataHeader header = {};
+		char szRecv[1024] = {};
 
-		int nLen = recv(_client, (char*)&header, sizeof(DataHeader), 0);
+		int nLen = recv(_client, szRecv, sizeof(DataHeader), 0);
+		DataHeader* header = (DataHeader*)szRecv;
 		if (nLen <= 0)
 		{
 			printf("client broken.");
@@ -111,14 +112,14 @@ int main()
 
 		//printf("recv cmd len :%d[%d] \n", header.cmd, header.len);
 
-		switch (header.cmd)
+		switch (header->cmd)
 		{
 
 		case CMD_LOGIN:
 		{
-			Login login = {};
-			recv(_client, (char*)&login + sizeof(DataHeader), sizeof(Login) - sizeof(DataHeader), 0);
-			printf("recv cmd len :login [%s][%s][%d] \n", login.username, login.password, login.len);
+			recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
+			Login* login = (Login*)(szRecv);
+			printf("recv cmd len :login [%s][%s][%d] \n", login->username, login->password, header->len);
 
 			LoginResult rst;
 			send(_client, (char*)&rst, sizeof(LoginResult), 0);
@@ -127,9 +128,9 @@ int main()
 
 		case CMD_LOGOUT:
 		{
-			Logout logout = {};
-			recv(_client, (char*)&logout + sizeof(DataHeader), sizeof(Logout) - sizeof(DataHeader), 0);
-			printf("recv cmd len :logout [%s][%d] \n", logout.username, header.len);
+			recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
+			Logout* logout = (Logout*)(szRecv);
+			printf("recv cmd len :logout [%s][%d] \n", logout->username, header->len);
 
 			LogoutResult rst;
 			send(_client, (char*)&rst, sizeof(LogoutResult), 0);
@@ -138,8 +139,8 @@ int main()
 
 		default:
 		{
-			header.cmd = CMD_ERROR;
-			header.len = 0;
+			header->cmd = CMD_ERROR;
+			header->len = 0;
 
 			send(_client, (char*)&header, sizeof(DataHeader), 0);
 		}
