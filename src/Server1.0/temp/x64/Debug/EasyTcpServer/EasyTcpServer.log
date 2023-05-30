@@ -1,3 +1,0 @@
-﻿  server.cpp
-G:\_projects\CppStudy\src\Server1.0\Server\EasyTcpServer\server.cpp(66,32): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-  EasyTcpServer.vcxproj -> G:\_projects\CppStudy\src\Server1.0\bin\x64\Debug\EasyTcpServer.exe
