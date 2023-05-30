@@ -100,7 +100,7 @@ int main()
 			LoginResult rst = {};
 			recv(_sock, (char*)&rst, sizeof(LoginResult), 0);
 
-			printf("LoginResult %d", rst.result);
+			printf("LoginResult %d \n", rst.result);
 		}
 		else if (strcmp(cmdbuf, "logout") == 0)
 		{
@@ -111,7 +111,7 @@ int main()
 			LogoutResult rst = {};
 			recv(_sock, (char*)&rst, sizeof(LogoutResult), 0);
 
-			printf("LogoutResult %d", rst.result);
+			printf("LogoutResult %d \n", rst.result);
 		}
 		else
 		{

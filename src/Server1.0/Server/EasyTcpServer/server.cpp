@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <WinSock2.h>
+#include <vector>
 
 enum CMD
 {
@@ -63,6 +64,58 @@ struct LogoutResult : public DataHeader
 	int result;
 };
 
+std::vector<SOCKET> g_clients;
+
+int processor(SOCKET _client)
+{
+	char szRecv[1024] = {};
+
+	int nLen = recv(_client, szRecv, sizeof(DataHeader), 0);
+	DataHeader* header = (DataHeader*)szRecv;
+	if (nLen <= 0)
+	{
+		printf("client broken.\n");
+		return -1;
+	}
+
+	switch (header->cmd)
+	{
+
+	case CMD_LOGIN:
+	{
+		recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
+		Login* login = (Login*)(szRecv);
+		printf("recv cmd len :login [%s][%s][%d] \n", login->username, login->password, header->len);
+
+		LoginResult rst;
+		send(_client, (char*)&rst, sizeof(LoginResult), 0);
+	}
+	break;
+
+	case CMD_LOGOUT:
+	{
+		recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
+		Logout* logout = (Logout*)(szRecv);
+		printf("recv cmd len :logout [%s][%d] \n", logout->username, header->len);
+
+		LogoutResult rst;
+		send(_client, (char*)&rst, sizeof(LogoutResult), 0);
+	}
+	break;
+
+	default:
+	{
+		header->cmd = CMD_ERROR;
+		header->len = 0;
+
+		send(_client, (char*)&header, sizeof(DataHeader), 0);
+	}
+	break;
+	}
+
+
+}
+
 int main()
 {
 	WORD ver = MAKEWORD(2, 2);
@@ -86,66 +139,67 @@ int main()
 	else
 		printf("listen socket succeed.\n");
 
-	sockaddr_in clientAddr = {};
-	int nAddrLen = sizeof(clientAddr);
-	SOCKET _client = INVALID_SOCKET;
-	char msgBuf[] = "HELLO, I AM SERVER. \n";
-
-	_client = accept(_sock, (sockaddr*)&clientAddr, &nAddrLen);
-	if (_client == INVALID_SOCKET)
-		printf("[ERROR]accept socket failed.\n");
-
-	printf("new client[%d][IP : %s] linked in.\n", (int)_client, inet_ntoa(clientAddr.sin_addr));
 	char _recvbuf[128] = {};
 
 	while (true)
 	{
-		char szRecv[1024] = {};
+		fd_set fdRead;
+		fd_set fdWrite;
+		fd_set fdExc;
 
-		int nLen = recv(_client, szRecv, sizeof(DataHeader), 0);
-		DataHeader* header = (DataHeader*)szRecv;
-		if (nLen <= 0)
+		FD_ZERO(&fdRead);
+		FD_ZERO(&fdWrite);
+		FD_ZERO(&fdExc);
+
+		FD_SET(_sock, &fdRead);
+		FD_SET(_sock, &fdWrite);
+		FD_SET(_sock, &fdExc);
+
+		for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 		{
-			printf("client broken.");
+			FD_SET(g_clients[n], &fdRead);
+		}
+
+		timeval t = { 0,0 };
+		int ret = select(_sock + 1, &fdRead, &fdWrite, &fdExc, &t);
+		if (ret < 0)
+		{
+			printf("select task end. \n");
 			break;
 		}
 
-		//printf("recv cmd len :%d[%d] \n", header.cmd, header.len);
-
-		switch (header->cmd)
+		if (FD_ISSET(_sock, &fdRead))
 		{
+			FD_CLR(_sock, &fdRead);
 
-		case CMD_LOGIN:
+			sockaddr_in clientAddr = {};
+			int nAddrLen = sizeof(clientAddr);
+			SOCKET _client = INVALID_SOCKET;
+
+			_client = accept(_sock, (sockaddr*)&clientAddr, &nAddrLen);
+			if (_client == INVALID_SOCKET)
+				printf("[ERROR]accept socket failed.\n");
+
+			g_clients.push_back(_client);
+			printf("new client[%d][IP : %s] linked in.\n", (int)_client, inet_ntoa(clientAddr.sin_addr));
+		}
+
+		for (int n = 0; n < fdRead.fd_count; n++)
 		{
-			recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
-			Login* login = (Login*)(szRecv);
-			printf("recv cmd len :login [%s][%s][%d] \n", login->username, login->password, header->len);
-
-			LoginResult rst;
-			send(_client, (char*)&rst, sizeof(LoginResult), 0);
+			if (processor(fdRead.fd_array[n]) == -1)
+			{
+				auto iter = find(g_clients.begin(), g_clients.end(), fdRead.fd_array[n]);
+				if (iter != g_clients.end())
+				{
+					g_clients.erase(iter);
+				}
+			}
 		}
-		break;
+	}
 
-		case CMD_LOGOUT:
-		{
-			recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
-			Logout* logout = (Logout*)(szRecv);
-			printf("recv cmd len :logout [%s][%d] \n", logout->username, header->len);
-
-			LogoutResult rst;
-			send(_client, (char*)&rst, sizeof(LogoutResult), 0);
-		}
-		break;
-
-		default:
-		{
-			header->cmd = CMD_ERROR;
-			header->len = 0;
-
-			send(_client, (char*)&header, sizeof(DataHeader), 0);
-		}
-		break;
-		}
+	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	{
+		closesocket(g_clients[n]);
 	}
 
 	closesocket(_sock);
