@@ -4,10 +4,63 @@
 #include <Windows.h>
 #include <WinSock2.h>
 
-struct DataPackage
+enum CMD
 {
-	int age;
-	char name[32];
+	CMD_LOGIN,
+	CMD_LOGIN_RESULT,
+	CMD_LOGOUT,
+	CMD_LOGOUT_RESLUT,
+	CMD_ERROR,
+};
+
+struct DataHeader
+{
+	short len;
+	short cmd;
+};
+
+struct Login : public DataHeader
+{
+	Login()
+	{
+		len = sizeof(Login);
+		cmd = CMD_LOGIN;
+	}
+
+	char username[32];
+	char password[32];
+};
+
+struct LoginResult : public DataHeader
+{
+	LoginResult()
+	{
+		len = sizeof(LoginResult);
+		cmd = CMD_LOGIN_RESULT;
+		result = 0;
+	}
+	int result;
+};
+
+struct Logout : public DataHeader
+{
+	Logout()
+	{
+		len = sizeof(Logout);
+		cmd = CMD_LOGOUT;
+	}
+	char username[32];
+};
+
+struct LogoutResult : public DataHeader
+{
+	LogoutResult()
+	{
+		len = sizeof(LogoutResult);
+		cmd = CMD_LOGOUT_RESLUT;
+		result = 0;
+	}
+	int result;
 };
 
 int main()
@@ -37,18 +90,33 @@ int main()
 		scanf("%s", cmdbuf);
 		if (strcmp(cmdbuf, "exit") == 0)
 			break;
-		else
-			send(_sock, cmdbuf, strlen(cmdbuf) + 1, 0);
-
-		char recvBuf[256] = {};
-		int nlen = recv(_sock, recvBuf, 256, 0);
-		if (nlen > 0)
+		else if (strcmp(cmdbuf, "login") == 0)
 		{
-			DataPackage* dp = (DataPackage*)recvBuf;
-			printf("recv: age[%d] name[%s] \n", dp->age, dp->name);
+			Login login;
+			strcpy(login.username, "xjn");
+			strcpy(login.password, "123456");
+			send(_sock, (const char*)&login, sizeof(Login), 0);
+
+			LoginResult rst = {};
+			recv(_sock, (char*)&rst, sizeof(LoginResult), 0);
+
+			printf("LoginResult %d", rst.result);
+		}
+		else if (strcmp(cmdbuf, "logout") == 0)
+		{
+			Logout logout;
+			strcpy(logout.username, "xjn");
+			send(_sock, (const char*)&logout, sizeof(Logout), 0);
+
+			LogoutResult rst = {};
+			recv(_sock, (char*)&rst, sizeof(LogoutResult), 0);
+
+			printf("LogoutResult %d", rst.result);
 		}
 		else
-			printf("recv error!\n");
+		{
+			printf("???\n");
+		}
 	}
 
 	closesocket(_sock);

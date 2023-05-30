@@ -4,10 +4,63 @@
 #include <Windows.h>
 #include <WinSock2.h>
 
-struct DataPackage
+enum CMD
 {
-	int age;
-	char name[32];
+	CMD_LOGIN,
+	CMD_LOGIN_RESULT,
+	CMD_LOGOUT,
+	CMD_LOGOUT_RESLUT,
+	CMD_ERROR,
+};
+
+struct DataHeader
+{
+	short len;
+	short cmd;
+};
+
+struct Login : public DataHeader
+{
+	Login()
+	{
+		len = sizeof(Login);
+		cmd = CMD_LOGIN;
+	}
+
+	char username[32];
+	char password[32];
+};
+
+struct LoginResult : public DataHeader
+{
+	LoginResult()
+	{
+		len = sizeof(LoginResult);
+		cmd = CMD_LOGIN_RESULT;
+		result = 0;
+	}
+	int result;
+};
+
+struct Logout : public DataHeader
+{
+	Logout()
+	{
+		len = sizeof(Logout);
+		cmd = CMD_LOGOUT;
+	}
+	char username[32];
+};
+
+struct LogoutResult : public DataHeader
+{
+	LogoutResult()
+	{
+		len = sizeof(LogoutResult);
+		cmd = CMD_LOGOUT_RESLUT;
+		result = 0;
+	}
+	int result;
 };
 
 int main()
@@ -47,23 +100,50 @@ int main()
 
 	while (true)
 	{
-		int nLen = recv(_client, _recvbuf, 128, 0);
+		DataHeader header = {};
+
+		int nLen = recv(_client, (char*)&header, sizeof(DataHeader), 0);
 		if (nLen <= 0)
 		{
 			printf("client broken.");
 			break;
 		}
 
-		printf("recv cmd : %s \n", _recvbuf);
-		if (strcmp(_recvbuf, "getInfo") == 0)
+		//printf("recv cmd len :%d[%d] \n", header.cmd, header.len);
+
+		switch (header.cmd)
 		{
-			DataPackage dp = { 80,"XiaoQiang" };
-			send(_client, (const char*)&dp, sizeof(DataPackage), 0);
+
+		case CMD_LOGIN:
+		{
+			Login login = {};
+			recv(_client, (char*)&login + sizeof(DataHeader), sizeof(Login) - sizeof(DataHeader), 0);
+			printf("recv cmd len :login [%s][%s][%d] \n", login.username, login.password, login.len);
+
+			LoginResult rst;
+			send(_client, (char*)&rst, sizeof(LoginResult), 0);
 		}
-		else
+		break;
+
+		case CMD_LOGOUT:
 		{
-			char msgBuf[] = "???";
-			send(_client, msgBuf, strlen(msgBuf), 0);
+			Logout logout = {};
+			recv(_client, (char*)&logout + sizeof(DataHeader), sizeof(Logout) - sizeof(DataHeader), 0);
+			printf("recv cmd len :logout [%s][%d] \n", logout.username, header.len);
+
+			LogoutResult rst;
+			send(_client, (char*)&rst, sizeof(LogoutResult), 0);
+		}
+		break;
+
+		default:
+		{
+			header.cmd = CMD_ERROR;
+			header.len = 0;
+
+			send(_client, (char*)&header, sizeof(DataHeader), 0);
+		}
+		break;
 		}
 	}
 
