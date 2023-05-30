@@ -10,7 +10,8 @@ enum CMD
 	CMD_LOGIN,
 	CMD_LOGIN_RESULT,
 	CMD_LOGOUT,
-	CMD_LOGOUT_RESLUT,
+	CMD_LOGOUT_RESULT,
+	CMD_NEW_USER_JOIN,
 	CMD_ERROR,
 };
 
@@ -58,10 +59,22 @@ struct LogoutResult : public DataHeader
 	LogoutResult()
 	{
 		len = sizeof(LogoutResult);
-		cmd = CMD_LOGOUT_RESLUT;
+		cmd = CMD_LOGOUT_RESULT;
 		result = 0;
 	}
 	int result;
+};
+
+struct NewUserJoin : public DataHeader
+{
+	NewUserJoin()
+	{
+		len = sizeof(NewUserJoin);
+		cmd = CMD_NEW_USER_JOIN;
+		sock = 0;
+	}
+
+	int sock;
 };
 
 std::vector<SOCKET> g_clients;
@@ -74,7 +87,7 @@ int processor(SOCKET _client)
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLen <= 0)
 	{
-		printf("client broken.\n");
+		printf("client[%d] broken.\n", (int)_client);
 		return -1;
 	}
 
@@ -85,7 +98,7 @@ int processor(SOCKET _client)
 	{
 		recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
 		Login* login = (Login*)(szRecv);
-		printf("recv cmd len :login [%s][%s][%d] \n", login->username, login->password, header->len);
+		printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)_client, login->username, login->password, header->len);
 
 		LoginResult rst;
 		send(_client, (char*)&rst, sizeof(LoginResult), 0);
@@ -96,7 +109,7 @@ int processor(SOCKET _client)
 	{
 		recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
 		Logout* logout = (Logout*)(szRecv);
-		printf("recv cmd len :logout [%s][%d] \n", logout->username, header->len);
+		printf("recv<%d> cmd len :logout [%s][%d] \n", (int)_client, logout->username, header->len);
 
 		LogoutResult rst;
 		send(_client, (char*)&rst, sizeof(LogoutResult), 0);
@@ -112,8 +125,6 @@ int processor(SOCKET _client)
 	}
 	break;
 	}
-
-
 }
 
 int main()
@@ -160,7 +171,7 @@ int main()
 			FD_SET(g_clients[n], &fdRead);
 		}
 
-		timeval t = { 0,0 };
+		timeval t = { 1,0 };
 		int ret = select(_sock + 1, &fdRead, &fdWrite, &fdExc, &t);
 		if (ret < 0)
 		{
@@ -180,6 +191,13 @@ int main()
 			if (_client == INVALID_SOCKET)
 				printf("[ERROR]accept socket failed.\n");
 
+			for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+			{
+				NewUserJoin join = {};
+				join.sock = (int)_client;
+				send(g_clients[n], (const char*)&join, sizeof(NewUserJoin), 0);
+			}
+
 			g_clients.push_back(_client);
 			printf("new client[%d][IP : %s] linked in.\n", (int)_client, inet_ntoa(clientAddr.sin_addr));
 		}
@@ -195,6 +213,8 @@ int main()
 				}
 			}
 		}
+
+		printf("do something else...\n");
 	}
 
 	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
