@@ -1,9 +1,22 @@
-#define WIN32_LEAN_AND_MEAN
-
 #include <stdio.h>
+#include <vector>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <WinSock2.h>
-#include <vector>
+
+#define socklen_t int
+
+#else
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <string.h>
+
+#define SOCKET int
+#define INVALID_SOCKET (SOCKET)(~0)
+#define SOCKET_ERROR (-1)
+#endif
 
 enum CMD
 {
@@ -83,7 +96,7 @@ int processor(SOCKET _client)
 {
 	char szRecv[1024] = {};
 
-	int nLen = recv(_client, szRecv, sizeof(DataHeader), 0);
+	int nLen = (int)recv(_client, szRecv, sizeof(DataHeader), 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLen <= 0)
 	{
@@ -125,21 +138,28 @@ int processor(SOCKET _client)
 	}
 	break;
 	}
+	return 0;
 }
 
 int main()
 {
+#ifdef _WIN32
 	WORD ver = MAKEWORD(2, 2);
 	WSADATA data;
 	WSAStartup(ver, &data);
+#endif
 
 	SOCKET _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	sockaddr_in _sin = {};
 	_sin.sin_family = AF_INET;
-	_sin.sin_port = htons(4567);	//host to net unsigned short
+	_sin.sin_port = htons(4567); // host to net unsigned short
 	//_sin.sin_addr.S_un.S_addr = INADDR_ANY;		//inet_addr("127.0.0.1");
+#ifdef _WIN32
 	_sin.sin_addr.S_un.S_addr = INADDR_ANY;
+#else
+	_sin.sin_addr.s_addr = INADDR_ANY;
+#endif
 	if (bind(_sock, (sockaddr*)&_sin, sizeof(sockaddr_in)) == SOCKET_ERROR)
 		printf("[ERROR]bind socket failed.\n");
 	else
@@ -166,13 +186,21 @@ int main()
 		FD_SET(_sock, &fdWrite);
 		FD_SET(_sock, &fdExc);
 
+		SOCKET _maxSock = _sock;
+		for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+		{
+			FD_SET(g_clients[n], &fdRead);
+			if (_maxSock < g_clients[n])
+				_maxSock = g_clients[n];
+		}
+
 		for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 		{
 			FD_SET(g_clients[n], &fdRead);
 		}
 
-		timeval t = { 1,0 };
-		int ret = select(_sock + 1, &fdRead, &fdWrite, &fdExc, &t);
+		timeval t = { 1, 0 };
+		int ret = select(_maxSock + 1, &fdRead, &fdWrite, &fdExc, &t);
 		if (ret < 0)
 		{
 			printf("select task end. \n");
@@ -187,7 +215,7 @@ int main()
 			int nAddrLen = sizeof(clientAddr);
 			SOCKET _client = INVALID_SOCKET;
 
-			_client = accept(_sock, (sockaddr*)&clientAddr, &nAddrLen);
+			_client = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
 			if (_client == INVALID_SOCKET)
 				printf("[ERROR]accept socket failed.\n");
 			else
@@ -204,7 +232,22 @@ int main()
 			}
 		}
 
-		for (int n = 0; n < fdRead.fd_count; n++)
+		for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+		{
+			if (FD_ISSET(g_clients[n], &fdRead))
+			{
+				if (processor(g_clients[n]) == -1)
+				{
+					auto iter = g_clients.begin() + n;
+					if (iter != g_clients.end())
+					{
+						g_clients.erase(iter);
+					}
+				}
+			}
+		}
+
+		/*for (int n = 0; n < fdRead.fd_count; n++)
 		{
 			if (processor(fdRead.fd_array[n]) == -1)
 			{
@@ -214,19 +257,28 @@ int main()
 					g_clients.erase(iter);
 				}
 			}
-		}
+		}*/
 
-		//printf("do something else...\n");
+		// printf("do something else...\n");
 	}
 
+#ifdef _WIN32
 	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 	{
 		closesocket(g_clients[n]);
 	}
-
 	closesocket(_sock);
+#else
+	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	{
+		close(g_clients[n]);
+	}
+	close(_sock);
+#endif
 
+#ifdef _WIN32
 	WSACleanup();
+#endif
 
 	printf("server exit.\n");
 
