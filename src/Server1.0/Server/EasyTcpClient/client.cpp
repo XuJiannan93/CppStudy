@@ -1,9 +1,22 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <stdio.h>
+#include <thread>
+
+#ifdef _WIN32
 #include <Windows.h>
 #include <WinSock2.h>
-#include <thread>
+
+#else
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <string.h>
+
+#define SOCKET int
+#define INVALID_SOCKET (SOCKET)(~0)
+#define SOCKET_ERROR           (-1)
+
+#endif
 
 enum CMD
 {
@@ -81,7 +94,7 @@ int processor(SOCKET _sock)
 {
 	char szRecv[1024] = {};
 
-	int nLen = recv(_sock, szRecv, sizeof(DataHeader), 0);
+	int nLen = (int)recv(_sock, szRecv, sizeof(DataHeader), 0);
 	DataHeader* header = (DataHeader*)szRecv;
 	if (nLen <= 0)
 	{
@@ -96,7 +109,7 @@ int processor(SOCKET _sock)
 	{
 		recv(_sock, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
 		LoginResult* rst = (LoginResult*)(szRecv);
-		printf("recv<%d> cmd len :login [%d][%d] \n", (int)_sock, rst->result, header->len);
+		printf("recv<%d> cmd[LOGIN][%d] len[%d] \n", (int)_sock, rst->result, header->len);
 	}
 	break;
 
@@ -104,7 +117,7 @@ int processor(SOCKET _sock)
 	{
 		recv(_sock, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
 		LogoutResult* rst = (LogoutResult*)(szRecv);
-		printf("recv<%d> cmd len :logout [%d][%d] \n", (int)_sock, rst->result, header->len);
+		printf("recv<%d> cmd[LOGOUT][%d] len[%d] \n", (int)_sock, rst->result, header->len);
 
 	}
 	break;
@@ -113,7 +126,7 @@ int processor(SOCKET _sock)
 	{
 		recv(_sock, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
 		NewUserJoin* join = (NewUserJoin*)(szRecv);
-		printf("recv<%d> cmd len :new user join[%d][%d] \n", (int)_sock, (int)join->sock, header->len);
+		printf("recv<%d> cmd[NEW_USER_JOIN][%d] len[%d] \n", (int)_sock, (int)join->sock, header->len);
 	}
 	break;
 
@@ -126,6 +139,8 @@ int processor(SOCKET _sock)
 	}
 	break;
 	}
+
+	return 0;
 }
 
 bool g_bRun = true;
@@ -149,10 +164,10 @@ void cmdThread(SOCKET _sock)
 			strcpy(login.password, "123456");
 			send(_sock, (const char*)&login, sizeof(Login), 0);
 
-			LoginResult rst = {};
-			recv(_sock, (char*)&rst, sizeof(LoginResult), 0);
+			/*	LoginResult rst = {};
+				recv(_sock, (char*)&rst, sizeof(LoginResult), 0);
 
-			printf("LoginResult %d \n", rst.result);
+				printf("LoginResult %d \n", rst.result);*/
 		}
 		else if (strcmp(cmdbuf, "logout") == 0)
 		{
@@ -160,10 +175,10 @@ void cmdThread(SOCKET _sock)
 			strcpy(logout.username, "xjn");
 			send(_sock, (const char*)&logout, sizeof(Logout), 0);
 
-			LogoutResult rst = {};
-			recv(_sock, (char*)&rst, sizeof(LogoutResult), 0);
+			/*	LogoutResult rst = {};
+				recv(_sock, (char*)&rst, sizeof(LogoutResult), 0);
 
-			printf("LogoutResult %d \n", rst.result);
+				printf("LogoutResult %d \n", rst.result);*/
 		}
 		else
 		{
@@ -175,9 +190,11 @@ void cmdThread(SOCKET _sock)
 
 int main()
 {
+#ifdef _WIN32
 	WORD ver = MAKEWORD(2, 2);
 	WSADATA data;
 	WSAStartup(ver, &data);
+#endif
 
 	SOCKET _sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (_sock == INVALID_SOCKET)
@@ -188,7 +205,12 @@ int main()
 	sockaddr_in _sin = {};
 	_sin.sin_family = AF_INET;
 	_sin.sin_port = htons(4567);
-	_sin.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
+#ifdef _WIN32
+	_sin.sin_addr.S_un.S_addr = inet_addr("192.168.184.1");
+#else
+	_sin.sin_addr.s_addr = inet_addr("192.168.184.1");
+#endif
 	if (connect(_sock, (sockaddr*)&_sin, sizeof(sockaddr_in)) == SOCKET_ERROR)
 		printf("[ERROR]connect socket failed.\n");
 	else
@@ -204,7 +226,7 @@ int main()
 		FD_SET(_sock, &fdReads);
 
 		timeval t = { 1,0 };
-		int ret = select(_sock, &fdReads, NULL, NULL, &t);
+		int ret = select(_sock + 1, &fdReads, NULL, NULL, &t);
 		if (ret < 0)
 		{
 			printf("selcet task end...\n");
@@ -224,9 +246,15 @@ int main()
 		//printf("do some else...\n");
 	}
 
+#ifdef _WIN32
 	closesocket(_sock);
+#else
+	close(_sock);
+#endif
 
+#ifdef _WIN323
 	WSACleanup();
+#endif
 
 	printf("client exit.\n");
 	getchar();
