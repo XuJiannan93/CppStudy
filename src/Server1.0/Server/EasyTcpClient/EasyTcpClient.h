@@ -36,7 +36,7 @@ public:
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	int SendData(DataHeader* header);
 	int RecvData();
-	void OnNetMsg(DataHeader* header);
+	virtual void OnNetMsg(DataHeader* header);
 };
 
 #endif
