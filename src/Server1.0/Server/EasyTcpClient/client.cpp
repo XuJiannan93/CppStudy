@@ -36,19 +36,20 @@ void cmdThread(EasyTcpClient* client)
 
 int main()
 {
-	EasyTcpClient client;
-	client.InitSocket();
-	client.Connect("127.0.0.1", 4567);
+	EasyTcpClient* client = new EasyTcpClient();
+	client->InitSocket();
+	client->Connect("127.0.0.1", 4567);
 
-	std::thread t1(cmdThread, &client);
+	std::thread t1(cmdThread, client);
 	t1.detach();
 
-	while (client.IsRun())
+	while (client->IsRun())
 	{
-		client.OnRun();
+		client->OnRun();
 	}
 
-	client.Close();
+	client->Close();
+	delete client;
 
 	printf("client exit.\n");
 	getchar();

@@ -15,6 +15,12 @@ struct DataHeader
 {
 	short len;
 	short cmd;
+
+	DataHeader()
+	{
+		len = sizeof(DataHeader);
+		cmd = CMD_ERROR;
+	}
 };
 
 struct Login : public DataHeader

@@ -106,19 +106,26 @@ int EasyTcpClient::SendData(DataHeader* header)
 
 int EasyTcpClient::RecvData()
 {
-	char szRecv[1024] = {};
-
-	int nLen = (int)recv(_sock, szRecv, sizeof(DataHeader), 0);
-	DataHeader* header = (DataHeader*)szRecv;
+	int nLen = (int)recv(_sock, _szRecv, RECV_BUFF_SIZE, 0);
 	if (nLen <= 0)
 	{
 		printf("remote[%d] broken.\n", (int)_sock);
 		return -1;
 	}
+	memcpy(_szMsgBuf + _lastPos, _szRecv, nLen);
+	_lastPos += nLen;
 
-	recv(_sock, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
+	while (_lastPos >= sizeof(DataHeader))
+	{
+		DataHeader* header = (DataHeader*)_szMsgBuf;
+		if (_lastPos < header->len)
+			break;
 
-	OnNetMsg(header);
+		int pos = _lastPos - header->len;
+		OnNetMsg(header);
+		memcpy(_szMsgBuf, _szMsgBuf + header->len, _lastPos - header->len);
+		_lastPos = pos;
+	}
 
 	return 0;
 }
@@ -149,12 +156,14 @@ void EasyTcpClient::OnNetMsg(DataHeader* header)
 	}
 	break;
 
+	case CMD_ERROR:
+		printf("recv undefine message! \n");
+
 	default:
 	{
 		header->cmd = CMD_ERROR;
 		header->len = 0;
-
-		send(_sock, (char*)&header, sizeof(DataHeader), 0);
+		send(_sock, (const char*)header, sizeof(DataHeader), 0);
 	}
 	break;
 	}

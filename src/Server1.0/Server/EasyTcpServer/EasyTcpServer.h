@@ -9,7 +9,9 @@
 #include <Windows.h>
 #include <WinSock2.h>
 
+#ifndef socklen_t
 #define socklen_t int
+#endif // !socklen_t
 
 #else
 #include <unistd.h>
@@ -22,27 +24,30 @@
 #endif
 
 #include "MessageHeader.hpp"
+#include "ClientSocket.h"
 
 class EasyTcpServer
 {
 public:
 	EasyTcpServer();
 	virtual ~EasyTcpServer();
+
 	SOCKET InitSocket();
 	int Bind(const char* ip, unsigned short port);
 	int Listen(int n);
 	SOCKET Accept();
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	bool OnRun();
-	int SendData(SOCKET _client, DataHeader* header);
+	int SendData(SOCKET client, DataHeader* header);
 	void SendDataToAll(DataHeader* header);
-	int RecvData(SOCKET _client);
-	virtual void OnNetMsg(SOCKET _client, DataHeader* header);
+	int RecvData(ClientSocket* client);
+	virtual void OnNetMsg(SOCKET client, DataHeader* header);
 	void Close();
 
 private:
 	SOCKET _sock;
-	std::vector<SOCKET> g_clients;
+	char _szRecv[RECV_BUFF_SIZE] = {};
+	std::vector<ClientSocket*> _clients;
 };
 
 #endif //  EASY_TCP_SERVER_H

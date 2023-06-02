@@ -20,10 +20,17 @@
 
 #include "MessageHeader.hpp"
 
+#ifndef  RECV_BUFF_SIZE
+#define RECV_BUFF_SIZE 10240
+#endif // ! RECV_BUFF_SIZE
+
 class EasyTcpClient
 {
 private:
 	SOCKET _sock;
+	char _szRecv[RECV_BUFF_SIZE] = {};
+	char _szMsgBuf[RECV_BUFF_SIZE * 10] = {};
+	int _lastPos = 0;
 
 public:
 	EasyTcpClient();

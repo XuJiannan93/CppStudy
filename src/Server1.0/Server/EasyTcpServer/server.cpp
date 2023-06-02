@@ -2,17 +2,19 @@
 
 int main()
 {
-	EasyTcpServer server;
-	server.InitSocket();
-	server.Bind(nullptr, 4567);
-	server.Listen(5);
+	EasyTcpServer* server = new EasyTcpServer();
+	server->InitSocket();
+	server->Bind(nullptr, 4567);
+	server->Listen(5);
 
-	while (server.IsRun())
+	while (server->IsRun())
 	{
-		server.OnRun();
+		server->OnRun();
 	}
 
-	server.Close();
+	server->Close();
+	delete server;
+
 	getchar();
 
 	return 0;

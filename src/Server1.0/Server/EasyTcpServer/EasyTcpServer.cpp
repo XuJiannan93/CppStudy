@@ -82,21 +82,21 @@ SOCKET EasyTcpServer::Accept()
 {
 	sockaddr_in clientAddr = {};
 	int nAddrLen = sizeof(clientAddr);
-	SOCKET _client = INVALID_SOCKET;
+	SOCKET client = INVALID_SOCKET;
 
-	_client = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
-	if (_client == INVALID_SOCKET)
+	client = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
+	if (client == INVALID_SOCKET)
 		printf("[ERROR]accept socket failed.\n");
 	else
 	{
 		NewUserJoin join = {};
 		SendDataToAll(&join);
 
-		g_clients.push_back(_client);
-		printf("new client[%d][IP : %s] linked in.\n", (int)_client, inet_ntoa(clientAddr.sin_addr));
+		_clients.push_back(new ClientSocket(client));
+		printf("new client[%d][IP : %s] linked in.\n", (int)client, inet_ntoa(clientAddr.sin_addr));
 	}
 
-	return _client;
+	return client;
 }
 
 bool EasyTcpServer::OnRun()
@@ -116,16 +116,16 @@ bool EasyTcpServer::OnRun()
 	FD_SET(_sock, &fdExc);
 
 	SOCKET _maxSock = _sock;
-	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	{
-		FD_SET(g_clients[n], &fdRead);
-		if (_maxSock < g_clients[n])
-			_maxSock = g_clients[n];
+		FD_SET(_clients[n]->sockfd(), &fdRead);
+		if (_maxSock < _clients[n]->sockfd())
+			_maxSock = _clients[n]->sockfd();
 	}
 
-	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	{
-		FD_SET(g_clients[n], &fdRead);
+		FD_SET(_clients[n]->sockfd(), &fdRead);
 	}
 
 	timeval t = { 1, 0 };
@@ -143,16 +143,17 @@ bool EasyTcpServer::OnRun()
 		Accept();
 	}
 
-	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	{
-		if (FD_ISSET(g_clients[n], &fdRead))
+		if (FD_ISSET(_clients[n]->sockfd(), &fdRead))
 		{
-			if (RecvData(g_clients[n]) == -1)
+			if (RecvData(_clients[n]) == -1)
 			{
-				auto iter = g_clients.begin() + n;
-				if (iter != g_clients.end())
+				auto iter = _clients.begin() + n;
+				if (iter != _clients.end())
 				{
-					g_clients.erase(iter);
+					delete _clients[n];
+					_clients.erase(iter);
 				}
 			}
 		}
@@ -161,36 +162,47 @@ bool EasyTcpServer::OnRun()
 	return true;
 }
 
-int EasyTcpServer::SendData(SOCKET _client, DataHeader* header)
+int EasyTcpServer::SendData(SOCKET client, DataHeader* header)
 {
 	if (IsRun() && header)
 	{
-		return send(_client, (const char*)header, header->len, 0);
+		return send(client, (const char*)header, header->len, 0);
 	}
 	return SOCKET_ERROR;
 }
 
 void EasyTcpServer::SendDataToAll(DataHeader* header)
 {
-	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	{
-		SendData(g_clients[n], header);
+		SendData(_clients[n]->sockfd(), header);
 	}
 }
 
-int EasyTcpServer::RecvData(SOCKET _client)
+int EasyTcpServer::RecvData(ClientSocket* client)
 {
-	char szRecv[1024] = {};
-
-	int nLen = (int)recv(_client, szRecv, sizeof(DataHeader), 0);
-	DataHeader* header = (DataHeader*)szRecv;
+	int nLen = (int)recv(client->sockfd(), _szRecv, RECV_BUFF_SIZE, 0);
 	if (nLen <= 0)
 	{
-		printf("client[%d] broken.\n", (int)_client);
+		printf("client[%d] broken.\n", (int)client);
 		return -1;
 	}
-	recv(_client, szRecv + sizeof(DataHeader), header->len - sizeof(DataHeader), 0);
-	OnNetMsg(_client, header);
+
+	memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
+	client->setLastPos(client->getLastPos() + nLen);
+
+	while (client->getLastPos() >= sizeof(DataHeader))
+	{
+		DataHeader* header = (DataHeader*)client->msgBuf();
+		if (client->getLastPos() < header->len)
+			break;
+
+		int pos = client->getLastPos() - header->len;
+		OnNetMsg(client->sockfd(), header);
+		memcpy(client->msgBuf(), client->msgBuf() + header->len, pos);
+		client->setLastPos(pos);
+	}
+
 	return 0;
 }
 
@@ -219,12 +231,15 @@ void EasyTcpServer::OnNetMsg(SOCKET _client, DataHeader* header)
 	}
 	break;
 
+	case CMD_ERROR:
+		printf("Recv Undefined Message! \n");
+		break;
+
+
 	default:
 	{
-		header->cmd = CMD_ERROR;
-		header->len = 0;
-
-		send(_client, (char*)&header, sizeof(DataHeader), 0);
+		DataHeader errormsg = {};
+		send(_client, (char*)&errormsg, errormsg.len, 0);
 	}
 	break;
 	}
@@ -234,20 +249,24 @@ void EasyTcpServer::OnNetMsg(SOCKET _client, DataHeader* header)
 void EasyTcpServer::Close()
 {
 #ifdef _WIN32
-	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
+	for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	{
-		closesocket(g_clients[n]);
+		closesocket(_clients[n]->sockfd());
+		delete _clients[n];
 	}
 	closesocket(_sock);
 #else
 	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 	{
-		close(g_clients[n]);
+		close(g_clients[n]->sockfd());
+		delete _clients[n];
 	}
 	close(_sock);
 #endif
 
+	_clients.clear();
+
 #ifdef _WIN32
 	WSACleanup();
 #endif
-}
+	}
