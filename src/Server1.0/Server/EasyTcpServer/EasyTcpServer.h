@@ -5,6 +5,7 @@
 #include <vector>
 
 #ifdef _WIN32
+#define FD_SETSIZE 1024
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <WinSock2.h>

@@ -269,4 +269,4 @@ void EasyTcpServer::Close()
 #ifdef _WIN32
 	WSACleanup();
 #endif
-	}
+}
