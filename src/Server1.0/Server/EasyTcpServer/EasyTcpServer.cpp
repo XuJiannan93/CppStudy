@@ -93,7 +93,7 @@ SOCKET EasyTcpServer::Accept()
 		SendDataToAll(&join);
 
 		_clients.push_back(new ClientSocket(client));
-		printf("new client[%d][IP : %s] linked in.\n", (int)client, inet_ntoa(clientAddr.sin_addr));
+		//printf("new client[%d][IP : %s] linked in.\n", (int)client, inet_ntoa(clientAddr.sin_addr));
 	}
 
 	return client;

@@ -28,7 +28,9 @@ void EasyTcpClient::InitSocket()
 	if (_sock == INVALID_SOCKET)
 		printf("[ERROR]create socket failed.\n");
 	else
-		printf("create socket succeed.\n");
+	{
+		//printf("create socket succeed.\n");
+	}
 }
 
 int EasyTcpClient::Connect(const char* ip, unsigned short port)
@@ -49,9 +51,9 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 	if (ret == SOCKET_ERROR)
 		printf("[ERROR]connect socket failed.\n");
 	else
-		printf("connect socket succeed.\n");
+		//printf("connect socket succeed.\n");
 
-	return ret;
+		return ret;
 }
 
 void EasyTcpClient::Close()
