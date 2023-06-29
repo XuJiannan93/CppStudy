@@ -3,6 +3,7 @@
 EasyTcpServer::EasyTcpServer()
 {
 	_sock = INVALID_SOCKET;
+	_recvCount = 0;
 }
 
 EasyTcpServer::~EasyTcpServer()
@@ -78,6 +79,20 @@ int EasyTcpServer::Listen(int n)
 	return ret;
 }
 
+void EasyTcpServer::AddClientToCellServer(ClientSocket* pclient)
+{
+	_clients.push_back(pclient);
+
+	auto pMinServer = _cellServers[0];
+	for (auto pCellServer : _cellServers)
+	{
+		if (pMinServer->GetClientCount() > pCellServer->GetClientCount())
+			pMinServer = pCellServer;
+	}
+
+	pMinServer->addClient(pclient);
+}
+
 SOCKET EasyTcpServer::Accept()
 {
 	sockaddr_in clientAddr = {};
@@ -92,44 +107,58 @@ SOCKET EasyTcpServer::Accept()
 		NewUserJoin join = {};
 		SendDataToAll(&join);
 
-		_clients.push_back(new ClientSocket(client));
+		AddClientToCellServer(new ClientSocket(client));
 		//printf("new client[%d][IP : %s] linked in.\n", (int)client, inet_ntoa(clientAddr.sin_addr));
 	}
 
 	return client;
 }
 
+void EasyTcpServer::Start()
+{
+	for (int n = 0; n < _CELL_SERVER_THREAD_COUNT; n++)
+	{
+		auto ser = new CellServer(_sock);
+		_cellServers.push_back(ser);
+		ser->SetEventObj(this);
+		ser->Start();
+	}
+}
+
 bool EasyTcpServer::OnRun()
 {
 	if (IsRun() == false) return false;
 
+	time4msg();
+
 	fd_set fdRead;
-	fd_set fdWrite;
-	fd_set fdExc;
+	//fd_set fdWrite;
+	//fd_set fdExc;
 
 	FD_ZERO(&fdRead);
-	FD_ZERO(&fdWrite);
-	FD_ZERO(&fdExc);
+	//FD_ZERO(&fdWrite);
+	//FD_ZERO(&fdExc);
 
 	FD_SET(_sock, &fdRead);
-	FD_SET(_sock, &fdWrite);
-	FD_SET(_sock, &fdExc);
+	//FD_SET(_sock, &fdWrite);
+	//FD_SET(_sock, &fdExc);
 
-	SOCKET _maxSock = _sock;
-	for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	{
-		FD_SET(_clients[n]->sockfd(), &fdRead);
-		if (_maxSock < _clients[n]->sockfd())
-			_maxSock = _clients[n]->sockfd();
-	}
+	//SOCKET _maxSock = _sock;
 
-	for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	{
-		FD_SET(_clients[n]->sockfd(), &fdRead);
-	}
+	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
+	//{
+	//	FD_SET(_clients[n]->sockfd(), &fdRead);
+	//	if (_maxSock < _clients[n]->sockfd())
+	//		_maxSock = _clients[n]->sockfd();
+	//}
 
-	timeval t = { 1, 0 };
-	int ret = select(_maxSock + 1, &fdRead, &fdWrite, &fdExc, &t);
+	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
+	//{
+	//	FD_SET(_clients[n]->sockfd(), &fdRead);
+	//}
+
+	timeval t = { 0, 10 };
+	int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
 	if (ret < 0)
 	{
 		printf("select task end. \n");
@@ -143,21 +172,21 @@ bool EasyTcpServer::OnRun()
 		Accept();
 	}
 
-	for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	{
-		if (FD_ISSET(_clients[n]->sockfd(), &fdRead))
-		{
-			if (RecvData(_clients[n]) == -1)
-			{
-				auto iter = _clients.begin() + n;
-				if (iter != _clients.end())
-				{
-					delete _clients[n];
-					_clients.erase(iter);
-				}
-			}
-		}
-	}
+	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
+	//{
+	//	if (FD_ISSET(_clients[n]->sockfd(), &fdRead))
+	//	{
+	//		if (RecvData(_clients[n]) == -1)
+	//		{
+	//			auto iter = _clients.begin() + n;
+	//			if (iter != _clients.end())
+	//			{
+	//				delete _clients[n];
+	//				_clients.erase(iter);
+	//			}
+	//		}
+	//	}
+	//}
 
 	return true;
 }
@@ -198,7 +227,7 @@ int EasyTcpServer::RecvData(ClientSocket* client)
 			break;
 
 		int pos = client->getLastPos() - header->len;
-		OnNetMsg(client->sockfd(), header);
+		//time4msg(/*client->sockfd(), header*/);
 		memcpy(client->msgBuf(), client->msgBuf() + header->len, pos);
 		client->setLastPos(pos);
 	}
@@ -206,44 +235,40 @@ int EasyTcpServer::RecvData(ClientSocket* client)
 	return 0;
 }
 
-void EasyTcpServer::OnNetMsg(SOCKET _client, DataHeader* header)
+void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 {
-	switch (header->cmd)
+	auto t1 = _tTime.GetElapsedSecond();
+
+	if (t1 >= 1.0)
 	{
+		_recvCount = 0;
+		for (auto ser : _cellServers)
+		{
+			_recvCount += ser->recvCount;
+			ser->recvCount = 0;
+		}
 
-	case CMD_LOGIN:
+		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recvCount<%d>\n", (int)_cellServers.size(), t1, (int)_sock, (int)_clients.size(), (int)(_recvCount / t1));
+		_tTime.Update();
+	}
+}
+
+void EasyTcpServer::OnLeave(ClientSocket* pClient)
+{
+	for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	{
-		Login* login = (Login*)header;
-		printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)_client, login->username, login->password, header->len);
-
-		LoginResult rst;
-		send(_client, (char*)&rst, sizeof(LoginResult), 0);
+		if (_clients[n] == pClient)
+		{
+			auto iter = _clients.begin() + n;
+			if (iter != _clients.end())
+				_clients.erase(iter);
+		}
 	}
-	break;
+}
 
-	case CMD_LOGOUT:
-	{
-		Logout* logout = (Logout*)header;
-		printf("recv<%d> cmd len :logout [%s][%d] \n", (int)_client, logout->username, header->len);
-
-		LogoutResult rst;
-		send(_client, (char*)&rst, sizeof(LogoutResult), 0);
-	}
-	break;
-
-	case CMD_ERROR:
-		printf("Recv Undefined Message! \n");
-		break;
-
-
-	default:
-	{
-		DataHeader errormsg = {};
-		send(_client, (char*)&errormsg, errormsg.len, 0);
-	}
-	break;
-	}
-
+void EasyTcpServer::OnNetMsg(SOCKET cSock, DataHeader* header)
+{
+	//time4msg();
 }
 
 void EasyTcpServer::Close()

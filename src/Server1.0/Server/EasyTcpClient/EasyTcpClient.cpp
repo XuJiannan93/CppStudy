@@ -99,10 +99,10 @@ bool EasyTcpClient::OnRun()
 	return true;
 }
 
-int EasyTcpClient::SendData(DataHeader* header)
+int EasyTcpClient::SendData(DataHeader* header, int nLen)
 {
 	if (IsRun() && header)
-		return send(_sock, (const char*)header, header->len, 0);
+		return send(_sock, (const char*)header, nLen, 0);
 	return SOCKET_ERROR;
 }
 

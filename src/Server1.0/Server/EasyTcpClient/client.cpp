@@ -1,6 +1,10 @@
+#include <atomic>
+
 #include "EasyTcpClient.h"
 
 bool g_bRun = true;
+std::atomic<int> sum = 0;
+
 void cmdThread(/*EasyTcpClient* client*/)
 {
 	while (true)
@@ -35,7 +39,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 }
 
 //客户端数量
-const int cCount = 1000;
+const int cCount = 648;
 //发送线程数量
 const int tCount = 4;
 EasyTcpClient* client[cCount];
@@ -54,19 +58,28 @@ void sendThread(int id)
 	for (int n = begin; n < end; n++)
 	{
 		client[n]->Connect("127.0.0.1", 4567);
-		printf("Connect=%d\n", n);
+		sum++;
+		printf("[%d]Connect=%d\n", sum.load(), n);
 	}
 
+	std::chrono::milliseconds t1(3000);
+	std::this_thread::sleep_for(t1);
 
-	Login login;
-	strcpy(login.username, "xjn");
-	strcpy(login.password, "123456");
+	Login login[10];
+
+	for (int n = 0; n < 10; n++)
+	{
+		strcpy(login[n].username, "xjn");
+		strcpy(login[n].password, "123456");
+	}
+
+	const int nLen = sizeof(login);
 
 	while (g_bRun)
 	{
 		for (int n = begin; n < end; n++)
 		{
-			client[n]->SendData(&login);
+			client[n]->SendData(login, nLen);
 		}
 	}
 

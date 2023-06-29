@@ -41,7 +41,7 @@ public:
 	void Close();
 	bool OnRun();
 	bool IsRun() { return _sock != INVALID_SOCKET; }
-	int SendData(DataHeader* header);
+	int SendData(DataHeader* header, int nLen);
 	int RecvData();
 	virtual void OnNetMsg(DataHeader* header);
 };

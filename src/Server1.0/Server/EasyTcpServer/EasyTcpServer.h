@@ -3,9 +3,11 @@
 
 #include <stdio.h>
 #include <vector>
+#include <thread>
+#include <mutex>
 
 #ifdef _WIN32
-#define FD_SETSIZE 4024
+#define FD_SETSIZE 2506 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <WinSock2.h>
@@ -25,9 +27,14 @@
 #endif
 
 #include "MessageHeader.hpp"
+#include "CELLTimestamp.h"
 #include "ClientSocket.h"
+#include "CellServer.h"
+#include "INetEvent.hpp"
 
-class EasyTcpServer
+#define _CELL_SERVER_THREAD_COUNT 4
+
+class EasyTcpServer : public INetEvent
 {
 public:
 	EasyTcpServer();
@@ -37,18 +44,29 @@ public:
 	int Bind(const char* ip, unsigned short port);
 	int Listen(int n);
 	SOCKET Accept();
+	void AddClientToCellServer(ClientSocket* pclient);
+	void Start();
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	bool OnRun();
 	int SendData(SOCKET client, DataHeader* header);
 	void SendDataToAll(DataHeader* header);
 	int RecvData(ClientSocket* client);
-	virtual void OnNetMsg(SOCKET client, DataHeader* header);
 	void Close();
+	virtual void OnLeave(ClientSocket* pClient);
+	virtual void OnNetMsg(SOCKET cSock, DataHeader* header);
+
+private:
+	virtual void time4msg(/*SOCKET client, DataHeader* header*/);
 
 private:
 	SOCKET _sock;
 	char _szRecv[RECV_BUFF_SIZE] = {};
 	std::vector<ClientSocket*> _clients;
+	std::vector<CellServer*> _cellServers;
+	CELLTimestamp _tTime;
+	int _recvCount;
+	std::mutex _mutex;
+
 };
 
 #endif //  EASY_TCP_SERVER_H

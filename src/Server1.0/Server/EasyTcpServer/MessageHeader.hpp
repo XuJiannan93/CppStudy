@@ -33,6 +33,7 @@ struct Login : public DataHeader
 
 	char username[32];
 	char password[32];
+	char data[32];
 };
 
 struct LoginResult : public DataHeader
@@ -44,6 +45,7 @@ struct LoginResult : public DataHeader
 		result = 0;
 	}
 	int result;
+	char data[92];
 };
 
 struct Logout : public DataHeader
