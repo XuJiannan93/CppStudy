@@ -25,3 +25,12 @@ void ClientSocket::setLastPos(int pos)
 {
 	_lastPos = pos;
 }
+
+int ClientSocket::SendData(DataHeader* header)
+{
+	if (header)
+	{
+		return send(_sockfd, (const char*)header, header->len, 0);
+	}
+	return SOCKET_ERROR;
+}

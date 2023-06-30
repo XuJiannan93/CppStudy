@@ -1,12 +1,14 @@
-#include "EasyTcpServer.h"
+//#include "EasyTcpServer.h"
+#include "MyServer.h"
+
 
 int main()
 {
-	EasyTcpServer* server = new EasyTcpServer();
+	MyServer* server = new MyServer();
 	server->InitSocket();
 	server->Bind(nullptr, 4567);
 	server->Listen(5);
-	server->Start();
+	server->Start(4);
 
 	while (server->IsRun())
 	{

@@ -3,8 +3,7 @@
 CellServer::CellServer(SOCKET sock)
 {
 	_sock = sock;
-	_pthread = nullptr;
-	recvCount = 0;
+	//recvCount = 0;
 	_pNetEvent = nullptr;
 }
 
@@ -21,7 +20,7 @@ void CellServer::SetEventObj(INetEvent* evt)
 
 void CellServer::Start()
 {
-	_pthread = new  std::thread(std::mem_fun(&CellServer::OnRun), this);
+	_thread = std::thread(std::mem_fn(&CellServer::OnRun), this);
 }
 
 void CellServer::OnRun()
@@ -90,7 +89,7 @@ void CellServer::OnRun()
 					if (iter != _clients.end())
 					{
 						if (_pNetEvent)
-							_pNetEvent->OnLeave(_clients[n]);
+							_pNetEvent->OnNetLeave(_clients[n]);
 
 						delete _clients[n];
 						_clients.erase(iter);
@@ -101,12 +100,21 @@ void CellServer::OnRun()
 	}
 }
 
+//int CellServer::SendData(SOCKET client, DataHeader* header)
+//{
+//	if (IsRun() && header)
+//	{
+//		return send(client, (const char*)header, header->len, 0);
+//	}
+//	return SOCKET_ERROR;
+//}
+
 int CellServer::RecvData(ClientSocket* client)
 {
 	int nLen = (int)recv(client->sockfd(), _szRecv, RECV_BUFF_SIZE, 0);
 	if (nLen <= 0)
 	{
-		printf("client[%d] broken.\n", (int)client);
+		//printf("client[%d] broken.\n", (int)client);
 		return -1;
 	}
 
@@ -120,7 +128,7 @@ int CellServer::RecvData(ClientSocket* client)
 			break;
 
 		int pos = client->getLastPos() - header->len;
-		OnNetMsg(client->sockfd(), header);
+		OnNetMsg(client, header);
 		memcpy(client->msgBuf(), client->msgBuf() + header->len, pos);
 		client->setLastPos(pos);
 	}
@@ -128,11 +136,11 @@ int CellServer::RecvData(ClientSocket* client)
 	return 0;
 }
 
-void CellServer::OnNetMsg(SOCKET _client, DataHeader* header)
+void CellServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
 {
-	recvCount++;
+	//recvCount++;
 
-	//_pNetEvent->OnNetMsg(_client, header);
+	_pNetEvent->OnNetMsg(pClient, header);
 
 	//auto t1 = _tTime.GetElapsedSecond();
 	//if (t1 >= 1.0)
@@ -142,41 +150,6 @@ void CellServer::OnNetMsg(SOCKET _client, DataHeader* header)
 	//	_tTime.Update();
 	//}
 
-	switch (header->cmd)
-	{
-
-	case CMD_LOGIN:
-	{
-		Login* login = (Login*)header;
-		//printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)_client, login->username, login->password, header->len);
-
-		LoginResult rst;
-		send(_client, (char*)&rst, sizeof(LoginResult), 0);
-	}
-	break;
-
-	case CMD_LOGOUT:
-	{
-		Logout* logout = (Logout*)header;
-		//printf("recv<%d> cmd len :logout [%s][%d] \n", (int)_client, logout->username, header->len);
-
-		LogoutResult rst;
-		send(_client, (char*)&rst, sizeof(LogoutResult), 0);
-	}
-	break;
-
-	case CMD_ERROR:
-		printf("Recv Undefined Message! \n");
-		break;
-
-
-	default:
-	{
-		DataHeader errormsg = {};
-		send(_client, (char*)&errormsg, errormsg.len, 0);
-	}
-	break;
-	}
 
 }
 
@@ -189,6 +162,7 @@ void CellServer::Close()
 		delete _clients[n];
 	}
 	closesocket(_sock);
+	//WSACleanup();
 #else
 	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
 	{
@@ -199,10 +173,6 @@ void CellServer::Close()
 #endif
 
 	_clients.clear();
-
-#ifdef _WIN32
-	WSACleanup();
-#endif
 }
 
 void CellServer::addClient(ClientSocket* pClient)

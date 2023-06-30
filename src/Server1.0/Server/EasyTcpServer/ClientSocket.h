@@ -27,12 +27,14 @@
 #define RECV_BUFF_SIZE 10240
 #endif // ! RECV_BUFF_SIZE
 
+#include "MessageHeader.hpp"
+
 
 class ClientSocket
 {
 private:
 	SOCKET _sockfd;
-	char _szMsgBuf[RECV_BUFF_SIZE * 10] = {};
+	char _szMsgBuf[RECV_BUFF_SIZE * 5] = {};
 	int _lastPos = 0;
 
 public:
@@ -40,6 +42,7 @@ public:
 	char* msgBuf();
 	int getLastPos();
 	void setLastPos(int pos);
+	int SendData(DataHeader* header);
 
 	ClientSocket(SOCKET sockfd = INVALID_SOCKET);
 };

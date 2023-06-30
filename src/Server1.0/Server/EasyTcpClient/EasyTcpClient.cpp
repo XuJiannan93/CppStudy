@@ -3,6 +3,7 @@
 EasyTcpClient::EasyTcpClient()
 {
 	_sock = INVALID_SOCKET;
+	_isConnected = false;
 }
 
 EasyTcpClient::~EasyTcpClient()
@@ -49,11 +50,17 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 #endif
 	int ret = connect(_sock, (sockaddr*)&_sin, sizeof(sockaddr_in));
 	if (ret == SOCKET_ERROR)
+	{
+		_isConnected = false;
 		printf("[ERROR]connect socket failed.\n");
+	}
 	else
+	{
+		_isConnected = true;
 		//printf("connect socket succeed.\n");
+	}
 
-		return ret;
+	return ret;
 }
 
 void EasyTcpClient::Close()
@@ -66,7 +73,9 @@ void EasyTcpClient::Close()
 #else
 	close(_sock);
 #endif
+
 	_sock = INVALID_SOCKET;
+	_isConnected = false;
 }
 
 bool EasyTcpClient::OnRun()
@@ -79,7 +88,9 @@ bool EasyTcpClient::OnRun()
 	FD_SET(_sock, &fdReads);
 
 	timeval t = { 1,0 };
-	int ret = select(_sock + 1, &fdReads, NULL, NULL, &t);
+	//printf("select begin\n");
+	int ret = select(_sock + 1, &fdReads, NULL, NULL, 0);
+	//printf("select end\n");
 	if (ret < 0)
 	{
 		printf("selcet task end...\n");
@@ -101,8 +112,14 @@ bool EasyTcpClient::OnRun()
 
 int EasyTcpClient::SendData(DataHeader* header, int nLen)
 {
+	int ret = SOCKET_ERROR;
 	if (IsRun() && header)
-		return send(_sock, (const char*)header, nLen, 0);
+	{
+		ret = send(_sock, (const char*)header, nLen, 0);
+		if (ret == SOCKET_ERROR)
+			Close();
+	}
+
 	return SOCKET_ERROR;
 }
 
@@ -140,21 +157,21 @@ void EasyTcpClient::OnNetMsg(DataHeader* header)
 	case CMD_LOGIN_RESULT:
 	{
 		LoginResult* rst = (LoginResult*)header;
-		printf("recv<%d> cmd[LOGIN][%d] len[%d] \n", (int)_sock, rst->result, header->len);
+		//printf("recv<%d> cmd[LOGIN][%d] len[%d] \n", (int)_sock, rst->result, header->len);
 	}
 	break;
 
 	case CMD_LOGOUT_RESULT:
 	{
 		LogoutResult* rst = (LogoutResult*)header;
-		printf("recv<%d> cmd[LOGOUT][%d] len[%d] \n", (int)_sock, rst->result, header->len);
+		//printf("recv<%d> cmd[LOGOUT][%d] len[%d] \n", (int)_sock, rst->result, header->len);
 	}
 	break;
 
 	case CMD_NEW_USER_JOIN:
 	{
 		NewUserJoin* join = (NewUserJoin*)header;
-		printf("recv<%d> cmd[NEW_USER_JOIN][%d] len[%d] \n", (int)_sock, (int)join->sock, header->len);
+		//printf("recv<%d> cmd[NEW_USER_JOIN][%d] len[%d] \n", (int)_sock, (int)join->sock, header->len);
 	}
 	break;
 
@@ -163,9 +180,10 @@ void EasyTcpClient::OnNetMsg(DataHeader* header)
 
 	default:
 	{
-		header->cmd = CMD_ERROR;
-		header->len = 0;
-		send(_sock, (const char*)header, sizeof(DataHeader), 0);
+		/*	header->cmd = CMD_ERROR;
+			header->len = 0;
+			send(_sock, (const char*)header, sizeof(DataHeader), 0);*/
+		printf("send error.\n");
 	}
 	break;
 	}

@@ -26,13 +26,13 @@
 #define SOCKET_ERROR (-1)
 #endif
 
-#include "MessageHeader.hpp"
+//#include "MessageHeader.hpp"
 #include "CELLTimestamp.h"
 #include "ClientSocket.h"
 #include "CellServer.h"
 #include "INetEvent.hpp"
 
-#define _CELL_SERVER_THREAD_COUNT 4
+//#define _CELL_SERVER_THREAD_COUNT 4
 
 class EasyTcpServer : public INetEvent
 {
@@ -45,15 +45,15 @@ public:
 	int Listen(int n);
 	SOCKET Accept();
 	void AddClientToCellServer(ClientSocket* pclient);
-	void Start();
+	void Start(int nCellServer);
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	bool OnRun();
-	int SendData(SOCKET client, DataHeader* header);
 	void SendDataToAll(DataHeader* header);
 	int RecvData(ClientSocket* client);
 	void Close();
-	virtual void OnLeave(ClientSocket* pClient);
-	virtual void OnNetMsg(SOCKET cSock, DataHeader* header);
+	virtual void OnNetJoin(ClientSocket* pClient);
+	virtual void OnNetLeave(ClientSocket* pClient);
+	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header);
 
 private:
 	virtual void time4msg(/*SOCKET client, DataHeader* header*/);
@@ -61,10 +61,11 @@ private:
 private:
 	SOCKET _sock;
 	char _szRecv[RECV_BUFF_SIZE] = {};
-	std::vector<ClientSocket*> _clients;
+	//std::vector<ClientSocket*> _clients;
 	std::vector<CellServer*> _cellServers;
 	CELLTimestamp _tTime;
-	int _recvCount;
+	std::atomic_int _recvCount;
+	std::atomic_int _clientCount;
 	std::mutex _mutex;
 
 };

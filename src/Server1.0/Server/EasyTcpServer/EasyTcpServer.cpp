@@ -4,6 +4,7 @@ EasyTcpServer::EasyTcpServer()
 {
 	_sock = INVALID_SOCKET;
 	_recvCount = 0;
+	_clientCount = 0;
 }
 
 EasyTcpServer::~EasyTcpServer()
@@ -81,7 +82,7 @@ int EasyTcpServer::Listen(int n)
 
 void EasyTcpServer::AddClientToCellServer(ClientSocket* pclient)
 {
-	_clients.push_back(pclient);
+	//_clients.push_back(pclient);
 
 	auto pMinServer = _cellServers[0];
 	for (auto pCellServer : _cellServers)
@@ -91,6 +92,7 @@ void EasyTcpServer::AddClientToCellServer(ClientSocket* pclient)
 	}
 
 	pMinServer->addClient(pclient);
+	OnNetJoin(pclient);
 }
 
 SOCKET EasyTcpServer::Accept()
@@ -104,9 +106,8 @@ SOCKET EasyTcpServer::Accept()
 		printf("[ERROR]accept socket failed.\n");
 	else
 	{
-		NewUserJoin join = {};
-		SendDataToAll(&join);
-
+		//NewUserJoin join = {};
+		//SendDataToAll(&join);
 		AddClientToCellServer(new ClientSocket(client));
 		//printf("new client[%d][IP : %s] linked in.\n", (int)client, inet_ntoa(clientAddr.sin_addr));
 	}
@@ -114,9 +115,9 @@ SOCKET EasyTcpServer::Accept()
 	return client;
 }
 
-void EasyTcpServer::Start()
+void EasyTcpServer::Start(int nCellServer)
 {
-	for (int n = 0; n < _CELL_SERVER_THREAD_COUNT; n++)
+	for (int n = 0; n < nCellServer; n++)
 	{
 		auto ser = new CellServer(_sock);
 		_cellServers.push_back(ser);
@@ -132,30 +133,8 @@ bool EasyTcpServer::OnRun()
 	time4msg();
 
 	fd_set fdRead;
-	//fd_set fdWrite;
-	//fd_set fdExc;
-
 	FD_ZERO(&fdRead);
-	//FD_ZERO(&fdWrite);
-	//FD_ZERO(&fdExc);
-
 	FD_SET(_sock, &fdRead);
-	//FD_SET(_sock, &fdWrite);
-	//FD_SET(_sock, &fdExc);
-
-	//SOCKET _maxSock = _sock;
-
-	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	//{
-	//	FD_SET(_clients[n]->sockfd(), &fdRead);
-	//	if (_maxSock < _clients[n]->sockfd())
-	//		_maxSock = _clients[n]->sockfd();
-	//}
-
-	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	//{
-	//	FD_SET(_clients[n]->sockfd(), &fdRead);
-	//}
 
 	timeval t = { 0, 10 };
 	int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
@@ -172,40 +151,16 @@ bool EasyTcpServer::OnRun()
 		Accept();
 	}
 
-	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	//{
-	//	if (FD_ISSET(_clients[n]->sockfd(), &fdRead))
-	//	{
-	//		if (RecvData(_clients[n]) == -1)
-	//		{
-	//			auto iter = _clients.begin() + n;
-	//			if (iter != _clients.end())
-	//			{
-	//				delete _clients[n];
-	//				_clients.erase(iter);
-	//			}
-	//		}
-	//	}
-	//}
-
 	return true;
 }
 
-int EasyTcpServer::SendData(SOCKET client, DataHeader* header)
-{
-	if (IsRun() && header)
-	{
-		return send(client, (const char*)header, header->len, 0);
-	}
-	return SOCKET_ERROR;
-}
 
 void EasyTcpServer::SendDataToAll(DataHeader* header)
 {
-	for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	{
-		SendData(_clients[n]->sockfd(), header);
-	}
+	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
+	//{
+	//	SendData(_clients[n]->sockfd(), header);
+	//}
 }
 
 int EasyTcpServer::RecvData(ClientSocket* client)
@@ -241,57 +196,33 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 
 	if (t1 >= 1.0)
 	{
+		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recvCount<%d>\n", (int)_cellServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1));
 		_recvCount = 0;
-		for (auto ser : _cellServers)
-		{
-			_recvCount += ser->recvCount;
-			ser->recvCount = 0;
-		}
-
-		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recvCount<%d>\n", (int)_cellServers.size(), t1, (int)_sock, (int)_clients.size(), (int)(_recvCount / t1));
 		_tTime.Update();
 	}
 }
 
-void EasyTcpServer::OnLeave(ClientSocket* pClient)
+void EasyTcpServer::OnNetJoin(ClientSocket* pClient)
 {
-	for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	{
-		if (_clients[n] == pClient)
-		{
-			auto iter = _clients.begin() + n;
-			if (iter != _clients.end())
-				_clients.erase(iter);
-		}
-	}
+	_clientCount++;
 }
 
-void EasyTcpServer::OnNetMsg(SOCKET cSock, DataHeader* header)
+void EasyTcpServer::OnNetLeave(ClientSocket* pClient)
 {
-	//time4msg();
+	_clientCount--;
+}
+
+void EasyTcpServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
+{
+	_recvCount++;
 }
 
 void EasyTcpServer::Close()
 {
 #ifdef _WIN32
-	for (int n = (int)_clients.size() - 1; n >= 0; n--)
-	{
-		closesocket(_clients[n]->sockfd());
-		delete _clients[n];
-	}
 	closesocket(_sock);
-#else
-	for (int n = (int)g_clients.size() - 1; n >= 0; n--)
-	{
-		close(g_clients[n]->sockfd());
-		delete _clients[n];
-	}
-	close(_sock);
-#endif
-
-	_clients.clear();
-
-#ifdef _WIN32
 	WSACleanup();
+#else
+	close(_sock);
 #endif
 }

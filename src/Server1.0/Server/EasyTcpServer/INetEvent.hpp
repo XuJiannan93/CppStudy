@@ -6,8 +6,9 @@
 class INetEvent
 {
 public:
-	virtual void OnLeave(ClientSocket* pClient) = 0;
-	virtual void OnNetMsg(SOCKET cSock, DataHeader* header) = 0;
+	virtual void OnNetJoin(ClientSocket* pClient) = 0;
+	virtual void OnNetLeave(ClientSocket* pClient) = 0;
+	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header) = 0;
 
 private:
 

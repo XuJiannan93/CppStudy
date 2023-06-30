@@ -151,6 +151,7 @@
     <ClCompile Include="CELLTimestamp.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="EasyTcpServer.cpp" />
+    <ClCompile Include="MyServer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="EasyTcpServer.h" />
     <ClInclude Include="INetEvent.hpp" />
     <ClInclude Include="MessageHeader.hpp" />
+    <ClInclude Include="MyServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

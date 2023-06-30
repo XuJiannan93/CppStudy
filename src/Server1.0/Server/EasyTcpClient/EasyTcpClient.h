@@ -28,8 +28,9 @@ class EasyTcpClient
 {
 private:
 	SOCKET _sock;
+	bool _isConnected;
 	char _szRecv[RECV_BUFF_SIZE] = {};
-	char _szMsgBuf[RECV_BUFF_SIZE * 10] = {};
+	char _szMsgBuf[RECV_BUFF_SIZE * 5] = {};
 	int _lastPos = 0;
 
 public:
@@ -40,7 +41,7 @@ public:
 	int Connect(const char* ip, unsigned short port);
 	void Close();
 	bool OnRun();
-	bool IsRun() { return _sock != INVALID_SOCKET; }
+	bool IsRun() { return _sock != INVALID_SOCKET && _isConnected; }
 	int SendData(DataHeader* header, int nLen);
 	int RecvData();
 	virtual void OnNetMsg(DataHeader* header);

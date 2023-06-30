@@ -39,8 +39,9 @@ public:
 	void Start();
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	void OnRun();
+	//int SendData(SOCKET client, DataHeader* header);
 	int RecvData(ClientSocket* client);
-	virtual void OnNetMsg(SOCKET client, DataHeader* header);
+	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header);
 	void Close();
 	size_t GetClientCount() { return _clients.size() + _clientsBuff.size(); }
 	void addClient(ClientSocket* pClient);
@@ -52,11 +53,11 @@ private:
 	std::vector<ClientSocket*> _clientsBuff;
 	char _szRecv[RECV_BUFF_SIZE] = {};
 	std::mutex _mutex;
-	std::thread* _pthread;
+	std::thread _thread;
 	INetEvent* _pNetEvent;
 
 public:
-	std::atomic_int recvCount;
+	//std::atomic_int recvCount;
 };
 
 #endif

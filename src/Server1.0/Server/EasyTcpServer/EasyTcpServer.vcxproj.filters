@@ -30,6 +30,9 @@
     <ClCompile Include="CellServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MyServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyTcpServer.h">
@@ -48,6 +51,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="INetEvent.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyServer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
