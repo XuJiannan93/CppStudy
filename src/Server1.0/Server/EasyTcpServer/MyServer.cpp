@@ -3,13 +3,13 @@
 void MyServer::OnNetJoin(ClientSocket* pClient)
 {
 	EasyTcpServer::OnNetJoin(pClient);
-	printf("client<%d> join\n", (int)pClient->sockfd());
+	//printf("client<%d> join\n", (int)pClient->sockfd());
 }
 
 void MyServer::OnNetLeave(ClientSocket* pClient)
 {
 	EasyTcpServer::OnNetLeave(pClient);
-	printf("client<%d> leave\n", (int)pClient->sockfd());
+	//printf("client<%d> leave\n", (int)pClient->sockfd());
 }
 
 void MyServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
@@ -23,8 +23,8 @@ void MyServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
 		Login* login = (Login*)header;
 		//printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)_client, login->username, login->password, header->len);
 
-		LoginResult ret;
-		pClient->SendData(&ret);
+	/*	LoginResult ret;
+		pClient->SendData(&ret);*/
 	}
 	break;
 

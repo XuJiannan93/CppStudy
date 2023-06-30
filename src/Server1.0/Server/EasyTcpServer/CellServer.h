@@ -6,6 +6,7 @@
 #include <mutex>
 #include <functional>
 #include <atomic>
+#include <map>
 
 #ifdef _WIN32
 #define FD_SETSIZE 1024
@@ -49,15 +50,20 @@ public:
 
 private:
 	SOCKET _sock;
-	std::vector<ClientSocket*> _clients;
+
+	std::map<SOCKET, ClientSocket*> _clients;
 	std::vector<ClientSocket*> _clientsBuff;
+
 	char _szRecv[RECV_BUFF_SIZE] = {};
+
 	std::mutex _mutex;
 	std::thread _thread;
 	INetEvent* _pNetEvent;
 
-public:
-	//std::atomic_int recvCount;
+	fd_set _fdRead_bak;
+	bool _clients_changed = true;
+	SOCKET _maxSock;
+
 };
 
 #endif

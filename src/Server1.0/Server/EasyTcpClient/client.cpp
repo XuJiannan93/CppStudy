@@ -39,7 +39,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 }
 
 //客户端数量
-const int cCount = 8;
+const int cCount = 10000;
 //发送线程数量
 const int tCount = 4;
 EasyTcpClient* client[cCount];
@@ -82,7 +82,7 @@ void sendThread(int id)
 		for (int n = begin; n < end; n++)
 		{
 			client[n]->SendData(login, nLen);
-			client[n]->OnRun();
+			//client[n]->OnRun();
 		}
 	}
 
