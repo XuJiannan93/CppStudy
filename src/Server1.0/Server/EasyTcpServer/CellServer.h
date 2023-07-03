@@ -54,7 +54,7 @@ private:
 	std::map<SOCKET, ClientSocket*> _clients;
 	std::vector<ClientSocket*> _clientsBuff;
 
-	char _szRecv[RECV_BUFF_SIZE] = {};
+	//char _szRecv[RECV_BUFF_SIZE] = {};
 
 	std::mutex _mutex;
 	std::thread _thread;

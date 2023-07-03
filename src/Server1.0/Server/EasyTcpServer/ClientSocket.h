@@ -25,6 +25,7 @@
 
 #ifndef  RECV_BUFF_SIZE
 #define RECV_BUFF_SIZE 10240
+#define SEND_BUFF_SIZE RECV_BUFF_SIZE
 #endif // ! RECV_BUFF_SIZE
 
 #include "MessageHeader.hpp"
@@ -34,8 +35,10 @@ class ClientSocket
 {
 private:
 	SOCKET _sockfd;
-	char _szMsgBuf[RECV_BUFF_SIZE * 5] = {};
+	char _szMsgBuf[RECV_BUFF_SIZE] = {};
+	char _szSendBuf[SEND_BUFF_SIZE] = {};
 	int _lastPos = 0;
+	int _lastSendPos = 0;
 
 public:
 	SOCKET sockfd();

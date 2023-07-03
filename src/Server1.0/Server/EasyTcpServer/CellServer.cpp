@@ -70,7 +70,7 @@ void CellServer::OnRun()
 		}
 
 		timeval t = { 0, 0 };
-		int ret = select(_maxSock + 1, &fdRead, nullptr, nullptr, nullptr);
+		int ret = select(_maxSock + 1, &fdRead, nullptr, nullptr, &t);
 		if (ret < 0)
 		{
 			printf("select task end. \n");
@@ -133,7 +133,7 @@ void CellServer::OnRun()
 int CellServer::RecvData(ClientSocket* client)
 {
 	char* szRecv = client->msgBuf() + client->getLastPos();
-	int nLen = (int)recv(client->sockfd(), szRecv, (RECV_BUFF_SIZE * 5) - client->getLastPos(), 0);
+	int nLen = (int)recv(client->sockfd(), szRecv, RECV_BUFF_SIZE - client->getLastPos(), 0);
 	_pNetEvent->OnNetRecv(client);
 	if (nLen <= 0)
 	{
@@ -193,7 +193,7 @@ void CellServer::Close()
 	{
 		close(iter.second->sockfd());
 		delete iter.second;
-}
+	}
 	close(_sock);
 #endif
 

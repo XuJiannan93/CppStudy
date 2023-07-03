@@ -42,7 +42,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 }
 
 //客户端数量
-const int cCount = 10000;
+const int cCount = 16;
 //发送线程数量
 const int tCount = 4;
 EasyTcpClient* client[cCount];
@@ -62,7 +62,6 @@ void sendThread(int id)
 	{
 		client[n]->Connect("127.0.0.1", 4567);
 		sum++;
-		//printf("[%d]Connect=%d\n", sum.load(), n);
 	}
 
 	printf("thread[%d] start,Connect sum [%d]\n", id, sum.load());

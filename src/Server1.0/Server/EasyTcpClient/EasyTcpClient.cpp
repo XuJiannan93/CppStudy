@@ -65,6 +65,8 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 
 void EasyTcpClient::Close()
 {
+	printf("sock closed!\n");
+
 	if (_sock == INVALID_SOCKET) return;
 
 #ifdef _WIN32
@@ -87,10 +89,8 @@ bool EasyTcpClient::OnRun()
 	FD_ZERO(&fdReads);
 	FD_SET(_sock, &fdReads);
 
-	timeval t = { 1,0 };
-	//printf("select begin\n");
-	int ret = select(_sock + 1, &fdReads, NULL, NULL, 0);
-	//printf("select end\n");
+	timeval t = { 0, 0 };
+	int ret = select(_sock + 1, &fdReads, NULL, NULL, &t);
 	if (ret < 0)
 	{
 		printf("selcet task end...\n");
@@ -117,7 +117,9 @@ int EasyTcpClient::SendData(DataHeader* header, int nLen)
 	{
 		ret = send(_sock, (const char*)header, nLen, 0);
 		if (ret == SOCKET_ERROR)
+		{
 			Close();
+		}
 	}
 	return ret;
 }
@@ -183,6 +185,7 @@ void EasyTcpClient::OnNetMsg(DataHeader* header)
 		/*	header->cmd = CMD_ERROR;
 			header->len = 0;
 			send(_sock, (const char*)header, sizeof(DataHeader), 0);*/
+
 		printf("send error.\n");
 	}
 	break;

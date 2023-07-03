@@ -137,7 +137,7 @@ bool EasyTcpServer::OnRun()
 	FD_ZERO(&fdRead);
 	FD_SET(_sock, &fdRead);
 
-	timeval t = { 0, 10 };
+	timeval t = { 0, 0 };
 	int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
 	if (ret < 0)
 	{
