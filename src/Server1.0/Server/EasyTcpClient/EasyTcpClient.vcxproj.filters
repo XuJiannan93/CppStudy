@@ -21,12 +21,18 @@
     <ClCompile Include="EasyTcpClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CELLTimestamp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyTcpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MessageHeader.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTimestamp.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

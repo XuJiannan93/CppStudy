@@ -119,19 +119,19 @@ int EasyTcpClient::SendData(DataHeader* header, int nLen)
 		if (ret == SOCKET_ERROR)
 			Close();
 	}
-
-	return SOCKET_ERROR;
+	return ret;
 }
 
 int EasyTcpClient::RecvData()
 {
-	int nLen = (int)recv(_sock, _szRecv, RECV_BUFF_SIZE, 0);
+	char* szRecv = _szMsgBuf + _lastPos;
+	int nLen = (int)recv(_sock, szRecv, (RECV_BUFF_SIZE * 5) - _lastPos, 0);
 	if (nLen <= 0)
 	{
 		printf("remote[%d] broken.\n", (int)_sock);
 		return -1;
 	}
-	memcpy(_szMsgBuf + _lastPos, _szRecv, nLen);
+	//memcpy(_szMsgBuf + _lastPos, _szRecv, nLen);
 	_lastPos += nLen;
 
 	while (_lastPos >= sizeof(DataHeader))

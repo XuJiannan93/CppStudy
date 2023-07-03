@@ -132,14 +132,16 @@ void CellServer::OnRun()
 
 int CellServer::RecvData(ClientSocket* client)
 {
-	int nLen = (int)recv(client->sockfd(), _szRecv, RECV_BUFF_SIZE, 0);
+	char* szRecv = client->msgBuf() + client->getLastPos();
+	int nLen = (int)recv(client->sockfd(), szRecv, (RECV_BUFF_SIZE * 5) - client->getLastPos(), 0);
+	_pNetEvent->OnNetRecv(client);
 	if (nLen <= 0)
 	{
 		//printf("client[%d] broken.\n", (int)client);
 		return -1;
 	}
 
-	memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
+	//memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
 	client->setLastPos(client->getLastPos() + nLen);
 
 	while (client->getLastPos() >= sizeof(DataHeader))
@@ -151,6 +153,7 @@ int CellServer::RecvData(ClientSocket* client)
 		int pos = client->getLastPos() - header->len;
 		OnNetMsg(client, header);
 		memcpy(client->msgBuf(), client->msgBuf() + header->len, pos);
+		//memcpy(client->msgBuf(), szRecv + header->len, pos);
 		client->setLastPos(pos);
 	}
 
@@ -190,7 +193,7 @@ void CellServer::Close()
 	{
 		close(iter.second->sockfd());
 		delete iter.second;
-	}
+}
 	close(_sock);
 #endif
 

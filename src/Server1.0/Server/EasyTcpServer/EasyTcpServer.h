@@ -54,6 +54,7 @@ public:
 	virtual void OnNetJoin(ClientSocket* pClient);
 	virtual void OnNetLeave(ClientSocket* pClient);
 	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header);
+	virtual void OnNetRecv(ClientSocket* pClient);
 
 private:
 	virtual void time4msg(/*SOCKET client, DataHeader* header*/);
@@ -64,9 +65,12 @@ private:
 	//std::vector<ClientSocket*> _clients;
 	std::vector<CellServer*> _cellServers;
 	CELLTimestamp _tTime;
+	std::mutex _mutex;
+
+protected:
+	std::atomic_int _msgCount;
 	std::atomic_int _recvCount;
 	std::atomic_int _clientCount;
-	std::mutex _mutex;
 
 };
 

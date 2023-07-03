@@ -1,9 +1,12 @@
 #include <atomic>
 
 #include "EasyTcpClient.h"
+#include "CELLTimestamp.h"
 
 bool g_bRun = true;
 std::atomic<int> sum = 0;
+std::atomic<int> sendCount = 0;
+std::atomic<int> readyCount = 0;
 
 void cmdThread(/*EasyTcpClient* client*/)
 {
@@ -64,10 +67,14 @@ void sendThread(int id)
 
 	printf("thread[%d] start,Connect sum [%d]\n", id, sum.load());
 
-	std::chrono::milliseconds t1(3000);
-	std::this_thread::sleep_for(t1);
+	readyCount++;
+	while (readyCount < tCount)
+	{
+		std::chrono::milliseconds t1(3000);
+		std::this_thread::sleep_for(t1);
+	}
 
-	Login login[1];
+	Login login[10];
 
 	for (int n = 0; n < 10; n++)
 	{
@@ -81,8 +88,12 @@ void sendThread(int id)
 	{
 		for (int n = begin; n < end; n++)
 		{
-			client[n]->SendData(login, nLen);
-			//client[n]->OnRun();
+			auto ret = client[n]->SendData(login, nLen);
+			if (ret != SOCKET_ERROR)
+			{
+				sendCount++;
+			}
+			client[n]->OnRun();
 		}
 	}
 
@@ -111,24 +122,18 @@ int main()
 		t0.detach();
 	}
 
-	//EasyTcpClient* client = new EasyTcpClient();
-	//client->InitSocket();
-	//client->Connect("127.0.0.1", 4567);
-
-	//std::thread t1(cmdThread, client);
-	//t1.detach();
-
-	//while (client->IsRun())
-	//{
-	//	client->OnRun();
-	//}
-
-	//client->Close();
-	//delete client;
+	CELLTimestamp tTime;
 
 	while (g_bRun)
 	{
-		Sleep(100);
+		auto t = tTime.GetElapsedSecond();
+		if (t >= 1.0)
+		{
+			printf("thread<%d>,clients<%d>,time<%lf>,send<%d>\n", tCount, cCount, t, (int)(sendCount.load() / t));
+			tTime.Update();
+			sendCount = 0;
+		}
+		Sleep(1);
 	}
 
 	printf("client exit.\n");

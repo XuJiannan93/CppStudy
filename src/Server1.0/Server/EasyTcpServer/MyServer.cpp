@@ -23,8 +23,8 @@ void MyServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
 		Login* login = (Login*)header;
 		//printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)_client, login->username, login->password, header->len);
 
-	/*	LoginResult ret;
-		pClient->SendData(&ret);*/
+		LoginResult ret;
+		pClient->SendData(&ret);
 	}
 	break;
 

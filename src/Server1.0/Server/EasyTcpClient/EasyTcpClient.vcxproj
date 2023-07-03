@@ -147,10 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CELLTimestamp.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="EasyTcpClient.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CELLTimestamp.h" />
     <ClInclude Include="EasyTcpClient.h" />
     <ClInclude Include="MessageHeader.hpp" />
   </ItemGroup>

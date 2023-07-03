@@ -5,6 +5,7 @@ EasyTcpServer::EasyTcpServer()
 	_sock = INVALID_SOCKET;
 	_recvCount = 0;
 	_clientCount = 0;
+	_msgCount = 0;
 }
 
 EasyTcpServer::~EasyTcpServer()
@@ -196,8 +197,9 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 
 	if (t1 >= 1.0)
 	{
-		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recvCount<%d>\n", (int)_cellServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1));
+		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>\n", (int)_cellServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), (int)(_msgCount / t1));
 		_recvCount = 0;
+		_msgCount = 0;
 		_tTime.Update();
 	}
 }
@@ -213,6 +215,11 @@ void EasyTcpServer::OnNetLeave(ClientSocket* pClient)
 }
 
 void EasyTcpServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
+{
+	_msgCount++;
+}
+
+void EasyTcpServer::OnNetRecv(ClientSocket* pClient)
 {
 	_recvCount++;
 }
