@@ -214,7 +214,7 @@ void EasyTcpServer::OnNetLeave(ClientSocket* pClient)
 	_clientCount--;
 }
 
-void EasyTcpServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
+void EasyTcpServer::OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header)
 {
 	_msgCount++;
 }

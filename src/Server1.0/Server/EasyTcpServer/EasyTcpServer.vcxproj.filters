@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Cells">
+      <UniqueIdentifier>{c35e75df-a394-40f2-a354-cbbdae445186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Cells">
+      <UniqueIdentifier>{e3b47bbb-2d43-4e13-a829-160e2a1d8c4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EasyTcpServer.cpp">
@@ -24,13 +30,25 @@
     <ClCompile Include="ClientSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CELLTimestamp.cpp">
+    <ClCompile Include="MyServer.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellTaskServer.cpp">
+      <Filter>源文件\Cells</Filter>
     </ClCompile>
     <ClCompile Include="CellServer.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Cells</Filter>
     </ClCompile>
-    <ClCompile Include="MyServer.cpp">
+    <ClCompile Include="CELLTask.cpp">
+      <Filter>源文件\Cells</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLTimestamp.cpp">
+      <Filter>源文件\Cells</Filter>
+    </ClCompile>
+    <ClCompile Include="CellSendMsg2ClientTask.h">
+      <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CellSendMsg2ClientTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,17 +62,23 @@
     <ClInclude Include="ClientSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CELLTimestamp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CellServer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="INetEvent.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MyServer.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CellServer.h">
+      <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTask.h">
+      <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="CellTaskServer.h">
+      <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTimestamp.h">
+      <Filter>头文件\Cells</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

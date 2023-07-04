@@ -3,6 +3,7 @@
 
 #include "MessageHeader.hpp"
 #include "EasyTcpServer.h"
+#include "CellSendMsg2ClientTask.h"
 
 class MyServer : public EasyTcpServer
 {
@@ -11,7 +12,7 @@ public:
 
 	void OnNetLeave(ClientSocket* pClient) override;
 
-	void OnNetMsg(ClientSocket* pClient, DataHeader* header) override;
+	void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header) override;
 
 
 };

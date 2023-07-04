@@ -21,6 +21,7 @@ void CellServer::SetEventObj(INetEvent* evt)
 void CellServer::Start()
 {
 	_thread = std::thread(std::mem_fn(&CellServer::OnRun), this);
+	_taskServer.Start();
 }
 
 
@@ -164,7 +165,7 @@ void CellServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
 {
 	//recvCount++;
 
-	_pNetEvent->OnNetMsg(pClient, header);
+	_pNetEvent->OnNetMsg(this, pClient, header);
 
 	//auto t1 = _tTime.GetElapsedSecond();
 	//if (t1 >= 1.0)
@@ -204,4 +205,10 @@ void CellServer::addClient(ClientSocket* pClient)
 {
 	std::lock_guard<std::mutex> lock(_mutex);
 	_clientsBuff.push_back(pClient);
+}
+
+void CellServer::AddSendTask(ClientSocket* pClient, DataHeader* header)
+{
+	CellSendMsg2ClientTask* task = new CellSendMsg2ClientTask(pClient, header);
+	_taskServer.AddTask(task);
 }

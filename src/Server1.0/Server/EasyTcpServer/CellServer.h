@@ -31,22 +31,26 @@
 #include "MessageHeader.hpp"
 #include "ClientSocket.h"
 #include "INetEvent.hpp"
+#include "CELLTask.h"
+#include "CellTaskServer.h"
+#include "CellSendMsg2ClientTask.h"
 
 class CellServer
 {
 public:
 	CellServer(SOCKET sock = INVALID_SOCKET);
 	virtual ~CellServer();
+
 	void Start();
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	void OnRun();
-	//int SendData(SOCKET client, DataHeader* header);
 	int RecvData(ClientSocket* client);
 	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header);
 	void Close();
 	size_t GetClientCount() { return _clients.size() + _clientsBuff.size(); }
 	void addClient(ClientSocket* pClient);
 	void SetEventObj(INetEvent* evt);
+	void AddSendTask(ClientSocket* pClient, DataHeader* header);
 
 private:
 	SOCKET _sock;
@@ -63,6 +67,8 @@ private:
 	fd_set _fdRead_bak;
 	bool _clients_changed = true;
 	SOCKET _maxSock;
+
+	CellTaskServer _taskServer;
 
 };
 

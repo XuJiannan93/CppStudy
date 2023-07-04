@@ -31,6 +31,7 @@
 #include "ClientSocket.h"
 #include "CellServer.h"
 #include "INetEvent.hpp"
+#include "CELLTask.h"
 
 //#define _CELL_SERVER_THREAD_COUNT 4
 
@@ -53,7 +54,7 @@ public:
 	void Close();
 	virtual void OnNetJoin(ClientSocket* pClient);
 	virtual void OnNetLeave(ClientSocket* pClient);
-	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header);
+	virtual void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header);
 	virtual void OnNetRecv(ClientSocket* pClient);
 
 private:

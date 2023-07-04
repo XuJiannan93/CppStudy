@@ -1,5 +1,5 @@
-#ifndef CLIENT_SOCKET_H
-#define CLIENT_SOCKET_H
+#ifndef _CLIENT_SOCKET_H
+#define _CLIENT_SOCKET_H
 
 #include <stdio.h>
 #include <vector>
@@ -50,4 +50,4 @@ public:
 	ClientSocket(SOCKET sockfd = INVALID_SOCKET);
 };
 
-#endif // !CLIENT_SOCKET_H
+#endif // !_CLIENT_SOCKET_H
