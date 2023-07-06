@@ -19,6 +19,21 @@
     <Filter Include="源文件\Cells">
       <UniqueIdentifier>{e3b47bbb-2d43-4e13-a829-160e2a1d8c4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\pools">
+      <UniqueIdentifier>{020fb02b-cdb0-400d-97e7-b75f934ed02e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\pools\memory">
+      <UniqueIdentifier>{8d40b656-da6f-4593-b94b-b9f404941c05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\pools">
+      <UniqueIdentifier>{49a3221d-64c7-4d94-a565-23016341dc14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\pools\memory">
+      <UniqueIdentifier>{8e2b42a1-64d1-4e81-a61c-2c2ab2f75633}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\tools">
+      <UniqueIdentifier>{3e34a59a-decb-4061-86b8-5fe3599c4410}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EasyTcpServer.cpp">
@@ -51,6 +66,18 @@
     <ClCompile Include="CellSendMsg2ClientTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Alloctor.cpp">
+      <Filter>源文件\pools\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryAlloc.cpp">
+      <Filter>源文件\pools\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryBlock.cpp">
+      <Filter>源文件\pools\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryMgr.cpp">
+      <Filter>源文件\pools\memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyTcpServer.h">
@@ -79,6 +106,21 @@
     </ClInclude>
     <ClInclude Include="CELLTimestamp.h">
       <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryAlloc.h">
+      <Filter>头文件\pools\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryBlock.h">
+      <Filter>头文件\pools\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryMgr.h">
+      <Filter>头文件\pools\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="XPrintf.h">
+      <Filter>头文件\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Alloctor.h">
+      <Filter>头文件\pools\memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

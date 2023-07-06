@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Alloctor.cpp" />
     <ClCompile Include="CellSendMsg2ClientTask.cpp" />
     <ClCompile Include="CellSendMsg2ClientTask.h" />
     <ClCompile Include="CellServer.cpp" />
@@ -155,10 +156,14 @@
     <ClCompile Include="CELLTimestamp.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="EasyTcpServer.cpp" />
+    <ClCompile Include="MemoryAlloc.cpp" />
+    <ClCompile Include="MemoryBlock.cpp" />
+    <ClCompile Include="MemoryMgr.cpp" />
     <ClCompile Include="MyServer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alloctor.h" />
     <ClInclude Include="CellServer.h" />
     <ClInclude Include="CELLTask.h" />
     <ClInclude Include="CellTaskServer.h" />
@@ -166,8 +171,12 @@
     <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="EasyTcpServer.h" />
     <ClInclude Include="INetEvent.hpp" />
+    <ClInclude Include="MemoryAlloc.h" />
+    <ClInclude Include="MemoryBlock.h" />
+    <ClInclude Include="MemoryMgr.h" />
     <ClInclude Include="MessageHeader.hpp" />
     <ClInclude Include="MyServer.h" />
+    <ClInclude Include="XPrintf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

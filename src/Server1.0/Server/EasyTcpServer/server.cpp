@@ -1,4 +1,5 @@
 //#include "EasyTcpServer.h"
+#include "Alloctor.h"
 #include "MyServer.h"
 
 
