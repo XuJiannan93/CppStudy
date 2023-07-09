@@ -148,8 +148,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Alloctor.cpp" />
-    <ClCompile Include="CellSendMsg2ClientTask.cpp" />
-    <ClCompile Include="CellSendMsg2ClientTask.h" />
+    <ClCompile Include="CellS2CTask.cpp" />
+    <ClCompile Include="CellS2CTask.h" />
     <ClCompile Include="CellServer.cpp" />
     <ClCompile Include="CELLTask.cpp" />
     <ClCompile Include="CellTaskServer.cpp" />
@@ -164,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alloctor.h" />
+    <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CellServer.h" />
     <ClInclude Include="CELLTask.h" />
     <ClInclude Include="CellTaskServer.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="MemoryMgr.h" />
     <ClInclude Include="MessageHeader.hpp" />
     <ClInclude Include="MyServer.h" />
+    <ClInclude Include="ObjectPoolBase.hpp" />
     <ClInclude Include="XPrintf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

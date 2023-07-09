@@ -58,12 +58,19 @@ void* MemoryAlloc::memory_alloc(size_t size)
 	if (_pHeader == nullptr)
 	{
 		pReturn = (MemoryBlock*)malloc(size + sizeof(MemoryBlock));
+		if (pReturn == nullptr)
+		{
+			xPrintf("MemoryAlloc::malloc failed: [%llx], size[%d]\n", pReturn, size);
+			return nullptr;
+		}
 
 		pReturn->bPool = false;
 		pReturn->nID = -1;
 		pReturn->nRef = 1;
 		pReturn->pAlloc = nullptr;
 		pReturn->pNext = nullptr;
+
+		xPrintf("MemoryAlloc::mem_alloc: [%llx], size[%d]\n", pReturn, size);
 	}
 	else
 	{

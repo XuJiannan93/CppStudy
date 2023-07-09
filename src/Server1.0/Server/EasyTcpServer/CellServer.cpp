@@ -92,12 +92,11 @@ void CellServer::OnRun()
 				if (_pNetEvent)
 					_pNetEvent->OnNetLeave(iter->second);
 
-				delete iter->second;
 				_clients.erase(iter->first);
 			}
 		}
 #else
-		std::vector<ClientSocket*> temp;
+		std::vector<ClientSocketPtr> temp;
 		for (auto iter : _clients)
 		{
 			if (FD_ISSET(iter.second->sockfd(), &fdRead))
@@ -115,7 +114,6 @@ void CellServer::OnRun()
 		for (auto pClient : temp)
 		{
 			_clients.erase(pClient->sockfd());
-			delete pClient;
 		}
 #endif
 
@@ -131,7 +129,7 @@ void CellServer::OnRun()
 //	return SOCKET_ERROR;
 //}
 
-int CellServer::RecvData(ClientSocket* client)
+int CellServer::RecvData(ClientSocketPtr client)
 {
 	char* szRecv = client->msgBuf() + client->getLastPos();
 	int nLen = (int)recv(client->sockfd(), szRecv, RECV_BUFF_SIZE - client->getLastPos(), 0);
@@ -161,7 +159,7 @@ int CellServer::RecvData(ClientSocket* client)
 	return 0;
 }
 
-void CellServer::OnNetMsg(ClientSocket* pClient, DataHeader* header)
+void CellServer::OnNetMsg(ClientSocketPtr& pClient, DataHeader* header)
 {
 	//recvCount++;
 
@@ -185,7 +183,6 @@ void CellServer::Close()
 	for (auto iter : _clients)
 	{
 		closesocket(iter.second->sockfd());
-		delete iter.second;
 	}
 	closesocket(_sock);
 	//WSACleanup();
@@ -193,7 +190,6 @@ void CellServer::Close()
 	for (auto iter : _clients)
 	{
 		close(iter.second->sockfd());
-		delete iter.second;
 	}
 	close(_sock);
 #endif
@@ -201,14 +197,15 @@ void CellServer::Close()
 	_clients.clear();
 }
 
-void CellServer::addClient(ClientSocket* pClient)
+void CellServer::addClient(ClientSocketPtr& pClient)
 {
 	std::lock_guard<std::mutex> lock(_mutex);
 	_clientsBuff.push_back(pClient);
 }
 
-void CellServer::AddSendTask(ClientSocket* pClient, DataHeader* header)
+void CellServer::AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header)
 {
-	CellSendMsg2ClientTask* task = new CellSendMsg2ClientTask(pClient, header);
-	_taskServer.AddTask(task);
+	auto task = std::make_shared<CellS2CTask>(pClient, header);
+	//CellSendMsg2ClientTask* task = new CellSendMsg2ClientTask(pClient, header);
+	_taskServer.AddTask((CellTaskPtr&)task);
 }

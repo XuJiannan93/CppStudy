@@ -7,6 +7,7 @@
 #include <functional>
 #include <atomic>
 #include <map>
+#include <memory>
 
 #ifdef _WIN32
 #define FD_SETSIZE 1024
@@ -33,7 +34,9 @@
 #include "INetEvent.hpp"
 #include "CELLTask.h"
 #include "CellTaskServer.h"
-#include "CellSendMsg2ClientTask.h"
+#include "CellS2CTask.h"
+
+//typedef std::shared_ptr<CellSendMsg2ClientTask> CellSendMsg2ClientTaskPtr;
 
 class CellServer
 {
@@ -44,19 +47,19 @@ public:
 	void Start();
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	void OnRun();
-	int RecvData(ClientSocket* client);
-	virtual void OnNetMsg(ClientSocket* pClient, DataHeader* header);
+	int RecvData(ClientSocketPtr client);
+	virtual void OnNetMsg(ClientSocketPtr& pClient, DataHeader* header);
 	void Close();
 	size_t GetClientCount() { return _clients.size() + _clientsBuff.size(); }
-	void addClient(ClientSocket* pClient);
+	void addClient(ClientSocketPtr& pClient);
 	void SetEventObj(INetEvent* evt);
-	void AddSendTask(ClientSocket* pClient, DataHeader* header);
+	void AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header);
 
 private:
 	SOCKET _sock;
 
-	std::map<SOCKET, ClientSocket*> _clients;
-	std::vector<ClientSocket*> _clientsBuff;
+	std::map<SOCKET, ClientSocketPtr> _clients;
+	std::vector<ClientSocketPtr> _clientsBuff;
 
 	//char _szRecv[RECV_BUFF_SIZE] = {};
 
@@ -71,5 +74,10 @@ private:
 	CellTaskServer _taskServer;
 
 };
+
+#ifndef _SHARED_PTR_CELL_SERVER_
+#define _SHARED_PTR_CELL_SERVER_
+typedef std::shared_ptr<CellServer> CellServerPtr;
+#endif // !_SHARED_PTR_CELL_SERVER_
 
 #endif

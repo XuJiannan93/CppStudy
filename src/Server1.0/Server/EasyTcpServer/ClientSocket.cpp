@@ -9,6 +9,10 @@ ClientSocket::ClientSocket(SOCKET sockfd)
 	_lastSendPos = 0;
 }
 
+ClientSocket::~ClientSocket()
+{
+}
+
 SOCKET ClientSocket::sockfd()
 {
 	return _sockfd;
@@ -28,11 +32,11 @@ void ClientSocket::setLastPos(int pos)
 	_lastPos = pos;
 }
 
-int ClientSocket::SendData(DataHeader* header)
+int ClientSocket::SendData(DataHeaderPtr& header)
 {
 	int ret = SOCKET_ERROR;
 	int nSendLen = header->len;
-	const char* pSendData = (const char*)header;
+	const char* pSendData = (const char*)header.get();
 
 	while (true)
 	{

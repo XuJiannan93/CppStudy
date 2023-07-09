@@ -44,7 +44,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 //客户端数量
 const int cCount = 1000;
 //发送线程数量
-const int tCount = 4;
+const int tCount = 8;
 EasyTcpClient* client[cCount];
 
 void sendThread(int id)
@@ -73,7 +73,7 @@ void sendThread(int id)
 		std::this_thread::sleep_for(t1);
 	}
 
-	Login login[10];
+	Login login[1];
 
 	for (int n = 0; n < 10; n++)
 	{
@@ -83,15 +83,20 @@ void sendThread(int id)
 
 	const int nLen = sizeof(login);
 
+	//CELLTimestamp tTime;
+
 	while (g_bRun)
 	{
 		for (int n = begin; n < end; n++)
 		{
+			/*	if (tTime.GetElapsedSecond() > 1.0)*/
+				//{
 			auto ret = client[n]->SendData(login, nLen);
 			if (ret != SOCKET_ERROR)
-			{
 				sendCount++;
-			}
+
+			//tTime.Update();
+			//}
 			client[n]->OnRun();
 		}
 	}

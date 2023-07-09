@@ -53,5 +53,11 @@
     <ClInclude Include="CELLTimestamp.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CELLObjectPool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPoolBase.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

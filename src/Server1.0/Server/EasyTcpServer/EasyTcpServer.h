@@ -35,6 +35,8 @@
 
 //#define _CELL_SERVER_THREAD_COUNT 4
 
+
+
 class EasyTcpServer : public INetEvent
 {
 public:
@@ -45,17 +47,17 @@ public:
 	int Bind(const char* ip, unsigned short port);
 	int Listen(int n);
 	SOCKET Accept();
-	void AddClientToCellServer(ClientSocket* pclient);
+	void AddClientToCellServer(ClientSocketPtr& pclient);
 	void Start(int nCellServer);
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	bool OnRun();
 	void SendDataToAll(DataHeader* header);
-	int RecvData(ClientSocket* client);
+	int RecvData(ClientSocketPtr& client);
 	void Close();
-	virtual void OnNetJoin(ClientSocket* pClient);
-	virtual void OnNetLeave(ClientSocket* pClient);
-	virtual void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header);
-	virtual void OnNetRecv(ClientSocket* pClient);
+	virtual void OnNetJoin(ClientSocketPtr& pClient);
+	virtual void OnNetLeave(ClientSocketPtr& pClient);
+	virtual void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header);
+	virtual void OnNetRecv(ClientSocketPtr& pClient);
 
 private:
 	virtual void time4msg(/*SOCKET client, DataHeader* header*/);
@@ -63,8 +65,8 @@ private:
 private:
 	SOCKET _sock;
 	char _szRecv[RECV_BUFF_SIZE] = {};
-	//std::vector<ClientSocket*> _clients;
-	std::vector<CellServer*> _cellServers;
+	//std::vector<ClientSocketPtr> _clients;
+	std::vector<CellServerPtr> _cellServers;
 	CELLTimestamp _tTime;
 	std::mutex _mutex;
 

@@ -14,7 +14,7 @@ void CellTaskServer::Start()
 	t.detach();
 }
 
-void CellTaskServer::AddTask(CellTask* task)
+void CellTaskServer::AddTask(CellTaskPtr& task)
 {
 	std::lock_guard<std::mutex> lock(_mutex);
 	_tasksBuf.push_back(task);
@@ -45,7 +45,6 @@ void CellTaskServer::OnRun()
 		for (auto pTask : _tasks)
 		{
 			pTask->DoTask();
-			delete pTask;
 		}
 		_tasks.clear();
 	}

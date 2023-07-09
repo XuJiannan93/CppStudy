@@ -3,16 +3,17 @@
 
 #include "MessageHeader.hpp"
 #include "EasyTcpServer.h"
-#include "CellSendMsg2ClientTask.h"
+#include "CellS2CTask.h"
+
 
 class MyServer : public EasyTcpServer
 {
 public:
-	void OnNetJoin(ClientSocket* pClient) override;
+	void OnNetJoin(ClientSocketPtr& pClient);
 
-	void OnNetLeave(ClientSocket* pClient) override;
+	void OnNetLeave(ClientSocketPtr& pClient);
 
-	void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header) override;
+	void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header);
 
 
 };

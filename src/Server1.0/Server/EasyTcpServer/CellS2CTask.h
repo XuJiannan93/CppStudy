@@ -4,15 +4,15 @@
 #include "CELLTask.h"
 #include "ClientSocket.h"
 
-class CellSendMsg2ClientTask : public CellTask
+class CellS2CTask : public CellTask
 {
 public:
-	CellSendMsg2ClientTask(ClientSocket* pClient, DataHeader* header);
-	~CellSendMsg2ClientTask();
+	CellS2CTask(ClientSocketPtr& pClient, DataHeaderPtr& header);
+	~CellS2CTask();
 
 private:
-	ClientSocket* _pClient;
-	DataHeader* _pHeader;
+	ClientSocketPtr _pClient;
+	DataHeaderPtr _pHeader;
 
 public:
 	void DoTask() override;

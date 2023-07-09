@@ -1,6 +1,8 @@
 #ifndef MESSAGE_HEADER_HPP
 #define MESSAGE_HEADER_HPP
 
+#include <memory>
+
 enum CMD
 {
 	CMD_LOGIN,
@@ -80,5 +82,8 @@ struct NewUserJoin : public DataHeader
 
 	int sock;
 };
+
+typedef std::shared_ptr<DataHeader> DataHeaderPtr;
+typedef std::shared_ptr<LoginResult> LoginResultPtr;
 
 #endif // !MESSAGE_HEADER_HPP

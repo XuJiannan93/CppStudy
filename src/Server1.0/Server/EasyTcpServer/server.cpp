@@ -5,7 +5,7 @@
 
 int main()
 {
-	MyServer* server = new MyServer();
+	auto server = std::make_shared<MyServer>();
 	server->InitSocket();
 	server->Bind(nullptr, 4567);
 	server->Listen(5);
@@ -17,7 +17,6 @@ int main()
 	}
 
 	server->Close();
-	delete server;
 
 	getchar();
 

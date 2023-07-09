@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <memory>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -29,9 +30,9 @@
 #endif // ! RECV_BUFF_SIZE
 
 #include "MessageHeader.hpp"
+#include "ObjectPoolBase.hpp"
 
-
-class ClientSocket
+class ClientSocket : public ObjectPoolBase<ClientSocket, 10000>
 {
 private:
 	SOCKET _sockfd;
@@ -45,9 +46,15 @@ public:
 	char* msgBuf();
 	int getLastPos();
 	void setLastPos(int pos);
-	int SendData(DataHeader* header);
+	int SendData(DataHeaderPtr& header);
 
 	ClientSocket(SOCKET sockfd = INVALID_SOCKET);
+	~ClientSocket();
 };
+
+#ifndef _SHARED_PTR_CLIENT_SOCKET_
+#define _SHARED_PTR_CLIENT_SOCKET_
+typedef std::shared_ptr<ClientSocket> ClientSocketPtr;
+#endif // !_SHARED_PTR_CLIENT_SOCKET_
 
 #endif // !_CLIENT_SOCKET_H

@@ -81,7 +81,7 @@ int EasyTcpServer::Listen(int n)
 	return ret;
 }
 
-void EasyTcpServer::AddClientToCellServer(ClientSocket* pclient)
+void EasyTcpServer::AddClientToCellServer(ClientSocketPtr& pclient)
 {
 	//_clients.push_back(pclient);
 
@@ -103,14 +103,14 @@ SOCKET EasyTcpServer::Accept()
 	SOCKET client = INVALID_SOCKET;
 
 	client = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
+
 	if (client == INVALID_SOCKET)
 		printf("[ERROR]accept socket failed.\n");
 	else
 	{
-		//NewUserJoin join = {};
-		//SendDataToAll(&join);
-		AddClientToCellServer(new ClientSocket(client));
-		//printf("new client[%d][IP : %s] linked in.\n", (int)client, inet_ntoa(clientAddr.sin_addr));
+		//ClientSocketPtr ptr = std::make_shared<ClientSocket>(client);
+		std::shared_ptr<ClientSocket> ptr(new ClientSocket(client));
+		AddClientToCellServer(ptr);
 	}
 
 	return client;
@@ -120,7 +120,9 @@ void EasyTcpServer::Start(int nCellServer)
 {
 	for (int n = 0; n < nCellServer; n++)
 	{
-		auto ser = new CellServer(_sock);
+		auto ser = std::make_shared<CellServer>(_sock);
+		//std::shared_ptr<CellServer> ser(new CellServer(_sock));
+		//auto ser = new CellServer(_sock);
 		_cellServers.push_back(ser);
 		ser->SetEventObj(this);
 		ser->Start();
@@ -164,12 +166,12 @@ void EasyTcpServer::SendDataToAll(DataHeader* header)
 	//}
 }
 
-int EasyTcpServer::RecvData(ClientSocket* client)
+int EasyTcpServer::RecvData(ClientSocketPtr& client)
 {
 	int nLen = (int)recv(client->sockfd(), _szRecv, RECV_BUFF_SIZE, 0);
 	if (nLen <= 0)
 	{
-		printf("client[%d] broken.\n", (int)client);
+		printf("client[%d] broken.\n", (int)client->sockfd());
 		return -1;
 	}
 
@@ -204,22 +206,22 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 	}
 }
 
-void EasyTcpServer::OnNetJoin(ClientSocket* pClient)
+void EasyTcpServer::OnNetJoin(ClientSocketPtr& pClient)
 {
 	_clientCount++;
 }
 
-void EasyTcpServer::OnNetLeave(ClientSocket* pClient)
+void EasyTcpServer::OnNetLeave(ClientSocketPtr& pClient)
 {
 	_clientCount--;
 }
 
-void EasyTcpServer::OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header)
+void EasyTcpServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header)
 {
 	_msgCount++;
 }
 
-void EasyTcpServer::OnNetRecv(ClientSocket* pClient)
+void EasyTcpServer::OnNetRecv(ClientSocketPtr& pClient)
 {
 	_recvCount++;
 }

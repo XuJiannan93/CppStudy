@@ -8,10 +8,10 @@ class CellServer;
 class INetEvent
 {
 public:
-	virtual void OnNetJoin(ClientSocket* pClient) = 0;
-	virtual void OnNetLeave(ClientSocket* pClient) = 0;
-	virtual void OnNetMsg(CellServer* pCellServer, ClientSocket* pClient, DataHeader* header) = 0;
-	virtual void OnNetRecv(ClientSocket* pClient) = 0;
+	virtual void OnNetJoin(ClientSocketPtr& pClient) = 0;
+	virtual void OnNetLeave(ClientSocketPtr& pClient) = 0;
+	virtual void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header) = 0;
+	virtual void OnNetRecv(ClientSocketPtr& pClient) = 0;
 
 private:
 

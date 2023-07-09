@@ -8,6 +8,8 @@
 
 #include "CELLTask.h"
 
+typedef std::shared_ptr<CellTask> CellTaskPtr;
+
 class CellTaskServer
 {
 public:
@@ -15,15 +17,15 @@ public:
 	virtual ~CellTaskServer();
 
 private:
-	std::list<CellTask*> _tasks;
-	std::list<CellTask*> _tasksBuf;
+	std::list<CellTaskPtr> _tasks;
+	std::list<CellTaskPtr> _tasksBuf;
 	std::mutex _mutex;
 
 protected:
 	void OnRun();
 
 public:
-	void AddTask(CellTask* task);
+	void AddTask(CellTaskPtr& task);
 	void Start();
 
 };

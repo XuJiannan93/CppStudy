@@ -152,10 +152,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alloctor.h" />
+    <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CELLTimestamp.h" />
     <ClInclude Include="MemoryAlloc.h" />
     <ClInclude Include="MemoryBlock.h" />
     <ClInclude Include="MemoryMgr.h" />
+    <ClInclude Include="ObjectPoolBase.hpp" />
     <ClInclude Include="XPrintf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

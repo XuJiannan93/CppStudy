@@ -34,6 +34,9 @@
     <Filter Include="头文件\tools">
       <UniqueIdentifier>{3e34a59a-decb-4061-86b8-5fe3599c4410}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\pools\object">
+      <UniqueIdentifier>{569fed28-506d-4c17-bcfc-2653cfa67856}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EasyTcpServer.cpp">
@@ -60,12 +63,6 @@
     <ClCompile Include="CELLTimestamp.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
-    <ClCompile Include="CellSendMsg2ClientTask.h">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CellSendMsg2ClientTask.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Alloctor.cpp">
       <Filter>源文件\pools\memory</Filter>
     </ClCompile>
@@ -77,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="MemoryMgr.cpp">
       <Filter>源文件\pools\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="CellS2CTask.h">
+      <Filter>头文件\Cells</Filter>
+    </ClCompile>
+    <ClCompile Include="CellS2CTask.cpp">
+      <Filter>源文件\Cells</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="Alloctor.h">
       <Filter>头文件\pools\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLObjectPool.hpp">
+      <Filter>头文件\pools\object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPoolBase.hpp">
+      <Filter>头文件\pools\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
