@@ -11,23 +11,23 @@ enum CMD
 	CMD_ERROR,
 };
 
-struct DataHeader
+struct netmsg_DataHeader
 {
 	short len;
 	short cmd;
 
-	DataHeader()
+	netmsg_DataHeader()
 	{
-		len = sizeof(DataHeader);
+		len = sizeof(netmsg_DataHeader);
 		cmd = CMD_ERROR;
 	}
 };
 
-struct Login : public DataHeader
+struct netmsg_Login : public netmsg_DataHeader
 {
-	Login()
+	netmsg_Login()
 	{
-		len = sizeof(Login);
+		len = sizeof(netmsg_Login);
 		cmd = CMD_LOGIN;
 	}
 
@@ -36,11 +36,11 @@ struct Login : public DataHeader
 	char data[32];
 };
 
-struct LoginResult : public DataHeader
+struct netmsg_LoginResult : public netmsg_DataHeader
 {
-	LoginResult()
+	netmsg_LoginResult()
 	{
-		len = sizeof(LoginResult);
+		len = sizeof(netmsg_LoginResult);
 		cmd = CMD_LOGIN_RESULT;
 		result = 0;
 	}
@@ -48,32 +48,32 @@ struct LoginResult : public DataHeader
 	char data[92];
 };
 
-struct Logout : public DataHeader
+struct netmsg_Logout : public netmsg_DataHeader
 {
-	Logout()
+	netmsg_Logout()
 	{
-		len = sizeof(Logout);
+		len = sizeof(netmsg_Logout);
 		cmd = CMD_LOGOUT;
 	}
 	char username[32];
 };
 
-struct LogoutResult : public DataHeader
+struct netmsg_LogoutResult : public netmsg_DataHeader
 {
-	LogoutResult()
+	netmsg_LogoutResult()
 	{
-		len = sizeof(LogoutResult);
+		len = sizeof(netmsg_LogoutResult);
 		cmd = CMD_LOGOUT_RESULT;
 		result = 0;
 	}
 	int result;
 };
 
-struct NewUserJoin : public DataHeader
+struct netmsg_NewUserJoin : public netmsg_DataHeader
 {
-	NewUserJoin()
+	netmsg_NewUserJoin()
 	{
-		len = sizeof(NewUserJoin);
+		len = sizeof(netmsg_NewUserJoin);
 		cmd = CMD_NEW_USER_JOIN;
 		sock = 0;
 	}

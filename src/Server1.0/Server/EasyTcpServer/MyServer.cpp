@@ -12,7 +12,7 @@ void MyServer::OnNetLeave(ClientSocketPtr& pClient)
 	//printf("client<%d> leave\n", (int)pClient->sockfd());
 }
 
-void MyServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header)
+void MyServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netmsg_DataHeader* header)
 {
 	EasyTcpServer::OnNetMsg(pCellServer, pClient, header);
 	switch (header->cmd)
@@ -23,7 +23,7 @@ void MyServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataH
 		//Login* login = (Login*)header;
 		//printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)pClient->sockfd(), login->username, login->password, header->len);
 
-		auto ret = std::make_shared<LoginResult>();
+		auto ret = std::make_shared<netmsg_LoginResult>();
 		pCellServer->AddSendTask(pClient, (DataHeaderPtr&)ret);
 	}
 	break;

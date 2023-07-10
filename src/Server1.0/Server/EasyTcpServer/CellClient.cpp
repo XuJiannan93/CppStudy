@@ -1,6 +1,6 @@
-#include "ClientSocket.h"
+#include "CellClient.h"
 
-ClientSocket::ClientSocket(SOCKET sockfd)
+CellClient::CellClient(SOCKET sockfd)
 {
 	_sockfd = sockfd;
 	memset(_szMsgBuf, 0, RECV_BUFF_SIZE);
@@ -9,30 +9,30 @@ ClientSocket::ClientSocket(SOCKET sockfd)
 	_lastSendPos = 0;
 }
 
-ClientSocket::~ClientSocket()
+CellClient::~CellClient()
 {
 }
 
-SOCKET ClientSocket::sockfd()
+SOCKET CellClient::sockfd()
 {
 	return _sockfd;
 }
 
-char* ClientSocket::msgBuf()
+char* CellClient::msgBuf()
 {
 	return _szMsgBuf;
 }
 
-int ClientSocket::getLastPos()
+int CellClient::getLastPos()
 {
 	return _lastPos;
 }
-void ClientSocket::setLastPos(int pos)
+void CellClient::setLastPos(int pos)
 {
 	_lastPos = pos;
 }
 
-int ClientSocket::SendData(DataHeaderPtr& header)
+int CellClient::SendData(DataHeaderPtr& header)
 {
 	int ret = SOCKET_ERROR;
 	int nSendLen = header->len;

@@ -110,7 +110,7 @@ bool EasyTcpClient::OnRun()
 	return true;
 }
 
-int EasyTcpClient::SendData(DataHeader* header, int nLen)
+int EasyTcpClient::SendData(netmsg_DataHeader* header, int nLen)
 {
 	int ret = SOCKET_ERROR;
 	if (IsRun() && header)
@@ -136,9 +136,9 @@ int EasyTcpClient::RecvData()
 	//memcpy(_szMsgBuf + _lastPos, _szRecv, nLen);
 	_lastPos += nLen;
 
-	while (_lastPos >= sizeof(DataHeader))
+	while (_lastPos >= sizeof(netmsg_DataHeader))
 	{
-		DataHeader* header = (DataHeader*)_szMsgBuf;
+		netmsg_DataHeader* header = (netmsg_DataHeader*)_szMsgBuf;
 		if (_lastPos < header->len)
 			break;
 
@@ -151,28 +151,28 @@ int EasyTcpClient::RecvData()
 	return 0;
 }
 
-void EasyTcpClient::OnNetMsg(DataHeader* header)
+void EasyTcpClient::OnNetMsg(netmsg_DataHeader* header)
 {
 	switch (header->cmd)
 	{
 
 	case CMD_LOGIN_RESULT:
 	{
-		LoginResult* rst = (LoginResult*)header;
+		netmsg_LoginResult* rst = (netmsg_LoginResult*)header;
 		//printf("recv<%d> cmd[LOGIN][%d] len[%d] \n", (int)_sock, rst->result, header->len);
 	}
 	break;
 
 	case CMD_LOGOUT_RESULT:
 	{
-		LogoutResult* rst = (LogoutResult*)header;
+		netmsg_LogoutResult* rst = (netmsg_LogoutResult*)header;
 		//printf("recv<%d> cmd[LOGOUT][%d] len[%d] \n", (int)_sock, rst->result, header->len);
 	}
 	break;
 
 	case CMD_NEW_USER_JOIN:
 	{
-		NewUserJoin* join = (NewUserJoin*)header;
+		netmsg_NewUserJoin* join = (netmsg_NewUserJoin*)header;
 		//printf("recv<%d> cmd[NEW_USER_JOIN][%d] len[%d] \n", (int)_sock, (int)join->sock, header->len);
 	}
 	break;

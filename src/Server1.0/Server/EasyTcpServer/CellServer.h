@@ -1,5 +1,5 @@
-#ifndef CELL_SERVER_H
-#define CELL_SERVER_H
+#ifndef _CELL_SERVER_H_
+#define _CELL_SERVER_H_
 
 #include <stdio.h>
 #include <vector>
@@ -9,28 +9,9 @@
 #include <map>
 #include <memory>
 
-#ifdef _WIN32
-#define FD_SETSIZE 1024
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <WinSock2.h>
-
-#ifndef socklen_t
-#define socklen_t int
-#endif // !socklen_t
-
-#else
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <string.h>
-
-#define SOCKET int
-#define INVALID_SOCKET (SOCKET)(~0)
-#define SOCKET_ERROR (-1)
-#endif
-
+#include "Cell.hpp"
 #include "MessageHeader.hpp"
-#include "ClientSocket.h"
+#include "CellClient.h"
 #include "INetEvent.hpp"
 #include "CELLTask.h"
 #include "CellTaskServer.h"
@@ -48,7 +29,7 @@ public:
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	void OnRun();
 	int RecvData(ClientSocketPtr client);
-	virtual void OnNetMsg(ClientSocketPtr& pClient, DataHeader* header);
+	virtual void OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header);
 	void Close();
 	size_t GetClientCount() { return _clients.size() + _clientsBuff.size(); }
 	void addClient(ClientSocketPtr& pClient);

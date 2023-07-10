@@ -109,7 +109,7 @@ SOCKET EasyTcpServer::Accept()
 	else
 	{
 		//ClientSocketPtr ptr = std::make_shared<ClientSocket>(client);
-		std::shared_ptr<ClientSocket> ptr(new ClientSocket(client));
+		std::shared_ptr<CellClient> ptr(new CellClient(client));
 		AddClientToCellServer(ptr);
 	}
 
@@ -158,7 +158,7 @@ bool EasyTcpServer::OnRun()
 }
 
 
-void EasyTcpServer::SendDataToAll(DataHeader* header)
+void EasyTcpServer::SendDataToAll(netmsg_DataHeader* header)
 {
 	//for (int n = (int)_clients.size() - 1; n >= 0; n--)
 	//{
@@ -178,9 +178,9 @@ int EasyTcpServer::RecvData(ClientSocketPtr& client)
 	memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
 	client->setLastPos(client->getLastPos() + nLen);
 
-	while (client->getLastPos() >= sizeof(DataHeader))
+	while (client->getLastPos() >= sizeof(netmsg_DataHeader))
 	{
-		DataHeader* header = (DataHeader*)client->msgBuf();
+		netmsg_DataHeader* header = (netmsg_DataHeader*)client->msgBuf();
 		if (client->getLastPos() < header->len)
 			break;
 
@@ -216,7 +216,7 @@ void EasyTcpServer::OnNetLeave(ClientSocketPtr& pClient)
 	_clientCount--;
 }
 
-void EasyTcpServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header)
+void EasyTcpServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netmsg_DataHeader* header)
 {
 	_msgCount++;
 }

@@ -143,9 +143,9 @@ int CellServer::RecvData(ClientSocketPtr client)
 	//memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
 	client->setLastPos(client->getLastPos() + nLen);
 
-	while (client->getLastPos() >= sizeof(DataHeader))
+	while (client->getLastPos() >= sizeof(netmsg_DataHeader))
 	{
-		DataHeader* header = (DataHeader*)client->msgBuf();
+		netmsg_DataHeader* header = (netmsg_DataHeader*)client->msgBuf();
 		if (client->getLastPos() < header->len)
 			break;
 
@@ -159,7 +159,7 @@ int CellServer::RecvData(ClientSocketPtr client)
 	return 0;
 }
 
-void CellServer::OnNetMsg(ClientSocketPtr& pClient, DataHeader* header)
+void CellServer::OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header)
 {
 	//recvCount++;
 

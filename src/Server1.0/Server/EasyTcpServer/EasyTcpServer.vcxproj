@@ -154,7 +154,7 @@
     <ClCompile Include="CELLTask.cpp" />
     <ClCompile Include="CellTaskServer.cpp" />
     <ClCompile Include="CELLTimestamp.cpp" />
-    <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="CellClient.cpp" />
     <ClCompile Include="EasyTcpServer.cpp" />
     <ClCompile Include="MemoryAlloc.cpp" />
     <ClCompile Include="MemoryBlock.cpp" />
@@ -164,12 +164,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alloctor.h" />
+    <ClInclude Include="Cell.hpp" />
     <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CellServer.h" />
     <ClInclude Include="CELLTask.h" />
     <ClInclude Include="CellTaskServer.h" />
     <ClInclude Include="CELLTimestamp.h" />
-    <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="CellClient.h" />
     <ClInclude Include="EasyTcpServer.h" />
     <ClInclude Include="INetEvent.hpp" />
     <ClInclude Include="MemoryAlloc.h" />

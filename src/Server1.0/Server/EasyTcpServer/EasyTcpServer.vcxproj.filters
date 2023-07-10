@@ -37,15 +37,15 @@
     <Filter Include="头文件\pools\object">
       <UniqueIdentifier>{569fed28-506d-4c17-bcfc-2653cfa67856}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\public">
+      <UniqueIdentifier>{89792b24-9dc0-49b8-8f6f-c6c310bffc18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EasyTcpServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="server.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientSocket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyServer.cpp">
@@ -81,15 +81,15 @@
     <ClCompile Include="CellS2CTask.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
+    <ClCompile Include="CellClient.cpp">
+      <Filter>源文件\Cells</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyTcpServer.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MessageHeader.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientSocket.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="INetEvent.hpp">
@@ -130,6 +130,12 @@
     </ClInclude>
     <ClInclude Include="ObjectPoolBase.hpp">
       <Filter>头文件\pools\object</Filter>
+    </ClInclude>
+    <ClInclude Include="CellClient.h">
+      <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

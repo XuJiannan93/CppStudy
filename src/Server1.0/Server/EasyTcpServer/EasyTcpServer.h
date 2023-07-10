@@ -6,36 +6,14 @@
 #include <thread>
 #include <mutex>
 
-#ifdef _WIN32
-#define FD_SETSIZE 2506 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <WinSock2.h>
-
-#ifndef socklen_t
-#define socklen_t int
-#endif // !socklen_t
-
-#else
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <string.h>
-
-#define SOCKET int
-#define INVALID_SOCKET (SOCKET)(~0)
-#define SOCKET_ERROR (-1)
-#endif
-
-//#include "MessageHeader.hpp"
+#include "Cell.hpp"
 #include "CELLTimestamp.h"
-#include "ClientSocket.h"
+#include "CellClient.h"
 #include "CellServer.h"
 #include "INetEvent.hpp"
 #include "CELLTask.h"
 
 //#define _CELL_SERVER_THREAD_COUNT 4
-
-
 
 class EasyTcpServer : public INetEvent
 {
@@ -51,12 +29,12 @@ public:
 	void Start(int nCellServer);
 	bool IsRun() { return _sock != INVALID_SOCKET; }
 	bool OnRun();
-	void SendDataToAll(DataHeader* header);
+	void SendDataToAll(netmsg_DataHeader* header);
 	int RecvData(ClientSocketPtr& client);
 	void Close();
 	virtual void OnNetJoin(ClientSocketPtr& pClient);
 	virtual void OnNetLeave(ClientSocketPtr& pClient);
-	virtual void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, DataHeader* header);
+	virtual void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
 	virtual void OnNetRecv(ClientSocketPtr& pClient);
 
 private:

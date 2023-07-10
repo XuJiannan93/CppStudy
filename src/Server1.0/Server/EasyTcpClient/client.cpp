@@ -73,7 +73,7 @@ void sendThread(int id)
 		std::this_thread::sleep_for(t1);
 	}
 
-	Login login[1];
+	netmsg_Login login[1];
 
 	for (int n = 0; n < 10; n++)
 	{

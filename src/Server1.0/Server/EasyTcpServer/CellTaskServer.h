@@ -1,5 +1,5 @@
-#ifndef _CELL_TASK_SERVER
-#define _CELL_TASK_SERVER
+#ifndef _CELL_TASK_SERVER_
+#define _CELL_TASK_SERVER_
 
 #include <thread>
 #include <mutex>
@@ -30,4 +30,4 @@ public:
 
 };
 
-#endif // !_CELL_TASK_SERVER
+#endif // !_CELL_TASK_SERVER_

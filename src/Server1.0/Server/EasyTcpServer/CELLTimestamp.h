@@ -1,5 +1,5 @@
-#ifndef CELL_TIMESTAMP_H
-#define CELL_TIMESTAMP_H
+#ifndef _CELL_TIMESTAMP_H_
+#define _CELL_TIMESTAMP_H_
 
 #include <chrono>
 using namespace std::chrono;
@@ -19,4 +19,4 @@ protected:
 	time_point<high_resolution_clock> _begin;
 };
 
-#endif // !CELL_TIMESTAMP_H
+#endif // !_CELL_TIMESTAMP_H_

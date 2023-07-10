@@ -42,9 +42,9 @@ public:
 	void Close();
 	bool OnRun();
 	bool IsRun() { return _sock != INVALID_SOCKET && _isConnected; }
-	int SendData(DataHeader* header, int nLen);
+	int SendData(netmsg_DataHeader* header, int nLen);
 	int RecvData();
-	virtual void OnNetMsg(DataHeader* header);
+	virtual void OnNetMsg(netmsg_DataHeader* header);
 };
 
 #endif

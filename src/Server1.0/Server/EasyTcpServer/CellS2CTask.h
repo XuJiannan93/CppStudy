@@ -1,8 +1,8 @@
-#ifndef _CELL_SEND_MSG_TO_CLIENT_TASK_H
-#define _CELL_SEND_MSG_TO_CLIENT_TASK_H
+#ifndef _CELL_SEND_MSG_TO_CLIENT_TASK_H_
+#define _CELL_SEND_MSG_TO_CLIENT_TASK_H_
 
 #include "CELLTask.h"
-#include "ClientSocket.h"
+#include "CellClient.h"
 
 class CellS2CTask : public CellTask
 {
@@ -18,4 +18,4 @@ public:
 	void DoTask() override;
 };
 
-#endif // !_CELL_SEND_MSG_TO_CLIENT_TASK_H
+#endif // !_CELL_SEND_MSG_TO_CLIENT_TASK_H_
