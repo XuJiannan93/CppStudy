@@ -135,7 +135,7 @@
       <Filter>头文件\Cells</Filter>
     </ClInclude>
     <ClInclude Include="Cell.hpp">
-      <Filter>头文件</Filter>
+      <Filter>头文件\public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
