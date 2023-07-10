@@ -9,6 +9,7 @@ CellClient::CellClient(SOCKET sockfd)
 	_lastSendPos = 0;
 
 	ResetDTHeard();
+	_ResetDTSend();
 }
 
 CellClient::~CellClient()
@@ -27,7 +28,39 @@ bool CellClient::CheckHeart(time_t dt)
 		return false;
 
 	printf("CellClient::CheckHeart() dead:%d, time:%d\n", (int)_sockfd, (int)_dtHeart);
+
 	return true;
+}
+
+void CellClient::_ResetDTSend()
+{
+	_dtSend = 0;
+}
+
+bool CellClient::CheckSend(time_t dt)
+{
+	_dtSend += dt;
+	if (_dtSend < CLIENT_SEND_BUFFF_TIME)
+		return false;
+
+	printf("CellClient::CheckSend() time:%d\n", (int)_dtSend);
+
+	if (_SendDataImmediately() == SOCKET_ERROR)
+		printf("CellClient::SendData failed\n");
+
+	return true;
+}
+
+int CellClient::_SendDataImmediately()
+{
+	if (_sockfd == SOCKET_ERROR) return SOCKET_ERROR;
+	if (_lastSendPos = 0) return SOCKET_ERROR;
+
+	auto ret = send(_sockfd, _szSendBuf, _lastSendPos, 0);
+	_lastSendPos = 0;
+	_ResetDTSend();
+
+	return ret;
 }
 
 SOCKET CellClient::sockfd()
@@ -65,6 +98,7 @@ int CellClient::SendData(const DataHeaderPtr& header)
 			nSendLen -= nCopyLen;
 			ret = send(_sockfd, _szSendBuf, SEND_BUFF_SIZE, 0);
 			_lastSendPos = 0;
+			_ResetDTSend();
 			if (ret == SOCKET_ERROR)
 				return ret;
 		}

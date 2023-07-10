@@ -42,9 +42,9 @@ void cmdThread(/*EasyTcpClient* client*/)
 }
 
 //客户端数量
-const int cCount = 256;
+const int cCount = 1;
 //发送线程数量
-const int tCount = 4;
+const int tCount = 1;
 EasyTcpClient* client[cCount];
 
 void recvThread(int begin, int end)
@@ -109,8 +109,8 @@ void sendThread(int id)
 			//client[n]->OnRun();
 		}
 
-		/*	std::chrono::milliseconds t(10);
-			std::this_thread::sleep_for(t);*/
+		std::chrono::milliseconds t(100);
+		std::this_thread::sleep_for(t);
 	}
 
 	for (int n = begin; n < end; n++)

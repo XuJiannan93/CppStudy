@@ -151,6 +151,7 @@ void CellServer::CheckTime()
 			continue;
 		}
 
+		iter->second->CheckSend(dt);
 		iter++;
 	}
 }
@@ -216,7 +217,7 @@ void CellServer::Close()
 	for (auto iter : _clients)
 	{
 		close(iter.second->sockfd());
-}
+	}
 	close(_sock);
 #endif
 

@@ -9,7 +9,8 @@
 #include "MessageHeader.hpp"
 #include "ObjectPoolBase.hpp"
 
-#define CLIENT_HEART_DEAD_TIME 5000
+#define CLIENT_HEART_DEAD_TIME 60000
+#define CLIENT_SEND_BUFFF_TIME 200
 
 class CellClient : public ObjectPoolBase<CellClient, 10000>
 {
@@ -20,6 +21,11 @@ private:
 	int _lastPos = 0;
 	int _lastSendPos = 0;
 	time_t _dtHeart;
+	time_t _dtSend;
+
+private:
+	void _ResetDTSend();
+	int _SendDataImmediately();
 
 public:
 	SOCKET sockfd();
@@ -29,6 +35,7 @@ public:
 	int SendData(const DataHeaderPtr& header);
 	void ResetDTHeard();
 	bool CheckHeart(time_t dt);
+	bool CheckSend(time_t dt);
 
 	CellClient(SOCKET sockfd = INVALID_SOCKET);
 	~CellClient();
