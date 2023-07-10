@@ -1,3 +1,4 @@
+#include "CELLTime.h"
 #include "CellServer.h"
 
 CellServer::CellServer(SOCKET sock)
@@ -5,6 +6,7 @@ CellServer::CellServer(SOCKET sock)
 	_sock = sock;
 	//recvCount = 0;
 	_pNetEvent = nullptr;
+	_old_time = CELLTime::GetNowInMilliSec();
 }
 
 CellServer::~CellServer()
@@ -47,6 +49,8 @@ void CellServer::OnRun()
 			std::chrono::milliseconds t(1);
 			std::this_thread::sleep_for(t);
 
+			_old_time = CELLTime::GetNowInMilliSec();
+
 			continue;
 		}
 
@@ -70,6 +74,7 @@ void CellServer::OnRun()
 			memcpy(&fdRead, &_fdRead_bak, sizeof(fd_set));
 		}
 
+
 		timeval t = { 0, 0 };
 		int ret = select(_maxSock + 1, &fdRead, nullptr, nullptr, &t);
 		if (ret < 0)
@@ -78,56 +83,77 @@ void CellServer::OnRun()
 			Close();
 			return;
 		}
-		else if (ret == 0) continue;
+		/*	else if (ret == 0) continue;*/
 
-#ifdef _WIN32
-		for (int n = 0; n < fdRead.fd_count; n++)
-		{
-			auto iter = _clients.find(fdRead.fd_array[n]);
-
-			if (RecvData(iter->second) == -1)
-			{
-				_clients_changed = true;
-
-				if (_pNetEvent)
-					_pNetEvent->OnNetLeave(iter->second);
-
-				_clients.erase(iter->first);
-			}
-		}
-#else
-		std::vector<ClientSocketPtr> temp;
-		for (auto iter : _clients)
-		{
-			if (FD_ISSET(iter.second->sockfd(), &fdRead))
-			{
-				if (RecvData(iter.second) == -1)
-				{
-					if (_pNetEvent)
-						_pNetEvent->OnNetLeave(iter.second);
-
-					_clients_changed = true;
-					temp.push_back(iter.second);
-				}
-			}
-		}
-		for (auto pClient : temp)
-		{
-			_clients.erase(pClient->sockfd());
-		}
-#endif
-
+		ReadData(fdRead);
+		CheckTime();
 	}
 }
 
-//int CellServer::SendData(SOCKET client, DataHeader* header)
-//{
-//	if (IsRun() && header)
-//	{
-//		return send(client, (const char*)header, header->len, 0);
-//	}
-//	return SOCKET_ERROR;
-//}
+void CellServer::ReadData(fd_set& fdRead)
+{
+#ifdef _WIN32
+	for (int n = 0; n < fdRead.fd_count; n++)
+	{
+		auto iter = _clients.find(fdRead.fd_array[n]);
+
+		if (RecvData(iter->second) == -1)
+		{
+			_clients_changed = true;
+
+			if (_pNetEvent)
+				_pNetEvent->OnNetLeave(iter->second);
+
+			closesocket(iter->first);
+			_clients.erase(iter);
+		}
+	}
+#else
+	std::vector<ClientSocketPtr> temp;
+	for (auto iter : _clients)
+	{
+		if (FD_ISSET(iter.second->sockfd(), &fdRead))
+		{
+			if (RecvData(iter.second) == -1)
+			{
+				if (_pNetEvent)
+					_pNetEvent->OnNetLeave(iter.second);
+
+				_clients_changed = true;
+				close(iter->first);
+				temp.push_back(iter.second);
+			}
+		}
+	}
+	for (auto pClient : temp)
+	{
+		_clients.erase(pClient->sockfd());
+	}
+#endif
+
+}
+
+void CellServer::CheckTime()
+{
+	auto tNow = CELLTime::GetNowInMilliSec();
+	auto dt = tNow - _old_time;
+	_old_time = tNow;
+
+	for (auto iter = _clients.begin(); iter != _clients.end();)
+	{
+		if (iter->second->CheckHeart(dt))
+		{
+			if (_pNetEvent)
+				_pNetEvent->OnNetLeave(iter->second);
+			_clients_changed = true;
+			auto iterOld = iter++;
+			_clients.erase(iterOld);
+			continue;
+		}
+
+		iter++;
+	}
+}
 
 int CellServer::RecvData(ClientSocketPtr client)
 {
@@ -190,7 +216,7 @@ void CellServer::Close()
 	for (auto iter : _clients)
 	{
 		close(iter.second->sockfd());
-	}
+}
 	close(_sock);
 #endif
 
@@ -205,7 +231,7 @@ void CellServer::addClient(ClientSocketPtr& pClient)
 
 void CellServer::AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header)
 {
-	auto task = std::make_shared<CellS2CTask>(pClient, header);
-	//CellSendMsg2ClientTask* task = new CellSendMsg2ClientTask(pClient, header);
-	_taskServer.AddTask((CellTaskPtr&)task);
+	_taskServer.AddTask([pClient, header]() {
+		pClient->SendData(header);
+		});
 }

@@ -127,7 +127,7 @@ int EasyTcpClient::SendData(netmsg_DataHeader* header, int nLen)
 int EasyTcpClient::RecvData()
 {
 	char* szRecv = _szMsgBuf + _lastPos;
-	int nLen = (int)recv(_sock, szRecv, (RECV_BUFF_SIZE * 5) - _lastPos, 0);
+	int nLen = (int)recv(_sock, szRecv, (RECV_BUFF_SIZE)-_lastPos, 0);
 	if (nLen <= 0)
 	{
 		printf("remote[%d] broken.\n", (int)_sock);
@@ -176,6 +176,9 @@ void EasyTcpClient::OnNetMsg(netmsg_DataHeader* header)
 		//printf("recv<%d> cmd[NEW_USER_JOIN][%d] len[%d] \n", (int)_sock, (int)join->sock, header->len);
 	}
 	break;
+
+	case CMD_S2C_HEART_BEAT:
+		break;
 
 	case CMD_ERROR:
 		printf("recv undefine message! \n");

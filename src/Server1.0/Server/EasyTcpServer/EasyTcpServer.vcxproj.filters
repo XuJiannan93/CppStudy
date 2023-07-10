@@ -57,9 +57,6 @@
     <ClCompile Include="CellServer.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
-    <ClCompile Include="CELLTask.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
     <ClCompile Include="CELLTimestamp.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
@@ -75,13 +72,10 @@
     <ClCompile Include="MemoryMgr.cpp">
       <Filter>源文件\pools\memory</Filter>
     </ClCompile>
-    <ClCompile Include="CellS2CTask.h">
-      <Filter>头文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CellS2CTask.cpp">
+    <ClCompile Include="CellClient.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
-    <ClCompile Include="CellClient.cpp">
+    <ClCompile Include="CELLTime.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
   </ItemGroup>
@@ -99,9 +93,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CellServer.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLTask.h">
       <Filter>头文件\Cells</Filter>
     </ClInclude>
     <ClInclude Include="CellTaskServer.h">
@@ -136,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="Cell.hpp">
       <Filter>头文件\public</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTime.h">
+      <Filter>头文件\Cells</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

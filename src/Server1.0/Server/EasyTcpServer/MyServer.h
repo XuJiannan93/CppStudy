@@ -3,8 +3,6 @@
 
 #include "MessageHeader.hpp"
 #include "EasyTcpServer.h"
-#include "CellS2CTask.h"
-
 
 class MyServer : public EasyTcpServer
 {

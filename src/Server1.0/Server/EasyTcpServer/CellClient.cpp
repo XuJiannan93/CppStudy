@@ -7,10 +7,27 @@ CellClient::CellClient(SOCKET sockfd)
 	memset(_szSendBuf, 0, SEND_BUFF_SIZE);
 	_lastPos = 0;
 	_lastSendPos = 0;
+
+	ResetDTHeard();
 }
 
 CellClient::~CellClient()
 {
+}
+
+void CellClient::ResetDTHeard()
+{
+	_dtHeart = 0;
+}
+
+bool CellClient::CheckHeart(time_t dt)
+{
+	_dtHeart += dt;
+	if (_dtHeart < CLIENT_HEART_DEAD_TIME)
+		return false;
+
+	printf("CellClient::CheckHeart() dead:%d, time:%d\n", (int)_sockfd, (int)_dtHeart);
+	return true;
 }
 
 SOCKET CellClient::sockfd()
@@ -32,7 +49,7 @@ void CellClient::setLastPos(int pos)
 	_lastPos = pos;
 }
 
-int CellClient::SendData(DataHeaderPtr& header)
+int CellClient::SendData(const DataHeaderPtr& header)
 {
 	int ret = SOCKET_ERROR;
 	int nSendLen = header->len;

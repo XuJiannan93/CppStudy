@@ -23,7 +23,11 @@ void MyServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netms
 		//Login* login = (Login*)header;
 		//printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)pClient->sockfd(), login->username, login->password, header->len);
 
-		auto ret = std::make_shared<netmsg_LoginResult>();
+	/*	auto ret = std::make_shared<netmsg_LoginResult>();
+		pCellServer->AddSendTask(pClient, (DataHeaderPtr&)ret);*/
+
+		pClient->ResetDTHeard();
+		auto ret = std::make_shared<netmsg_s2c_Heart>();
 		pCellServer->AddSendTask(pClient, (DataHeaderPtr&)ret);
 	}
 	break;
@@ -37,6 +41,14 @@ void MyServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netms
 		pClient->SendData(&ret);*/
 	}
 	break;
+
+	case CMD_C2S_HEART_BEAT:
+	{
+		pClient->ResetDTHeard();
+		auto ret = std::make_shared<netmsg_s2c_Heart>();
+		pCellServer->AddSendTask(pClient, (DataHeaderPtr&)ret);
+		break;
+	}
 
 	case CMD_ERROR:
 		printf("Recv Undefined Message! \n");

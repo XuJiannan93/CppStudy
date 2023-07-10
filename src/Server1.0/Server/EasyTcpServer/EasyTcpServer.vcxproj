@@ -148,11 +148,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Alloctor.cpp" />
-    <ClCompile Include="CellS2CTask.cpp" />
-    <ClCompile Include="CellS2CTask.h" />
     <ClCompile Include="CellServer.cpp" />
-    <ClCompile Include="CELLTask.cpp" />
     <ClCompile Include="CellTaskServer.cpp" />
+    <ClCompile Include="CELLTime.cpp" />
     <ClCompile Include="CELLTimestamp.cpp" />
     <ClCompile Include="CellClient.cpp" />
     <ClCompile Include="EasyTcpServer.cpp" />
@@ -167,8 +165,8 @@
     <ClInclude Include="Cell.hpp" />
     <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CellServer.h" />
-    <ClInclude Include="CELLTask.h" />
     <ClInclude Include="CellTaskServer.h" />
+    <ClInclude Include="CELLTime.h" />
     <ClInclude Include="CELLTimestamp.h" />
     <ClInclude Include="CellClient.h" />
     <ClInclude Include="EasyTcpServer.h" />

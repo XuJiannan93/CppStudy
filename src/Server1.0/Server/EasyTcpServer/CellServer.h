@@ -13,9 +13,7 @@
 #include "MessageHeader.hpp"
 #include "CellClient.h"
 #include "INetEvent.hpp"
-#include "CELLTask.h"
 #include "CellTaskServer.h"
-#include "CellS2CTask.h"
 
 //typedef std::shared_ptr<CellSendMsg2ClientTask> CellSendMsg2ClientTaskPtr;
 
@@ -37,6 +35,10 @@ public:
 	void AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header);
 
 private:
+	void ReadData(fd_set& fdRead);
+	void CheckTime();
+
+private:
 	SOCKET _sock;
 
 	std::map<SOCKET, ClientSocketPtr> _clients;
@@ -53,6 +55,7 @@ private:
 	SOCKET _maxSock;
 
 	CellTaskServer _taskServer;
+	time_t _old_time;
 
 };
 

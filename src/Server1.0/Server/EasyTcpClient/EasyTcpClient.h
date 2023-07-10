@@ -30,7 +30,7 @@ private:
 	SOCKET _sock;
 	bool _isConnected;
 	char _szRecv[RECV_BUFF_SIZE] = {};
-	char _szMsgBuf[RECV_BUFF_SIZE * 5] = {};
+	char _szMsgBuf[RECV_BUFF_SIZE] = {};
 	int _lastPos = 0;
 
 public:

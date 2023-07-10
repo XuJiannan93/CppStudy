@@ -11,7 +11,6 @@
 #include "CellClient.h"
 #include "CellServer.h"
 #include "INetEvent.hpp"
-#include "CELLTask.h"
 
 //#define _CELL_SERVER_THREAD_COUNT 4
 
