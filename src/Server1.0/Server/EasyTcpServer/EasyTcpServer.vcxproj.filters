@@ -87,6 +87,9 @@
     <ClCompile Include="CELLSemaphore.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
+    <ClCompile Include="CELLThread.cpp">
+      <Filter>源文件\Cells</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyTcpServer.h">
@@ -141,6 +144,9 @@
       <Filter>头文件\Cells</Filter>
     </ClInclude>
     <ClInclude Include="CELLSemaphore.h">
+      <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLThread.h">
       <Filter>头文件\Cells</Filter>
     </ClInclude>
   </ItemGroup>

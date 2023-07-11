@@ -27,7 +27,7 @@ public:
 	void Start();
 	void Close();
 	//bool IsRun() { return _sock != INVALID_SOCKET; }
-	void OnRun();
+	void OnRun(CELLThread* pThread);
 	int RecvData(ClientSocketPtr client);
 	virtual void OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header);
 	size_t GetClientCount() { return _clients.size() + _clientsBuff.size(); }
@@ -50,10 +50,9 @@ private:
 	SOCKET _maxSock;
 	CellTaskServer _taskServer;
 	time_t _old_time;
-	CELLSemaphore _sem;
+	CELLThread _thread;
 	int _id = -1;
 	bool _clients_changed = true;
-	bool _isRun = false;
 
 };
 

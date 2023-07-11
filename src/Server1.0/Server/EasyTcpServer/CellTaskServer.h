@@ -6,7 +6,7 @@
 #include <list>
 #include <functional>
 
-#include "CELLSemaphore.h"
+#include "CELLThread.h"
 
 class CellTaskServer
 {
@@ -17,7 +17,7 @@ public:
 	virtual ~CellTaskServer();
 
 protected:
-	void OnRun();
+	void OnRun(CELLThread* pThread);
 
 public:
 	void AddTask(CellTask task);
@@ -31,8 +31,9 @@ private:
 	std::list<CellTask> _tasks;
 	std::list<CellTask> _tasksBuf;
 	std::mutex _mutex;
-	CELLSemaphore _sem;
-	bool _isRun = false;
+	CELLThread _thread;
+	//CELLSemaphore _sem;
+	//bool _isRun = false;
 
 
 };

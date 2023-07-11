@@ -153,6 +153,7 @@
     <ClCompile Include="CELLTask.cpp" />
     <ClCompile Include="CELLTask.h" />
     <ClCompile Include="CellTaskServer.cpp" />
+    <ClCompile Include="CELLThread.cpp" />
     <ClCompile Include="CELLTime.cpp" />
     <ClCompile Include="CELLTimestamp.cpp" />
     <ClCompile Include="CellClient.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="CELLSemaphore.h" />
     <ClInclude Include="CellServer.h" />
     <ClInclude Include="CellTaskServer.h" />
+    <ClInclude Include="CELLThread.h" />
     <ClInclude Include="CELLTime.h" />
     <ClInclude Include="CELLTimestamp.h" />
     <ClInclude Include="CellClient.h" />

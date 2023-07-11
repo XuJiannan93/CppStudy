@@ -118,41 +118,51 @@ SOCKET EasyTcpServer::Accept()
 
 void EasyTcpServer::Start(int nCellServer)
 {
-	for (int n = 0; n < nCellServer; n++)
-	{
-		std::shared_ptr<CellServer> ser(new CellServer(n + 1));
-		_cellServers.push_back(ser);
-		ser->SetEventObj(this);
-		ser->Start();
-	}
+	_thread.Start(
+		[this, nCellServer](CELLThread* pThread) {
+			for (int n = 0; n < nCellServer; n++)
+			{
+				std::shared_ptr<CellServer> ser(new CellServer(n + 1));
+				_cellServers.push_back(ser);
+				ser->SetEventObj(this);
+				ser->Start();
+			}
+		},
+		[this](CELLThread* pThread)
+		{
+			OnRun(pThread);
+		},
+		[this](CELLThread* pThread)
+		{
+			_cellServers.clear();
+		});
 }
 
-bool EasyTcpServer::OnRun()
+void EasyTcpServer::OnRun(CELLThread* pThread)
 {
-	if (IsRun() == false) return false;
-
-	time4msg();
-
-	fd_set fdRead;
-	FD_ZERO(&fdRead);
-	FD_SET(_sock, &fdRead);
-
-	timeval t = { 0, 0 };
-	int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
-	if (ret < 0)
+	while (pThread->isRun())
 	{
-		printf("select task end. \n");
-		Close();
-		return false;
-	}
+		time4msg();
 
-	if (FD_ISSET(_sock, &fdRead))
-	{
-		FD_CLR(_sock, &fdRead);
-		Accept();
-	}
+		fd_set fdRead;
+		FD_ZERO(&fdRead);
+		FD_SET(_sock, &fdRead);
 
-	return true;
+		timeval t = { 0, 0 };
+		int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
+		if (ret < 0)
+		{
+			printf("select task end. \n");
+			pThread->Exit();
+			break;
+		}
+
+		if (FD_ISSET(_sock, &fdRead))
+		{
+			FD_CLR(_sock, &fdRead);
+			Accept();
+		}
+	}
 }
 
 void EasyTcpServer::SendDataToAll(netmsg_DataHeader* header)
@@ -226,10 +236,9 @@ void EasyTcpServer::OnNetRecv(ClientSocketPtr& pClient)
 void EasyTcpServer::Close()
 {
 	printf("EasyTcpServer::Close() 1\n");
+	_thread.Close();
 
 	if (_sock == INVALID_SOCKET) return;
-
-	_cellServers.clear();
 
 #ifdef _WIN32
 	closesocket(_sock);

@@ -11,6 +11,7 @@
 #include "CellClient.h"
 #include "CellServer.h"
 #include "INetEvent.hpp"
+#include "CELLThread.h"
 
 //#define _CELL_SERVER_THREAD_COUNT 4
 
@@ -26,8 +27,7 @@ public:
 	SOCKET Accept();
 	void AddClientToCellServer(ClientSocketPtr& pclient);
 	void Start(int nCellServer);
-	bool IsRun() { return _sock != INVALID_SOCKET; }
-	bool OnRun();
+	//bool IsRun() { return _sock != INVALID_SOCKET; }
 	void SendDataToAll(netmsg_DataHeader* header);
 	int RecvData(ClientSocketPtr& client);
 	void Close();
@@ -37,6 +37,7 @@ public:
 	virtual void OnNetRecv(ClientSocketPtr& pClient);
 
 private:
+	void OnRun(CELLThread* pThread);
 	virtual void time4msg(/*SOCKET client, DataHeader* header*/);
 
 private:
@@ -46,6 +47,7 @@ private:
 	std::vector<CellServerPtr> _cellServers;
 	CELLTimestamp _tTime;
 	std::mutex _mutex;
+	CELLThread _thread;
 
 protected:
 	std::atomic_int _msgCount;

@@ -25,16 +25,22 @@ void CellServer::SetEventObj(INetEvent* evt)
 
 void CellServer::Start()
 {
-	if (_isRun) return;
-	_isRun = true;
-	std::thread _thread = std::thread(std::mem_fn(&CellServer::OnRun), this);
-	_thread.detach();
 	_taskServer.Start();
+
+	_thread.Start(
+		nullptr,
+		[this](CELLThread* pThread) {
+			OnRun(pThread);
+		},
+		[this](CELLThread* pThread) {
+			_clients.clear();
+			_clientsBuff.clear();
+		});
 }
 
-void CellServer::OnRun()
+void CellServer::OnRun(CELLThread* pThread)
 {
-	while (_isRun)
+	while (pThread->isRun())
 	{
 		if (_clientsBuff.size() > 0)
 		{
@@ -85,8 +91,8 @@ void CellServer::OnRun()
 		if (ret < 0)
 		{
 			printf("select task end. \n");
-			Close();
-			return;
+			pThread->Exit();
+			break;
 		}
 		/*	else if (ret == 0) continue;*/
 
@@ -94,11 +100,7 @@ void CellServer::OnRun()
 		CheckTime();
 	}
 
-	_clients.clear();
-	_clientsBuff.clear();
-
-	_sem.Wakeup();
-	printf("CellServer[%d]::OnRun() exit", _id);
+	printf("CellServer[%d]::OnRun() exit\n", _id);
 }
 
 void CellServer::ReadData(fd_set& fdRead)
@@ -137,10 +139,10 @@ void CellServer::ReadData(fd_set& fdRead)
 	for (auto pClient : temp)
 	{
 		_clients.erase(pClient->sockfd());
-		}
+	}
 #endif
 
-	}
+}
 
 void CellServer::CheckTime()
 {
@@ -202,13 +204,11 @@ void CellServer::OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header)
 
 void CellServer::Close()
 {
-	if (_isRun == false) return;
 
 	printf("CellServer[%d]::Close() 1\n", _id);
 
 	_taskServer.Close();
-	_isRun = false;
-	_sem.Wait();
+	_thread.Close();
 
 	printf("CellServer[%d]::Close() 2\n", _id);
 }

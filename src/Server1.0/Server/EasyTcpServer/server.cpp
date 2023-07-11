@@ -31,20 +31,31 @@ int main()
 	server->Listen(5);
 	server->Start(4);
 
-	std::thread t(cmdThread);
-	t.detach();
-
-	while (g_bRun)
+	/*std::thread t(cmdThread);
+	t.detach();*/
+	while (true)
 	{
-		server->OnRun();
+		char cmdbuf[256] = {};
+		scanf("%s", cmdbuf);
+		if (strcmp(cmdbuf, "exit") == 0)
+		{
+			server->Close();
+			printf("exit the thread.\n");
+			break;
+		}
+		else
+		{
+			printf("???\n");
+		}
 	}
 
-	server->Close();
 
-	//while (true)
-	//{
-	//	Sleep(10000);
-	//}
+	//server->Close();
+
+	while (true)
+	{
+		Sleep(10000);
+	}
 
 	return 0;
 }
