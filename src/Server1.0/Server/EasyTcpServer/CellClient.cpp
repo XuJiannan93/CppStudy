@@ -14,6 +14,17 @@ CellClient::CellClient(SOCKET sockfd)
 
 CellClient::~CellClient()
 {
+	printf("CellClient[%d]::~CellClient()\n", (int)_sockfd);
+
+	if (_sockfd == INVALID_SOCKET)
+		return;
+#ifdef _WIN32
+	closesocket(_sockfd);
+#else
+	close(_sockfd);
+#endif // _WIN32
+
+	_sockfd = INVALID_SOCKET;
 }
 
 void CellClient::ResetDTHeard()
@@ -43,7 +54,7 @@ bool CellClient::CheckSend(time_t dt)
 	if (_dtSend < CLIENT_SEND_BUFFF_TIME)
 		return false;
 
-	printf("CellClient::CheckSend() time:%d\n", (int)_dtSend);
+	//printf("CellClient::CheckSend() time:%d\n", (int)_dtSend);
 
 	if (_SendDataImmediately() == SOCKET_ERROR)
 		printf("CellClient::SendData failed\n");

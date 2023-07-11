@@ -42,9 +42,9 @@ void cmdThread(/*EasyTcpClient* client*/)
 }
 
 //客户端数量
-const int cCount = 1;
+const int cCount = 20;
 //发送线程数量
-const int tCount = 1;
+const int tCount = 4;
 EasyTcpClient* client[cCount];
 
 void recvThread(int begin, int end)

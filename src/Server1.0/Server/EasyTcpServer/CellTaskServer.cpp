@@ -10,8 +10,17 @@ CellTaskServer::~CellTaskServer()
 
 void CellTaskServer::Start()
 {
+	_isRun = true;
 	std::thread t(std::mem_fn(&CellTaskServer::OnRun), this);
 	t.detach();
+}
+
+void CellTaskServer::Close()
+{
+	printf("CellTaskServer[%d]::Close() 1\n", serverID);
+	_isRun = false;
+	_sem.Wait();
+	printf("CellTaskServer[%d]::Close() 2\n", serverID);
 }
 
 void CellTaskServer::AddTask(CellTask task)
@@ -22,7 +31,7 @@ void CellTaskServer::AddTask(CellTask task)
 
 void CellTaskServer::OnRun()
 {
-	while (true)
+	while (_isRun)
 	{
 		if (!_tasksBuf.empty())
 		{
@@ -49,4 +58,6 @@ void CellTaskServer::OnRun()
 		}
 		_tasks.clear();
 	}
+	_sem.Wakeup();
+	printf("CellTaskServer[%d]::OnRun() exit\n", serverID);
 }

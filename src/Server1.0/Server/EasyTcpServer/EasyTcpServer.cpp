@@ -93,7 +93,7 @@ void EasyTcpServer::AddClientToCellServer(ClientSocketPtr& pclient)
 	}
 
 	pMinServer->addClient(pclient);
-	OnNetJoin(pclient);
+	//OnNetJoin(pclient);
 }
 
 SOCKET EasyTcpServer::Accept()
@@ -120,9 +120,7 @@ void EasyTcpServer::Start(int nCellServer)
 {
 	for (int n = 0; n < nCellServer; n++)
 	{
-		auto ser = std::make_shared<CellServer>(_sock);
-		//std::shared_ptr<CellServer> ser(new CellServer(_sock));
-		//auto ser = new CellServer(_sock);
+		std::shared_ptr<CellServer> ser(new CellServer(n + 1));
 		_cellServers.push_back(ser);
 		ser->SetEventObj(this);
 		ser->Start();
@@ -156,7 +154,6 @@ bool EasyTcpServer::OnRun()
 
 	return true;
 }
-
 
 void EasyTcpServer::SendDataToAll(netmsg_DataHeader* header)
 {
@@ -228,10 +225,20 @@ void EasyTcpServer::OnNetRecv(ClientSocketPtr& pClient)
 
 void EasyTcpServer::Close()
 {
+	printf("EasyTcpServer::Close() 1\n");
+
+	if (_sock == INVALID_SOCKET) return;
+
+	_cellServers.clear();
+
 #ifdef _WIN32
 	closesocket(_sock);
 	WSACleanup();
 #else
 	close(_sock);
 #endif
+
+	_sock = INVALID_SOCKET;
+
+	printf("EasyTcpServer::Close() 2\n");
 }

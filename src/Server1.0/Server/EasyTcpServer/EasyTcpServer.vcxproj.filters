@@ -78,6 +78,15 @@
     <ClCompile Include="CELLTime.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
+    <ClCompile Include="CELLTask.h">
+      <Filter>头文件\Cells</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLTask.cpp">
+      <Filter>源文件\Cells</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLSemaphore.cpp">
+      <Filter>源文件\Cells</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyTcpServer.h">
@@ -129,6 +138,9 @@
       <Filter>头文件\public</Filter>
     </ClInclude>
     <ClInclude Include="CELLTime.h">
+      <Filter>头文件\Cells</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLSemaphore.h">
       <Filter>头文件\Cells</Filter>
     </ClInclude>
   </ItemGroup>
