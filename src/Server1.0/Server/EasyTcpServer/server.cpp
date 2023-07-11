@@ -41,10 +41,10 @@ int main()
 
 	server->Close();
 
-	while (true)
-	{
-		Sleep(10000);
-	}
+	//while (true)
+	//{
+	//	Sleep(10000);
+	//}
 
 	return 0;
 }
