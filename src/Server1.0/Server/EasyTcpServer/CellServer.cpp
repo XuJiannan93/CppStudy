@@ -1,7 +1,7 @@
 #include "CELLTime.h"
-#include "CellServer.h"
+#include "CELLServer.h"
 
-CellServer::CellServer(int id)
+CELLServer::CELLServer(int id)
 {
 	_id = id;
 	_pNetEvent = nullptr;
@@ -11,19 +11,19 @@ CellServer::CellServer(int id)
 	_old_time = CELLTime::GetNowInMilliSec();
 }
 
-CellServer::~CellServer()
+CELLServer::~CELLServer()
 {
-	printf("CellServer[%d]::~CellServer() 1\n", _id);
+	printf("CELLServer[%d]::~CELLServer() 1\n", _id);
 	Close();
-	printf("CellServer[%d]::~CellServer() 2\n", _id);
+	printf("CELLServer[%d]::~CELLServer() 2\n", _id);
 }
 
-void CellServer::SetEventObj(INetEvent* evt)
+void CELLServer::SetEventObj(INetEvent* evt)
 {
 	_pNetEvent = evt;
 }
 
-void CellServer::Start()
+void CELLServer::Start()
 {
 	_taskServer.Start();
 
@@ -38,7 +38,7 @@ void CellServer::Start()
 		});
 }
 
-void CellServer::OnRun(CELLThread* pThread)
+void CELLServer::OnRun(CELLThread* pThread)
 {
 	while (pThread->isRun())
 	{
@@ -100,10 +100,10 @@ void CellServer::OnRun(CELLThread* pThread)
 		CheckTime();
 	}
 
-	printf("CellServer[%d]::OnRun() exit\n", _id);
+	printf("CELLServer[%d]::OnRun() exit\n", _id);
 }
 
-void CellServer::ReadData(fd_set& fdRead)
+void CELLServer::ReadData(fd_set& fdRead)
 {
 #ifdef _WIN32
 	for (int n = 0; n < fdRead.fd_count; n++)
@@ -144,7 +144,7 @@ void CellServer::ReadData(fd_set& fdRead)
 
 }
 
-void CellServer::CheckTime()
+void CELLServer::CheckTime()
 {
 	auto tNow = CELLTime::GetNowInMilliSec();
 	auto dt = tNow - _old_time;
@@ -167,7 +167,7 @@ void CellServer::CheckTime()
 	}
 }
 
-int CellServer::RecvData(ClientSocketPtr client)
+int CELLServer::RecvData(ClientSocketPtr client)
 {
 	char* szRecv = client->msgBuf() + client->getLastPos();
 	int nLen = (int)recv(client->sockfd(), szRecv, RECV_BUFF_SIZE - client->getLastPos(), 0);
@@ -197,29 +197,29 @@ int CellServer::RecvData(ClientSocketPtr client)
 	return 0;
 }
 
-void CellServer::OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header)
+void CELLServer::OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header)
 {
 	_pNetEvent->OnNetMsg(this, pClient, header);
 }
 
-void CellServer::Close()
+void CELLServer::Close()
 {
 
-	printf("CellServer[%d]::Close() 1\n", _id);
+	printf("CELLServer[%d]::Close() 1\n", _id);
 
 	_taskServer.Close();
 	_thread.Close();
 
-	printf("CellServer[%d]::Close() 2\n", _id);
+	printf("CELLServer[%d]::Close() 2\n", _id);
 }
 
-void CellServer::addClient(ClientSocketPtr& pClient)
+void CELLServer::addClient(ClientSocketPtr& pClient)
 {
 	std::lock_guard<std::mutex> lock(_mutex);
 	_clientsBuff.push_back(pClient);
 }
 
-void CellServer::AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header)
+void CELLServer::AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header)
 {
 	_taskServer.AddTask([pClient, header]() {
 		pClient->SendData(header);

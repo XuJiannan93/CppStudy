@@ -8,19 +8,19 @@
 
 #include "CELLThread.h"
 
-class CellTaskServer
+class CELLTaskServer
 {
-	typedef std::function<void()> CellTask;
+	typedef std::function<void()> CELLTask;
 
 public:
-	CellTaskServer();
-	virtual ~CellTaskServer();
+	CELLTaskServer();
+	virtual ~CELLTaskServer();
 
 protected:
 	void OnRun(CELLThread* pThread);
 
 public:
-	void AddTask(CellTask task);
+	void AddTask(CELLTask task);
 	void Start();
 	void Close();
 
@@ -28,8 +28,8 @@ public:
 	int serverID = -1;
 
 private:
-	std::list<CellTask> _tasks;
-	std::list<CellTask> _tasksBuf;
+	std::list<CELLTask> _tasks;
+	std::list<CELLTask> _tasksBuf;
 	std::mutex _mutex;
 	CELLThread _thread;
 	//CELLSemaphore _sem;

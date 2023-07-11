@@ -81,15 +81,15 @@ int EasyTcpServer::Listen(int n)
 	return ret;
 }
 
-void EasyTcpServer::AddClientToCellServer(ClientSocketPtr& pclient)
+void EasyTcpServer::AddClientToCELLServer(ClientSocketPtr& pclient)
 {
 	//_clients.push_back(pclient);
 
-	auto pMinServer = _cellServers[0];
-	for (auto pCellServer : _cellServers)
+	auto pMinServer = _CELLServers[0];
+	for (auto pCELLServer : _CELLServers)
 	{
-		if (pMinServer->GetClientCount() > pCellServer->GetClientCount())
-			pMinServer = pCellServer;
+		if (pMinServer->GetClientCount() > pCELLServer->GetClientCount())
+			pMinServer = pCELLServer;
 	}
 
 	pMinServer->addClient(pclient);
@@ -109,21 +109,21 @@ SOCKET EasyTcpServer::Accept()
 	else
 	{
 		//ClientSocketPtr ptr = std::make_shared<ClientSocket>(client);
-		std::shared_ptr<CellClient> ptr(new CellClient(client));
-		AddClientToCellServer(ptr);
+		std::shared_ptr<CELLClient> ptr(new CELLClient(client));
+		AddClientToCELLServer(ptr);
 	}
 
 	return client;
 }
 
-void EasyTcpServer::Start(int nCellServer)
+void EasyTcpServer::Start(int nCELLServer)
 {
 	_thread.Start(
-		[this, nCellServer](CELLThread* pThread) {
-			for (int n = 0; n < nCellServer; n++)
+		[this, nCELLServer](CELLThread* pThread) {
+			for (int n = 0; n < nCELLServer; n++)
 			{
-				std::shared_ptr<CellServer> ser(new CellServer(n + 1));
-				_cellServers.push_back(ser);
+				std::shared_ptr<CELLServer> ser(new CELLServer(n + 1));
+				_CELLServers.push_back(ser);
 				ser->SetEventObj(this);
 				ser->Start();
 			}
@@ -134,7 +134,7 @@ void EasyTcpServer::Start(int nCellServer)
 		},
 		[this](CELLThread* pThread)
 		{
-			_cellServers.clear();
+			_CELLServers.clear();
 		});
 }
 
@@ -206,7 +206,7 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 
 	if (t1 >= 1.0)
 	{
-		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>\n", (int)_cellServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), (int)(_msgCount / t1));
+		printf("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>\n", (int)_CELLServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), (int)(_msgCount / t1));
 		_recvCount = 0;
 		_msgCount = 0;
 		_tTime.Update();
@@ -223,7 +223,7 @@ void EasyTcpServer::OnNetLeave(ClientSocketPtr& pClient)
 	_clientCount--;
 }
 
-void EasyTcpServer::OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netmsg_DataHeader* header)
+void EasyTcpServer::OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header)
 {
 	_msgCount++;
 }

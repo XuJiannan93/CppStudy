@@ -11,7 +11,7 @@ public:
 
 	void OnNetLeave(ClientSocketPtr& pClient);
 
-	void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
+	void OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
 
 
 };

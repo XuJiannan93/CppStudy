@@ -1,14 +1,14 @@
-#include "CellTaskServer.h"
+#include "CELLTaskServer.h"
 
-CellTaskServer::CellTaskServer()
+CELLTaskServer::CELLTaskServer()
 {
 }
 
-CellTaskServer::~CellTaskServer()
+CELLTaskServer::~CELLTaskServer()
 {
 }
 
-void CellTaskServer::Start()
+void CELLTaskServer::Start()
 {
 	_thread.Start(
 		nullptr,
@@ -18,20 +18,20 @@ void CellTaskServer::Start()
 		nullptr);
 }
 
-void CellTaskServer::Close()
+void CELLTaskServer::Close()
 {
-	printf("CellTaskServer[%d]::Close() 1\n", serverID);
+	printf("CELLTaskServer[%d]::Close() 1\n", serverID);
 	_thread.Close();
-	printf("CellTaskServer[%d]::Close() 2\n", serverID);
+	printf("CELLTaskServer[%d]::Close() 2\n", serverID);
 }
 
-void CellTaskServer::AddTask(CellTask task)
+void CELLTaskServer::AddTask(CELLTask task)
 {
 	std::lock_guard<std::mutex> lock(_mutex);
 	_tasksBuf.push_back(task);
 }
 
-void CellTaskServer::OnRun(CELLThread* pThread)
+void CELLTaskServer::OnRun(CELLThread* pThread)
 {
 	while (pThread->isRun())
 	{
@@ -60,5 +60,5 @@ void CellTaskServer::OnRun(CELLThread* pThread)
 		}
 		_tasks.clear();
 	}
-	printf("CellTaskServer[%d]::OnRun() exit\n", serverID);
+	printf("CELLTaskServer[%d]::OnRun() exit\n", serverID);
 }

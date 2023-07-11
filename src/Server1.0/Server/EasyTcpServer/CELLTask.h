@@ -2,11 +2,11 @@
 #define _CELL_TASK_H_
 
 
-class CellTask
+class CELLTask
 {
 public:
-	CellTask();
-	virtual ~CellTask();
+	CELLTask();
+	virtual ~CELLTask();
 
 private:
 

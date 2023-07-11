@@ -8,7 +8,7 @@
 #include "XPrintf.h"
 
 template<class Type, size_t nPoolSize>
-class CellObjectPool
+class CELLObjectPool
 {
 private:
 	struct NodeHeader
@@ -55,12 +55,12 @@ private:
 
 public:
 
-	CellObjectPool()
+	CELLObjectPool()
 	{
 		initPool();
 	}
 
-	~CellObjectPool()
+	~CELLObjectPool()
 	{
 		if (_pBuf)
 			delete[] _pBuf;

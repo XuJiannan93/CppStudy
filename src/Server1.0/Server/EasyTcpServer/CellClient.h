@@ -5,14 +5,14 @@
 #include <vector>
 #include <memory>
 
-#include "Cell.hpp"
+#include "CELL.hpp"
 #include "MessageHeader.hpp"
 #include "ObjectPoolBase.hpp"
 
 #define CLIENT_HEART_DEAD_TIME 60000
 #define CLIENT_SEND_BUFFF_TIME 200
 
-class CellClient : public ObjectPoolBase<CellClient, 10000>
+class CELLClient : public ObjectPoolBase<CELLClient, 10000>
 {
 private:
 	SOCKET _sockfd;
@@ -37,13 +37,13 @@ public:
 	bool CheckHeart(time_t dt);
 	bool CheckSend(time_t dt);
 
-	CellClient(SOCKET sockfd = INVALID_SOCKET);
-	~CellClient();
+	CELLClient(SOCKET sockfd = INVALID_SOCKET);
+	~CELLClient();
 };
 
 #ifndef _SHARED_PTR_CLIENT_SOCKET_
 #define _SHARED_PTR_CLIENT_SOCKET_
-typedef std::shared_ptr<CellClient> ClientSocketPtr;
+typedef std::shared_ptr<CELLClient> ClientSocketPtr;
 #endif // !_SHARED_PTR_CLIENT_SOCKET_
 
 #endif // !_CELL_CLIENT_H_

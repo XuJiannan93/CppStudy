@@ -9,20 +9,20 @@
 #include <map>
 #include <memory>
 
-#include "Cell.hpp"
+#include "CELL.hpp"
 #include "MessageHeader.hpp"
-#include "CellClient.h"
+#include "CELLClient.h"
 #include "INetEvent.hpp"
-#include "CellTaskServer.h"
+#include "CELLTaskServer.h"
 #include "CELLSemaphore.h"
 
-//typedef std::shared_ptr<CellSendMsg2ClientTask> CellSendMsg2ClientTaskPtr;
+//typedef std::shared_ptr<CELLSendMsg2ClientTask> CELLSendMsg2ClientTaskPtr;
 
-class CellServer
+class CELLServer
 {
 public:
-	CellServer(int id);
-	virtual ~CellServer();
+	CELLServer(int id);
+	virtual ~CELLServer();
 
 	void Start();
 	void Close();
@@ -48,7 +48,7 @@ private:
 	INetEvent* _pNetEvent;
 	fd_set _fdRead_bak;
 	SOCKET _maxSock;
-	CellTaskServer _taskServer;
+	CELLTaskServer _taskServer;
 	time_t _old_time;
 	CELLThread _thread;
 	int _id = -1;
@@ -58,7 +58,7 @@ private:
 
 #ifndef _SHARED_PTR_CELL_SERVER_
 #define _SHARED_PTR_CELL_SERVER_
-typedef std::shared_ptr<CellServer> CellServerPtr;
+typedef std::shared_ptr<CELLServer> CELLServerPtr;
 
 #endif // !_SHARED_PTR_CELL_SERVER_
 

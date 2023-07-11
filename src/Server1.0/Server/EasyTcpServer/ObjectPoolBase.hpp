@@ -30,7 +30,7 @@ public:
 	}
 
 private:
-	typedef CellObjectPool<Type, nPoolSize> ClassTypePool;
+	typedef CELLObjectPool<Type, nPoolSize> ClassTypePool;
 
 	static ClassTypePool& objectPool()
 	{

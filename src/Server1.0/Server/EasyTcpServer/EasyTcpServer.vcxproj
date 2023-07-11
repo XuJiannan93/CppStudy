@@ -149,14 +149,14 @@
   <ItemGroup>
     <ClCompile Include="Alloctor.cpp" />
     <ClCompile Include="CELLSemaphore.cpp" />
-    <ClCompile Include="CellServer.cpp" />
+    <ClCompile Include="CELLServer.cpp" />
     <ClCompile Include="CELLTask.cpp" />
     <ClCompile Include="CELLTask.h" />
-    <ClCompile Include="CellTaskServer.cpp" />
+    <ClCompile Include="CELLTaskServer.cpp" />
     <ClCompile Include="CELLThread.cpp" />
     <ClCompile Include="CELLTime.cpp" />
     <ClCompile Include="CELLTimestamp.cpp" />
-    <ClCompile Include="CellClient.cpp" />
+    <ClCompile Include="CELLClient.cpp" />
     <ClCompile Include="EasyTcpServer.cpp" />
     <ClCompile Include="MemoryAlloc.cpp" />
     <ClCompile Include="MemoryBlock.cpp" />
@@ -169,12 +169,12 @@
     <ClInclude Include="Cell.hpp" />
     <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CELLSemaphore.h" />
-    <ClInclude Include="CellServer.h" />
-    <ClInclude Include="CellTaskServer.h" />
+    <ClInclude Include="CELLServer.h" />
+    <ClInclude Include="CELLTaskServer.h" />
     <ClInclude Include="CELLThread.h" />
     <ClInclude Include="CELLTime.h" />
     <ClInclude Include="CELLTimestamp.h" />
-    <ClInclude Include="CellClient.h" />
+    <ClInclude Include="CELLClient.h" />
     <ClInclude Include="EasyTcpServer.h" />
     <ClInclude Include="INetEvent.hpp" />
     <ClInclude Include="MemoryAlloc.h" />

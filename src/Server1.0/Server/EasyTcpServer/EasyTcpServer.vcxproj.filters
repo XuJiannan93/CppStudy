@@ -51,10 +51,10 @@
     <ClCompile Include="MyServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CellTaskServer.cpp">
+    <ClCompile Include="CELLTaskServer.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
-    <ClCompile Include="CellServer.cpp">
+    <ClCompile Include="CELLServer.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
     <ClCompile Include="CELLTimestamp.cpp">
@@ -72,7 +72,7 @@
     <ClCompile Include="MemoryMgr.cpp">
       <Filter>源文件\pools\memory</Filter>
     </ClCompile>
-    <ClCompile Include="CellClient.cpp">
+    <ClCompile Include="CELLClient.cpp">
       <Filter>源文件\Cells</Filter>
     </ClCompile>
     <ClCompile Include="CELLTime.cpp">
@@ -104,10 +104,10 @@
     <ClInclude Include="MyServer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CellServer.h">
+    <ClInclude Include="CELLServer.h">
       <Filter>头文件\Cells</Filter>
     </ClInclude>
-    <ClInclude Include="CellTaskServer.h">
+    <ClInclude Include="CELLTaskServer.h">
       <Filter>头文件\Cells</Filter>
     </ClInclude>
     <ClInclude Include="CELLTimestamp.h">
@@ -134,7 +134,7 @@
     <ClInclude Include="ObjectPoolBase.hpp">
       <Filter>头文件\pools\object</Filter>
     </ClInclude>
-    <ClInclude Include="CellClient.h">
+    <ClInclude Include="CELLClient.h">
       <Filter>头文件\Cells</Filter>
     </ClInclude>
     <ClInclude Include="Cell.hpp">

@@ -1,14 +1,14 @@
 #include "CELLTask.h"
 
-CellTask::CellTask()
+CELLTask::CELLTask()
 {
 }
 
-CellTask::~CellTask()
+CELLTask::~CELLTask()
 {
 }
 
 
-void CellTask::DoTask()
+void CELLTask::DoTask()
 {
 }

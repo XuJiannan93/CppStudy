@@ -1,15 +1,15 @@
-#ifndef  EASY_TCP_SERVER_H
-#define EASY_TCP_SERVER_H
+#ifndef  _EASY_TCP_SERVER_H_
+#define __EASY_TCP_SERVER_H__
 
 #include <stdio.h>
 #include <vector>
 #include <thread>
 #include <mutex>
 
-#include "Cell.hpp"
+#include "CELL.hpp"
 #include "CELLTimestamp.h"
-#include "CellClient.h"
-#include "CellServer.h"
+#include "CELLClient.h"
+#include "CELLServer.h"
 #include "INetEvent.hpp"
 #include "CELLThread.h"
 
@@ -25,15 +25,15 @@ public:
 	int Bind(const char* ip, unsigned short port);
 	int Listen(int n);
 	SOCKET Accept();
-	void AddClientToCellServer(ClientSocketPtr& pclient);
-	void Start(int nCellServer);
+	void AddClientToCELLServer(ClientSocketPtr& pclient);
+	void Start(int nCELLServer);
 	//bool IsRun() { return _sock != INVALID_SOCKET; }
 	void SendDataToAll(netmsg_DataHeader* header);
 	int RecvData(ClientSocketPtr& client);
 	void Close();
 	virtual void OnNetJoin(ClientSocketPtr& pClient);
 	virtual void OnNetLeave(ClientSocketPtr& pClient);
-	virtual void OnNetMsg(CellServer* pCellServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
+	virtual void OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
 	virtual void OnNetRecv(ClientSocketPtr& pClient);
 
 private:
@@ -44,7 +44,7 @@ private:
 	SOCKET _sock;
 	char _szRecv[RECV_BUFF_SIZE] = {};
 	//std::vector<ClientSocketPtr> _clients;
-	std::vector<CellServerPtr> _cellServers;
+	std::vector<CELLServerPtr> _CELLServers;
 	CELLTimestamp _tTime;
 	std::mutex _mutex;
 	CELLThread _thread;
@@ -56,4 +56,4 @@ protected:
 
 };
 
-#endif //  EASY_TCP_SERVER_H
+#endif //  _EASY_TCP_SERVER_H_

@@ -9,7 +9,7 @@
 #include "XPrintf.h"
 
 template<class Type, size_t nPoolSize>
-class CellObjectPool
+class CELLObjectPool
 {
 private:
 	struct NodeHeader
@@ -56,13 +56,13 @@ private:
 
 public:
 
-	CellObjectPool()
+	CELLObjectPool()
 	{
 		_pBuf = nullptr;
 		initPool();
 	}
 
-	~CellObjectPool()
+	~CELLObjectPool()
 	{
 		if (_pBuf)
 			delete[] _pBuf;
@@ -96,7 +96,7 @@ public:
 	{
 		if (pObj == nullptr)
 		{
-			printf("CellObjectPool::FreeObjMemory: nullptr!!\n");
+			printf("CELLObjectPool::FreeObjMemory: nullptr!!\n");
 			return;
 		}
 

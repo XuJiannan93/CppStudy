@@ -1,6 +1,6 @@
-#include "CellClient.h"
+#include "CELLClient.h"
 
-CellClient::CellClient(SOCKET sockfd)
+CELLClient::CELLClient(SOCKET sockfd)
 {
 	_sockfd = sockfd;
 	memset(_szMsgBuf, 0, RECV_BUFF_SIZE);
@@ -12,9 +12,9 @@ CellClient::CellClient(SOCKET sockfd)
 	_ResetDTSend();
 }
 
-CellClient::~CellClient()
+CELLClient::~CELLClient()
 {
-	printf("CellClient[%d]::~CellClient()\n", (int)_sockfd);
+	printf("CELLClient[%d]::~CELLClient()\n", (int)_sockfd);
 
 	if (_sockfd == INVALID_SOCKET)
 		return;
@@ -27,42 +27,42 @@ CellClient::~CellClient()
 	_sockfd = INVALID_SOCKET;
 }
 
-void CellClient::ResetDTHeard()
+void CELLClient::ResetDTHeard()
 {
 	_dtHeart = 0;
 }
 
-bool CellClient::CheckHeart(time_t dt)
+bool CELLClient::CheckHeart(time_t dt)
 {
 	_dtHeart += dt;
 	if (_dtHeart < CLIENT_HEART_DEAD_TIME)
 		return false;
 
-	printf("CellClient::CheckHeart() dead:%d, time:%d\n", (int)_sockfd, (int)_dtHeart);
+	printf("CELLClient::CheckHeart() dead:%d, time:%d\n", (int)_sockfd, (int)_dtHeart);
 
 	return true;
 }
 
-void CellClient::_ResetDTSend()
+void CELLClient::_ResetDTSend()
 {
 	_dtSend = 0;
 }
 
-bool CellClient::CheckSend(time_t dt)
+bool CELLClient::CheckSend(time_t dt)
 {
 	_dtSend += dt;
 	if (_dtSend < CLIENT_SEND_BUFFF_TIME)
 		return false;
 
-	//printf("CellClient::CheckSend() time:%d\n", (int)_dtSend);
+	//printf("CELLClient::CheckSend() time:%d\n", (int)_dtSend);
 
 	if (_SendDataImmediately() == SOCKET_ERROR)
-		printf("CellClient::SendData failed\n");
+		printf("CELLClient::SendData failed\n");
 
 	return true;
 }
 
-int CellClient::_SendDataImmediately()
+int CELLClient::_SendDataImmediately()
 {
 	if (_sockfd == SOCKET_ERROR) return SOCKET_ERROR;
 	if (_lastSendPos = 0) return SOCKET_ERROR;
@@ -74,26 +74,26 @@ int CellClient::_SendDataImmediately()
 	return ret;
 }
 
-SOCKET CellClient::sockfd()
+SOCKET CELLClient::sockfd()
 {
 	return _sockfd;
 }
 
-char* CellClient::msgBuf()
+char* CELLClient::msgBuf()
 {
 	return _szMsgBuf;
 }
 
-int CellClient::getLastPos()
+int CELLClient::getLastPos()
 {
 	return _lastPos;
 }
-void CellClient::setLastPos(int pos)
+void CELLClient::setLastPos(int pos)
 {
 	_lastPos = pos;
 }
 
-int CellClient::SendData(const DataHeaderPtr& header)
+int CELLClient::SendData(const DataHeaderPtr& header)
 {
 	int ret = SOCKET_ERROR;
 	int nSendLen = header->len;
