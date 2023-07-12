@@ -32,10 +32,6 @@ private:
 	std::list<CELLTask> _tasksBuf;
 	std::mutex _mutex;
 	CELLThread _thread;
-	//CELLSemaphore _sem;
-	//bool _isRun = false;
-
-
 };
 
 #endif // !_CELL_TASK_SERVER_

@@ -81,7 +81,7 @@ int EasyTcpServer::Listen(int n)
 	return ret;
 }
 
-void EasyTcpServer::AddClientToCELLServer(ClientSocketPtr& pclient)
+void EasyTcpServer::AddClientToCELLServer(CELLClientPtr& pclient)
 {
 	//_clients.push_back(pclient);
 
@@ -173,7 +173,7 @@ void EasyTcpServer::SendDataToAll(netmsg_DataHeader* header)
 	//}
 }
 
-int EasyTcpServer::RecvData(ClientSocketPtr& client)
+int EasyTcpServer::RecvData(CELLClientPtr& client)
 {
 	int nLen = (int)recv(client->sockfd(), _szRecv, RECV_BUFF_SIZE, 0);
 	if (nLen <= 0)
@@ -213,22 +213,22 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 	}
 }
 
-void EasyTcpServer::OnNetJoin(ClientSocketPtr& pClient)
+void EasyTcpServer::OnNetJoin(CELLClientPtr& pClient)
 {
 	_clientCount++;
 }
 
-void EasyTcpServer::OnNetLeave(ClientSocketPtr& pClient)
+void EasyTcpServer::OnNetLeave(CELLClientPtr& pClient)
 {
 	_clientCount--;
 }
 
-void EasyTcpServer::OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header)
+void EasyTcpServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_DataHeader* header)
 {
 	_msgCount++;
 }
 
-void EasyTcpServer::OnNetRecv(ClientSocketPtr& pClient)
+void EasyTcpServer::OnNetRecv(CELLClientPtr& pClient)
 {
 	_recvCount++;
 }

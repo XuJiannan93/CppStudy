@@ -22,10 +22,10 @@ private:
 	int _lastSendPos = 0;
 	time_t _dtHeart;
 	time_t _dtSend;
+	int _sendBuffFullCount = 0;
 
 private:
 	void _ResetDTSend();
-	int _SendDataImmediately();
 
 public:
 	SOCKET sockfd();
@@ -33,6 +33,7 @@ public:
 	int getLastPos();
 	void setLastPos(int pos);
 	int SendData(const DataHeaderPtr& header);
+	int SendDataImmediately();
 	void ResetDTHeard();
 	bool CheckHeart(time_t dt);
 	bool CheckSend(time_t dt);
@@ -43,7 +44,7 @@ public:
 
 #ifndef _SHARED_PTR_CLIENT_SOCKET_
 #define _SHARED_PTR_CLIENT_SOCKET_
-typedef std::shared_ptr<CELLClient> ClientSocketPtr;
+typedef std::shared_ptr<CELLClient> CELLClientPtr;
 #endif // !_SHARED_PTR_CLIENT_SOCKET_
 
 #endif // !_CELL_CLIENT_H_

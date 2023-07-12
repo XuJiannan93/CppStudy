@@ -25,16 +25,16 @@ public:
 	int Bind(const char* ip, unsigned short port);
 	int Listen(int n);
 	SOCKET Accept();
-	void AddClientToCELLServer(ClientSocketPtr& pclient);
+	void AddClientToCELLServer(CELLClientPtr& pclient);
 	void Start(int nCELLServer);
 	//bool IsRun() { return _sock != INVALID_SOCKET; }
 	void SendDataToAll(netmsg_DataHeader* header);
-	int RecvData(ClientSocketPtr& client);
+	int RecvData(CELLClientPtr& client);
 	void Close();
-	virtual void OnNetJoin(ClientSocketPtr& pClient);
-	virtual void OnNetLeave(ClientSocketPtr& pClient);
-	virtual void OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
-	virtual void OnNetRecv(ClientSocketPtr& pClient);
+	virtual void OnNetJoin(CELLClientPtr& pClient);
+	virtual void OnNetLeave(CELLClientPtr& pClient);
+	virtual void OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_DataHeader* header);
+	virtual void OnNetRecv(CELLClientPtr& pClient);
 
 private:
 	void OnRun(CELLThread* pThread);

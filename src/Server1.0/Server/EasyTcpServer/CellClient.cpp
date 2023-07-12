@@ -14,8 +14,6 @@ CELLClient::CELLClient(SOCKET sockfd)
 
 CELLClient::~CELLClient()
 {
-	printf("CELLClient[%d]::~CELLClient()\n", (int)_sockfd);
-
 	if (_sockfd == INVALID_SOCKET)
 		return;
 #ifdef _WIN32
@@ -56,19 +54,20 @@ bool CELLClient::CheckSend(time_t dt)
 
 	//printf("CELLClient::CheckSend() time:%d\n", (int)_dtSend);
 
-	if (_SendDataImmediately() == SOCKET_ERROR)
+	if (SendDataImmediately() == SOCKET_ERROR)
 		printf("CELLClient::SendData failed\n");
 
 	return true;
 }
 
-int CELLClient::_SendDataImmediately()
+int CELLClient::SendDataImmediately()
 {
-	if (_sockfd == SOCKET_ERROR) return SOCKET_ERROR;
-	if (_lastSendPos = 0) return SOCKET_ERROR;
+	if (_sockfd == INVALID_SOCKET) return 0;
+	if (_lastSendPos <= 0) return 0;
 
 	auto ret = send(_sockfd, _szSendBuf, _lastSendPos, 0);
 	_lastSendPos = 0;
+	_sendBuffFullCount = 0;
 	_ResetDTSend();
 
 	return ret;
@@ -88,6 +87,7 @@ int CELLClient::getLastPos()
 {
 	return _lastPos;
 }
+
 void CELLClient::setLastPos(int pos)
 {
 	_lastPos = pos;
@@ -99,26 +99,21 @@ int CELLClient::SendData(const DataHeaderPtr& header)
 	int nSendLen = header->len;
 	const char* pSendData = (const char*)header.get();
 
-	while (true)
+	if (_lastSendPos + nSendLen <= SEND_BUFF_SIZE)
 	{
-		if (_lastSendPos + nSendLen >= SEND_BUFF_SIZE)
+		memcpy(_szSendBuf + _lastSendPos, pSendData, nSendLen);
+		_lastSendPos += nSendLen;
+
+		if (_lastSendPos == SEND_BUFF_SIZE)
 		{
-			int nCopyLen = SEND_BUFF_SIZE - _lastSendPos;
-			memcpy(_szSendBuf + _lastSendPos, pSendData, nCopyLen);
-			pSendData += nCopyLen;
-			nSendLen -= nCopyLen;
-			ret = send(_sockfd, _szSendBuf, SEND_BUFF_SIZE, 0);
-			_lastSendPos = 0;
-			_ResetDTSend();
-			if (ret == SOCKET_ERROR)
-				return ret;
+			_sendBuffFullCount++;
 		}
-		else
-		{
-			memcpy(_szSendBuf + _lastSendPos, pSendData, nSendLen);
-			_lastSendPos += nSendLen;
-			break;
-		}
+
+		return nSendLen;
+	}
+	else
+	{
+		_sendBuffFullCount++;
 	}
 
 	return ret;

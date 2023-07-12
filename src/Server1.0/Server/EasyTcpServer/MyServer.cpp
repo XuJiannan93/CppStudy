@@ -1,18 +1,18 @@
 #include "MyServer.h"
 
-void MyServer::OnNetJoin(ClientSocketPtr& pClient)
+void MyServer::OnNetJoin(CELLClientPtr& pClient)
 {
 	EasyTcpServer::OnNetJoin(pClient);
 	//printf("client<%d> join\n", (int)pClient->sockfd());
 }
 
-void MyServer::OnNetLeave(ClientSocketPtr& pClient)
+void MyServer::OnNetLeave(CELLClientPtr& pClient)
 {
 	EasyTcpServer::OnNetLeave(pClient);
 	//printf("client<%d> leave\n", (int)pClient->sockfd());
 }
 
-void MyServer::OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header)
+void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_DataHeader* header)
 {
 	EasyTcpServer::OnNetMsg(pCELLServer, pClient, header);
 	switch (header->cmd)

@@ -16,8 +16,6 @@
 #include "CELLTaskServer.h"
 #include "CELLSemaphore.h"
 
-//typedef std::shared_ptr<CELLSendMsg2ClientTask> CELLSendMsg2ClientTaskPtr;
-
 class CELLServer
 {
 public:
@@ -28,25 +26,32 @@ public:
 	void Close();
 	//bool IsRun() { return _sock != INVALID_SOCKET; }
 	void OnRun(CELLThread* pThread);
-	int RecvData(ClientSocketPtr client);
-	virtual void OnNetMsg(ClientSocketPtr& pClient, netmsg_DataHeader* header);
+	int RecvData(CELLClientPtr client);
+	virtual void OnNetMsg(CELLClientPtr& pClient, netmsg_DataHeader* header);
 	size_t GetClientCount() { return _clients.size() + _clientsBuff.size(); }
-	void addClient(ClientSocketPtr& pClient);
+	void addClient(CELLClientPtr& pClient);
 	void SetEventObj(INetEvent* evt);
-	void AddSendTask(ClientSocketPtr& pClient, DataHeaderPtr& header);
+	void AddSendTask(CELLClientPtr& pClient, DataHeaderPtr& header);
 
 private:
-	void ReadData(fd_set& fdRead);
-	void CheckTime();
+	void _ReadData(fd_set& fdRead);
+	void _WriteData(fd_set& fdWrite);
+	void _CheckTime();
+	void _OnClientLeave(CELLClientPtr pClient);
 
 private:
 	//SOCKET _sock;
-	std::map<SOCKET, ClientSocketPtr> _clients;
-	std::vector<ClientSocketPtr> _clientsBuff;
+	std::map<SOCKET, CELLClientPtr> _clients;
+	std::vector<CELLClientPtr> _clientsBuff;
 
 	std::mutex _mutex;
 	INetEvent* _pNetEvent;
+
+	fd_set _fdRead;
+	fd_set _fdWrite;
+	//fd_set _fdExc;
 	fd_set _fdRead_bak;
+
 	SOCKET _maxSock;
 	CELLTaskServer _taskServer;
 	time_t _old_time;

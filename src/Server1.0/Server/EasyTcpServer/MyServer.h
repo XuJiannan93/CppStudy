@@ -7,11 +7,11 @@
 class MyServer : public EasyTcpServer
 {
 public:
-	void OnNetJoin(ClientSocketPtr& pClient);
+	void OnNetJoin(CELLClientPtr& pClient);
 
-	void OnNetLeave(ClientSocketPtr& pClient);
+	void OnNetLeave(CELLClientPtr& pClient);
 
-	void OnNetMsg(CELLServer* pCELLServer, ClientSocketPtr& pClient, netmsg_DataHeader* header);
+	void OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_DataHeader* header);
 
 
 };
