@@ -171,9 +171,9 @@ void CELLServer::_WriteData(fd_set& fdWrite)
 	std::vector<ClientSocketPtr> temp;
 	for (auto iter : _clients)
 	{
-		if (FD_ISSET(iter.second->sockfd(), &fdRead))
+		if (FD_ISSET(iter.second->sockfd(), &fdWrite))
 		{
-			if (RecvData(iter.second) == -1)
+			if (iter->second->SendDataImmediately() == -1)
 			{
 				_OnClientLeave(iter->second);
 				temp.push_back(iter.second);
@@ -212,29 +212,16 @@ void CELLServer::_CheckTime()
 
 int CELLServer::RecvData(CELLClientPtr client)
 {
-	char* szRecv = client->msgBuf() + client->getLastPos();
-	int nLen = (int)recv(client->sockfd(), szRecv, RECV_BUFF_SIZE - client->getLastPos(), 0);
+	int len = client->RecvData();
+
+	if (len <= 0) return -1;
+
 	_pNetEvent->OnNetRecv(client);
-	if (nLen <= 0)
+
+	while (client->HasMsg())
 	{
-		//printf("client[%d] broken.\n", (int)client);
-		return -1;
-	}
-
-	//memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
-	client->setLastPos(client->getLastPos() + nLen);
-
-	while (client->getLastPos() >= sizeof(netmsg_DataHeader))
-	{
-		netmsg_DataHeader* header = (netmsg_DataHeader*)client->msgBuf();
-		if (client->getLastPos() < header->len)
-			break;
-
-		int pos = client->getLastPos() - header->len;
-		OnNetMsg(client, header);
-		memcpy(client->msgBuf(), client->msgBuf() + header->len, pos);
-		//memcpy(client->msgBuf(), szRecv + header->len, pos);
-		client->setLastPos(pos);
+		OnNetMsg(client, client->front_msg());
+		client->pop_front_msg();
 	}
 
 	return 0;
@@ -268,6 +255,6 @@ void CELLServer::AddSendTask(CELLClientPtr& pClient, DataHeaderPtr& header)
 		if (pClient->SendData(header) == SOCKET_ERROR)
 		{
 			//send buf full, msg not send
-			printf("socket[%d] send full\n", pClient->sockfd());
+			printf("socket[%d] send full\n", (int)pClient->sockfd());
 		}});
 }

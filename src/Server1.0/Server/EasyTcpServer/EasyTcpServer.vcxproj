@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Alloctor.cpp" />
+    <ClCompile Include="CELLBuffer.cpp" />
     <ClCompile Include="CELLSemaphore.cpp" />
     <ClCompile Include="CELLServer.cpp" />
     <ClCompile Include="CELLTask.cpp" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="Alloctor.h" />
     <ClInclude Include="Cell.hpp" />
+    <ClInclude Include="CELLBuffer.h" />
     <ClInclude Include="CELLObjectPool.hpp" />
     <ClInclude Include="CELLSemaphore.h" />
     <ClInclude Include="CELLServer.h" />

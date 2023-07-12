@@ -80,7 +80,7 @@ void sendThread(int id)
 	readyCount++;
 	while (readyCount < tCount)
 	{
-		std::chrono::milliseconds t1(10);
+		std::chrono::milliseconds t1(100);
 		std::this_thread::sleep_for(t1);
 	}
 
@@ -88,7 +88,7 @@ void sendThread(int id)
 	t1.detach();
 
 
-	netmsg_Login login[10];
+	netmsg_Login login[1];
 
 	for (int n = 0; n < 10; n++)
 	{
@@ -109,8 +109,8 @@ void sendThread(int id)
 			//client[n]->OnRun();
 		}
 
-	/*	std::chrono::milliseconds t(1);
-		std::this_thread::sleep_for(t);*/
+		/*	std::chrono::milliseconds t(1);
+			std::this_thread::sleep_for(t);*/
 	}
 
 	for (int n = begin; n < end; n++)

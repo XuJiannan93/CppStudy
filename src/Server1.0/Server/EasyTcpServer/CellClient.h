@@ -8,6 +8,7 @@
 #include "CELL.hpp"
 #include "MessageHeader.hpp"
 #include "ObjectPoolBase.hpp"
+#include "CELLBuffer.h"
 
 #define CLIENT_HEART_DEAD_TIME 60000
 #define CLIENT_SEND_BUFFF_TIME 200
@@ -16,10 +17,8 @@ class CELLClient : public ObjectPoolBase<CELLClient, 10000>
 {
 private:
 	SOCKET _sockfd;
-	char _szMsgBuf[RECV_BUFF_SIZE] = {};
-	char _szSendBuf[SEND_BUFF_SIZE] = {};
-	int _lastPos = 0;
-	int _lastSendPos = 0;
+	CELLBuffer _recvBuf;
+	CELLBuffer _sendBuf;
 	time_t _dtHeart;
 	time_t _dtSend;
 	int _sendBuffFullCount = 0;
@@ -29,14 +28,15 @@ private:
 
 public:
 	SOCKET sockfd();
-	char* msgBuf();
-	int getLastPos();
-	void setLastPos(int pos);
 	int SendData(const DataHeaderPtr& header);
+	int RecvData();
 	int SendDataImmediately();
 	void ResetDTHeard();
 	bool CheckHeart(time_t dt);
 	bool CheckSend(time_t dt);
+	bool HasMsg();
+	netmsg_DataHeader* front_msg();
+	void pop_front_msg();
 
 	CELLClient(SOCKET sockfd = INVALID_SOCKET);
 	~CELLClient();

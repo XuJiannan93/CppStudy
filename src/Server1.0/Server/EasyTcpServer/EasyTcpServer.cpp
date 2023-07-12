@@ -1,3 +1,5 @@
+#include <signal.h>
+
 #include "EasyTcpServer.h"
 
 EasyTcpServer::EasyTcpServer()
@@ -19,6 +21,8 @@ SOCKET EasyTcpServer::InitSocket()
 	WORD ver = MAKEWORD(2, 2);
 	WSADATA data;
 	WSAStartup(ver, &data);
+#else
+	signal(SIGPIPE, SIG_IGN);
 #endif
 
 	if (_sock != INVALID_SOCKET)
@@ -171,33 +175,6 @@ void EasyTcpServer::SendDataToAll(netmsg_DataHeader* header)
 	//{
 	//	SendData(_clients[n]->sockfd(), header);
 	//}
-}
-
-int EasyTcpServer::RecvData(CELLClientPtr& client)
-{
-	int nLen = (int)recv(client->sockfd(), _szRecv, RECV_BUFF_SIZE, 0);
-	if (nLen <= 0)
-	{
-		printf("client[%d] broken.\n", (int)client->sockfd());
-		return -1;
-	}
-
-	memcpy(client->msgBuf() + client->getLastPos(), _szRecv, nLen);
-	client->setLastPos(client->getLastPos() + nLen);
-
-	while (client->getLastPos() >= sizeof(netmsg_DataHeader))
-	{
-		netmsg_DataHeader* header = (netmsg_DataHeader*)client->msgBuf();
-		if (client->getLastPos() < header->len)
-			break;
-
-		int pos = client->getLastPos() - header->len;
-		//time4msg(/*client->sockfd(), header*/);
-		memcpy(client->msgBuf(), client->msgBuf() + header->len, pos);
-		client->setLastPos(pos);
-	}
-
-	return 0;
 }
 
 void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)

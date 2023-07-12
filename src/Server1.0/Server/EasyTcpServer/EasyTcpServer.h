@@ -27,9 +27,7 @@ public:
 	SOCKET Accept();
 	void AddClientToCELLServer(CELLClientPtr& pclient);
 	void Start(int nCELLServer);
-	//bool IsRun() { return _sock != INVALID_SOCKET; }
 	void SendDataToAll(netmsg_DataHeader* header);
-	int RecvData(CELLClientPtr& client);
 	void Close();
 	virtual void OnNetJoin(CELLClientPtr& pClient);
 	virtual void OnNetLeave(CELLClientPtr& pClient);

@@ -1,12 +1,10 @@
 #include "CELLClient.h"
 
 CELLClient::CELLClient(SOCKET sockfd)
+	:_sendBuf(SEND_BUFF_SIZE),
+	_recvBuf(RECV_BUFF_SIZE)
 {
 	_sockfd = sockfd;
-	memset(_szMsgBuf, 0, RECV_BUFF_SIZE);
-	memset(_szSendBuf, 0, SEND_BUFF_SIZE);
-	_lastPos = 0;
-	_lastSendPos = 0;
 
 	ResetDTHeard();
 	_ResetDTSend();
@@ -60,17 +58,26 @@ bool CELLClient::CheckSend(time_t dt)
 	return true;
 }
 
+bool CELLClient::HasMsg()
+{
+	return _recvBuf.HasMsg();
+}
+
+netmsg_DataHeader* CELLClient::front_msg()
+{
+	return (netmsg_DataHeader*)_recvBuf.data();
+}
+
+void CELLClient::pop_front_msg()
+{
+	if (HasMsg())
+		_recvBuf.Pop(front_msg()->len);
+}
+
 int CELLClient::SendDataImmediately()
 {
-	if (_sockfd == INVALID_SOCKET) return 0;
-	if (_lastSendPos <= 0) return 0;
-
-	auto ret = send(_sockfd, _szSendBuf, _lastSendPos, 0);
-	_lastSendPos = 0;
-	_sendBuffFullCount = 0;
 	_ResetDTSend();
-
-	return ret;
+	return _sendBuf.Write2Socket(_sockfd);
 }
 
 SOCKET CELLClient::sockfd()
@@ -78,43 +85,20 @@ SOCKET CELLClient::sockfd()
 	return _sockfd;
 }
 
-char* CELLClient::msgBuf()
-{
-	return _szMsgBuf;
-}
-
-int CELLClient::getLastPos()
-{
-	return _lastPos;
-}
-
-void CELLClient::setLastPos(int pos)
-{
-	_lastPos = pos;
-}
-
 int CELLClient::SendData(const DataHeaderPtr& header)
 {
-	int ret = SOCKET_ERROR;
 	int nSendLen = header->len;
 	const char* pSendData = (const char*)header.get();
 
-	if (_lastSendPos + nSendLen <= SEND_BUFF_SIZE)
-	{
-		memcpy(_szSendBuf + _lastSendPos, pSendData, nSendLen);
-		_lastSendPos += nSendLen;
-
-		if (_lastSendPos == SEND_BUFF_SIZE)
-		{
-			_sendBuffFullCount++;
-		}
-
+	if (_sendBuf.Push(pSendData, nSendLen))
 		return nSendLen;
-	}
-	else
-	{
-		_sendBuffFullCount++;
-	}
 
-	return ret;
+	return SOCKET_ERROR;
 }
+
+int CELLClient::RecvData()
+{
+	return _recvBuf.Read4Socket(_sockfd);
+}
+
+
