@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\Tools">
+      <UniqueIdentifier>{3b3ae7df-e678-4874-b7fb-743bd2f6fb61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\CELLNet">
+      <UniqueIdentifier>{5a9dcc2d-7ae3-41dc-a41a-3b5fe71c8d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CELLNet">
+      <UniqueIdentifier>{70dc3a85-0e02-4bb4-a28a-9f7314c4a83d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Tools">
+      <UniqueIdentifier>{c22b7bee-0e5b-49f9-b39e-194342c6d18c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Tools\MemoryPool">
+      <UniqueIdentifier>{3d9acbb6-5697-4233-9c79-5cd7485abc06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Tools\MemoryPool">
+      <UniqueIdentifier>{08ab26d6-af74-45c6-bbbf-b1d5036e5f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Tools\ObjectPool">
+      <UniqueIdentifier>{8f6ed131-5758-43eb-b180-4b85e19f1546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\CELLNet\Task">
+      <UniqueIdentifier>{cf99f8af-52c6-4ae2-a377-3bfe412256a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CELLNet\Task">
+      <UniqueIdentifier>{15218f88-eddd-452e-be60-ee48d144b1bf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XPrintf.h">
+      <Filter>头文件\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLSemaphore.h">
+      <Filter>头文件\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.hpp">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryMgr.h">
+      <Filter>头文件\Tools\MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryAlloc.h">
+      <Filter>头文件\Tools\MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryBlock.h">
+      <Filter>头文件\Tools\MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLObjectPool.hpp">
+      <Filter>头文件\Tools\ObjectPool</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPoolBase.hpp">
+      <Filter>头文件\Tools\ObjectPool</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTimestamp.h">
+      <Filter>头文件\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTask.h">
+      <Filter>头文件\CELLNet\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTaskServer.h">
+      <Filter>头文件\CELLNet\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLTime.h">
+      <Filter>头文件\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLThread.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLLog.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="INetEvent.hpp">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLBuffer.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLNetwork.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLClient.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="CELLServer.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyTcpServer.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CELLSemaphore.cpp">
+      <Filter>源文件\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryAlloc.cpp">
+      <Filter>源文件\Tools\MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryBlock.cpp">
+      <Filter>源文件\Tools\MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryMgr.cpp">
+      <Filter>源文件\Tools\MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLTimestamp.cpp">
+      <Filter>源文件\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLTask.cpp">
+      <Filter>源文件\CELLNet\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLTaskServer.cpp">
+      <Filter>源文件\CELLNet\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLTime.cpp">
+      <Filter>源文件\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLThread.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLLog.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLBuffer.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLNetwork.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLClient.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLServer.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="EasyTcpServer.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

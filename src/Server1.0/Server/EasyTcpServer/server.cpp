@@ -1,4 +1,5 @@
 //#include "EasyTcpServer.h"
+#include "XPrintf.h"
 #include "Alloctor.h"
 #include "MyServer.h"
 #include "CELLLog.h"
@@ -34,8 +35,8 @@ int main()
 	server->Listen(5);
 	server->Start(4);
 
-	/*std::thread t(cmdThread);
-	t.detach();*/
+	//std::thread t(cmdThread);
+	//t.detach();
 	while (true)
 	{
 		char cmdbuf[256] = {};
@@ -54,3 +55,4 @@ int main()
 
 	return 0;
 }
+

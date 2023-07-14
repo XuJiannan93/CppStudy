@@ -73,18 +73,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,12 +96,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;XUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -108,14 +112,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;XUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,12 +128,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;XUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,21 +144,43 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;XUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Alloctor.cpp" />
     <ClCompile Include="MyServer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\depends\CellNet\include\Cell.hpp" />
+    <ClInclude Include="..\depends\CellNet\include\CELLBuffer.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLClient.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLLog.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLNetwork.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLObjectPool.hpp" />
+    <ClInclude Include="..\depends\CellNet\include\CELLSemaphore.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLServer.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLTask.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLTaskServer.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLThread.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLTime.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLTimestamp.h" />
+    <ClInclude Include="..\depends\CellNet\include\EasyTcpServer.h" />
+    <ClInclude Include="..\depends\CellNet\include\INetEvent.hpp" />
+    <ClInclude Include="..\depends\CellNet\include\MemoryAlloc.h" />
+    <ClInclude Include="..\depends\CellNet\include\MemoryBlock.h" />
+    <ClInclude Include="..\depends\CellNet\include\MemoryMgr.h" />
+    <ClInclude Include="..\depends\CellNet\include\ObjectPoolBase.hpp" />
+    <ClInclude Include="..\depends\CellNet\include\XPrintf.h" />
+    <ClInclude Include="Alloctor.h" />
     <ClInclude Include="MyServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

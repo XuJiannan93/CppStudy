@@ -13,9 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\XUtility">
+      <UniqueIdentifier>{ae5be2e2-6243-42cf-8cd4-1df9eb137fcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Alloctor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyServer.cpp">
@@ -23,8 +29,71 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alloctor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\Cell.hpp">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLTimestamp.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\MemoryAlloc.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\MemoryBlock.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\MemoryMgr.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\XPrintf.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
     <ClInclude Include="MyServer.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLBuffer.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLClient.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLLog.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLNetwork.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLObjectPool.hpp">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLSemaphore.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLServer.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLTask.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLTaskServer.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLThread.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLTime.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\EasyTcpServer.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\INetEvent.hpp">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\ObjectPoolBase.hpp">
+      <Filter>头文件\XUtility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
