@@ -3,13 +3,13 @@
 void MyServer::OnNetJoin(CELLClientPtr& pClient)
 {
 	EasyTcpServer::OnNetJoin(pClient);
-	//printf("client<%d> join\n", (int)pClient->sockfd());
+	//CELLLog::Info("client<%d> join\n", (int)pClient->sockfd());
 }
 
 void MyServer::OnNetLeave(CELLClientPtr& pClient)
 {
 	EasyTcpServer::OnNetLeave(pClient);
-	//printf("client<%d> leave\n", (int)pClient->sockfd());
+	//CELLLog::Info("client<%d> leave\n", (int)pClient->sockfd());
 }
 
 void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_DataHeader* header)
@@ -21,7 +21,7 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 	case CMD_LOGIN:
 	{
 		//Login* login = (Login*)header;
-		//printf("recv<%d> cmd len :login [%s][%s][%d] \n", (int)pClient->sockfd(), login->username, login->password, header->len);
+		//CELLLog::Info("recv<%d> cmd len :login [%s][%s][%d] \n", (int)pClient->sockfd(), login->username, login->password, header->len);
 
 	/*	auto ret = std::make_shared<netmsg_LoginResult>();
 		pCELLServer->AddSendTask(pClient, (DataHeaderPtr&)ret);*/
@@ -35,7 +35,7 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 	case CMD_LOGOUT:
 	{
 		//Logout* logout = (Logout*)header;
-		//printf("recv<%d> cmd len :logout [%s][%d] \n", (int)_client, logout->username, header->len);
+		//CELLLog::Info("recv<%d> cmd len :logout [%s][%d] \n", (int)_client, logout->username, header->len);
 
 	/*	LogoutResult ret;
 		pClient->SendData(&ret);*/
@@ -51,7 +51,7 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 	}
 
 	case CMD_ERROR:
-		printf("Recv Undefined Message! \n");
+		CELLLog::Info("Recv Undefined Message! \n");
 		break;
 
 

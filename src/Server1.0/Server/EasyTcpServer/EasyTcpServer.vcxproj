@@ -92,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\res;G:\_projects\CppStudy\src\Server1.0\Server\depends\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,45 +151,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Alloctor.cpp" />
-    <ClCompile Include="CELLBuffer.cpp" />
-    <ClCompile Include="CELLSemaphore.cpp" />
-    <ClCompile Include="CELLServer.cpp" />
-    <ClCompile Include="CELLTask.cpp" />
-    <ClCompile Include="CELLTask.h" />
-    <ClCompile Include="CELLTaskServer.cpp" />
-    <ClCompile Include="CELLThread.cpp" />
-    <ClCompile Include="CELLTime.cpp" />
-    <ClCompile Include="CELLTimestamp.cpp" />
-    <ClCompile Include="CELLClient.cpp" />
-    <ClCompile Include="EasyTcpServer.cpp" />
-    <ClCompile Include="MemoryAlloc.cpp" />
-    <ClCompile Include="MemoryBlock.cpp" />
-    <ClCompile Include="MemoryMgr.cpp" />
     <ClCompile Include="MyServer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Alloctor.h" />
-    <ClInclude Include="Cell.hpp" />
-    <ClInclude Include="CELLBuffer.h" />
-    <ClInclude Include="CELLObjectPool.hpp" />
-    <ClInclude Include="CELLSemaphore.h" />
-    <ClInclude Include="CELLServer.h" />
-    <ClInclude Include="CELLTaskServer.h" />
-    <ClInclude Include="CELLThread.h" />
-    <ClInclude Include="CELLTime.h" />
-    <ClInclude Include="CELLTimestamp.h" />
-    <ClInclude Include="CELLClient.h" />
-    <ClInclude Include="EasyTcpServer.h" />
-    <ClInclude Include="INetEvent.hpp" />
-    <ClInclude Include="MemoryAlloc.h" />
-    <ClInclude Include="MemoryBlock.h" />
-    <ClInclude Include="MemoryMgr.h" />
-    <ClInclude Include="MessageHeader.hpp" />
     <ClInclude Include="MyServer.h" />
-    <ClInclude Include="ObjectPoolBase.hpp" />
-    <ClInclude Include="XPrintf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

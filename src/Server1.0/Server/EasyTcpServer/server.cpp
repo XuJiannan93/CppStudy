@@ -1,6 +1,7 @@
 //#include "EasyTcpServer.h"
 #include "Alloctor.h"
 #include "MyServer.h"
+#include "CELLLog.h"
 
 bool g_bRun = true;
 
@@ -13,18 +14,20 @@ void cmdThread()
 		if (strcmp(cmdbuf, "exit") == 0)
 		{
 			g_bRun = false;
-			printf("exit the thread.\n");
+			CELLLog::Info("exit the thread.\n");
 			break;
 		}
 		else
 		{
-			printf("???\n");
+			CELLLog::Info("???\n");
 		}
 	}
 }
 
 int main()
 {
+	CELLLog::Instance().SetLogPath("../../bin/log/ServerLog.txt", "w");
+
 	auto server = std::make_shared<MyServer>();
 	server->InitSocket();
 	server->Bind(nullptr, 4567);
@@ -40,21 +43,13 @@ int main()
 		if (strcmp(cmdbuf, "exit") == 0)
 		{
 			server->Close();
-			printf("exit the thread.\n");
+			CELLLog::Info("exit the thread.\n");
 			break;
 		}
 		else
 		{
-			printf("???\n");
+			CELLLog::Info("???\n");
 		}
-	}
-
-
-	//server->Close();
-
-	while (true)
-	{
-		Sleep(10000);
 	}
 
 	return 0;

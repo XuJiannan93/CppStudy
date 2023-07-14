@@ -13,147 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Cells">
-      <UniqueIdentifier>{c35e75df-a394-40f2-a354-cbbdae445186}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\Cells">
-      <UniqueIdentifier>{e3b47bbb-2d43-4e13-a829-160e2a1d8c4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\pools">
-      <UniqueIdentifier>{020fb02b-cdb0-400d-97e7-b75f934ed02e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\pools\memory">
-      <UniqueIdentifier>{8d40b656-da6f-4593-b94b-b9f404941c05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\pools">
-      <UniqueIdentifier>{49a3221d-64c7-4d94-a565-23016341dc14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\pools\memory">
-      <UniqueIdentifier>{8e2b42a1-64d1-4e81-a61c-2c2ab2f75633}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\tools">
-      <UniqueIdentifier>{3e34a59a-decb-4061-86b8-5fe3599c4410}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\pools\object">
-      <UniqueIdentifier>{569fed28-506d-4c17-bcfc-2653cfa67856}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\public">
-      <UniqueIdentifier>{89792b24-9dc0-49b8-8f6f-c6c310bffc18}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EasyTcpServer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CELLTaskServer.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLServer.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLTimestamp.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="Alloctor.cpp">
-      <Filter>源文件\pools\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="MemoryAlloc.cpp">
-      <Filter>源文件\pools\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="MemoryBlock.cpp">
-      <Filter>源文件\pools\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="MemoryMgr.cpp">
-      <Filter>源文件\pools\memory</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLClient.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLTime.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLTask.h">
-      <Filter>头文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLTask.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLSemaphore.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLThread.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLBuffer.cpp">
-      <Filter>源文件\Cells</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EasyTcpServer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageHeader.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="INetEvent.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MyServer.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLServer.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLTaskServer.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLTimestamp.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryAlloc.h">
-      <Filter>头文件\pools\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryBlock.h">
-      <Filter>头文件\pools\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryMgr.h">
-      <Filter>头文件\pools\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="XPrintf.h">
-      <Filter>头文件\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Alloctor.h">
-      <Filter>头文件\pools\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLObjectPool.hpp">
-      <Filter>头文件\pools\object</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectPoolBase.hpp">
-      <Filter>头文件\pools\object</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLClient.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="Cell.hpp">
-      <Filter>头文件\public</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLTime.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLSemaphore.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLThread.h">
-      <Filter>头文件\Cells</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLBuffer.h">
-      <Filter>头文件\Cells</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
