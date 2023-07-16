@@ -1,7 +1,7 @@
 #include <atomic>
 
-#include "EasyTcpClient.h"
 #include "CELLTimestamp.h"
+#include "MyClient.h"
 
 bool g_bRun = true;
 std::atomic<int> sum = 0;
@@ -18,7 +18,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 		{
 			//client->Close();
 			g_bRun = false;
-			printf("exit the thread.\n");
+			CELLLog::Info("exit the thread.\n");
 			break;
 		}
 		//else if (strcmp(cmdbuf, "login") == 0)
@@ -36,7 +36,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 		//}
 		else
 		{
-			printf("???\n");
+			CELLLog::Info("???\n");
 		}
 	}
 }
@@ -66,7 +66,7 @@ void sendThread(int id)
 
 	for (int n = begin; n < end; n++)
 	{
-		client[n] = new EasyTcpClient();
+		client[n] = new MyClient();
 	}
 
 	for (int n = begin; n < end; n++)
@@ -75,7 +75,7 @@ void sendThread(int id)
 		sum++;
 	}
 
-	printf("thread[%d] start,Connect sum [%d]\n", id, sum.load());
+	CELLLog::Info("thread[%d] start,Connect sum [%d]\n", id, sum.load());
 
 	readyCount++;
 	while (readyCount < tCount)
@@ -117,7 +117,7 @@ void sendThread(int id)
 		sum--;
 	}
 
-	printf("thread[%d] exit,Connect sum [%d]\n", id, sum.load());
+	CELLLog::Info("thread[%d] exit,Connect sum [%d]\n", id, sum.load());
 
 
 }
@@ -125,6 +125,7 @@ void sendThread(int id)
 
 int main()
 {
+	CELLLog::Instance().SetLogPath("../../bin/log/ClientLog.txt", "w");
 
 	std::thread t1(cmdThread);
 	t1.detach();
@@ -143,14 +144,14 @@ int main()
 		auto t = tTime.GetElapsedSecond();
 		if (t >= 1.0)
 		{
-			printf("thread<%d>,clients<%d>,time<%lf>,send<%d>\n", tCount, cCount, t, (int)(sendCount.load() / t));
+			CELLLog::Info("thread<%d>,clients<%d>,time<%lf>,send<%d>\n", tCount, cCount, t, (int)(sendCount.load() / t));
 			tTime.Update();
 			sendCount = 0;
 		}
 		Sleep(1);
 	}
 
-	printf("client exit.\n");
+	CELLLog::Info("client exit.\n");
 	//getchar();
 
 	return 0;

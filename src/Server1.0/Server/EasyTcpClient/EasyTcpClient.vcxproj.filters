@@ -21,21 +21,18 @@
     <ClCompile Include="client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="EasyTcpClient.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CELLTimestamp.cpp">
+    <ClCompile Include="MyClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EasyTcpClient.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CELLTimestamp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\depends\CellNet\include\CELLNetwork.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="MyClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\EasyTcpClient.h">
       <Filter>头文件\XUtility</Filter>
     </ClInclude>
   </ItemGroup>

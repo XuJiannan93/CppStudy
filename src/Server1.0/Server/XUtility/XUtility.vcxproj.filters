@@ -99,6 +99,9 @@
     <ClInclude Include="EasyTcpServer.h">
       <Filter>头文件\CELLNet</Filter>
     </ClInclude>
+    <ClInclude Include="EasyTcpClient.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CELLSemaphore.cpp">
@@ -144,6 +147,9 @@
       <Filter>源文件\CELLNet</Filter>
     </ClCompile>
     <ClCompile Include="EasyTcpServer.cpp">
+      <Filter>源文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="EasyTcpClient.cpp">
       <Filter>源文件\CELLNet</Filter>
     </ClCompile>
   </ItemGroup>

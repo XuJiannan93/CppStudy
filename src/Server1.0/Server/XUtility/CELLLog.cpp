@@ -33,7 +33,7 @@ void CELLLog::SetLogPath(const char* path, const char* mode)
 	}
 	else
 	{
-		Info("CELLLog::SetLogPath() failed!\n");
+		Info("CELLLog::SetLogPath(), <%s,%s> failed!\n", path, mode);
 	}
 }
 
