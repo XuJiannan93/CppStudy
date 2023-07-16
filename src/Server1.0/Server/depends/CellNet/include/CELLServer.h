@@ -16,7 +16,7 @@
 #include "CELLTaskServer.h"
 #include "CELLSemaphore.h"
 
-class CELLServer
+class _X_UTILITY_API_ CELLServer
 {
 public:
 	CELLServer(int id);

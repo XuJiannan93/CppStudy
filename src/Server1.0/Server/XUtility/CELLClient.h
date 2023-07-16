@@ -15,17 +15,6 @@
 
 class _X_UTILITY_API_ CELLClient : public ObjectPoolBase<CELLClient, 10000>
 {
-private:
-	SOCKET _sockfd;
-	CELLBuffer _recvBuf;
-	CELLBuffer _sendBuf;
-	time_t _dtHeart;
-	time_t _dtSend;
-	int _sendBuffFullCount = 0;
-
-private:
-	void _ResetDTSend();
-
 public:
 	SOCKET sockfd();
 	int SendData(const DataHeaderPtr& header);
@@ -37,9 +26,21 @@ public:
 	bool HasMsg();
 	netmsg_DataHeader* front_msg();
 	void pop_front_msg();
+	bool NeedWrite();
 
 	CELLClient(SOCKET sockfd = INVALID_SOCKET);
 	~CELLClient();
+
+private:
+	void _ResetDTSend();
+
+private:
+	SOCKET _sockfd;
+	CELLBuffer _recvBuf;
+	CELLBuffer _sendBuf;
+	time_t _dtHeart;
+	time_t _dtSend;
+	int _sendBuffFullCount = 0;
 };
 
 #ifndef _SHARED_PTR_CLIENT_SOCKET_

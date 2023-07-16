@@ -4,7 +4,7 @@
 #include "CELLObjectPool.hpp"
 
 template<class Type, size_t nPoolSize>
-class ObjectPoolBase
+class __declspec(dllexport) ObjectPoolBase
 {
 public:
 	void* operator new(size_t size)

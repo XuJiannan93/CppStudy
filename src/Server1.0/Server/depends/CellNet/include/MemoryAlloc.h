@@ -9,7 +9,7 @@
 #include "XPrintf.h"
 #include "MemoryBlock.h"
 
-class MemoryAlloc
+class __declspec(dllexport) MemoryAlloc
 {
 public:
 	MemoryAlloc();

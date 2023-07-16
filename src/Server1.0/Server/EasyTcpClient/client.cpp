@@ -88,29 +88,26 @@ void sendThread(int id)
 	t1.detach();
 
 
-	netmsg_Login login[1];
+	std::shared_ptr<netmsg_Login> msg;
 
-	for (int n = 0; n < 10; n++)
-	{
-		strcpy(login[n].username, "xjn");
-		strcpy(login[n].password, "123456");
-	}
+	msg = std::make_shared<netmsg_Login>();
 
-	const int nLen = sizeof(login);
+	strcpy(msg->username, "xjn");
+	strcpy(msg->password, "123456");
 
 	while (g_bRun)
 	{
 		for (int n = begin; n < end; n++)
 		{
-			auto ret = client[n]->SendData(login, nLen);
+			auto ret = client[n]->SendData(msg);
 			if (ret != SOCKET_ERROR)
 				sendCount++;
 
 			//client[n]->OnRun();
 		}
 
-		/*	std::chrono::milliseconds t(1);
-			std::this_thread::sleep_for(t);*/
+		std::chrono::milliseconds t(100);
+		std::this_thread::sleep_for(t);
 	}
 
 	for (int n = begin; n < end; n++)

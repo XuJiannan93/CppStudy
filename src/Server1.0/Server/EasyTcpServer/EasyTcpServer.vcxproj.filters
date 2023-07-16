@@ -21,19 +21,13 @@
     <ClCompile Include="server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Alloctor.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="MyServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Alloctor.h">
+    <ClInclude Include="Alloctor.hpp">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\depends\CellNet\include\Cell.hpp">
-      <Filter>头文件\XUtility</Filter>
     </ClInclude>
     <ClInclude Include="..\depends\CellNet\include\CELLTimestamp.h">
       <Filter>头文件\XUtility</Filter>

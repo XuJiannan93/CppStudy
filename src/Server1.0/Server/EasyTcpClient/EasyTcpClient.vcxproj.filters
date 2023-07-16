@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\XUtility">
+      <UniqueIdentifier>{dbcced01-779d-4482-916e-aa16486a3593}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp">
@@ -29,11 +32,11 @@
     <ClInclude Include="EasyTcpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MessageHeader.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CELLTimestamp.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLNetwork.h">
+      <Filter>头文件\XUtility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

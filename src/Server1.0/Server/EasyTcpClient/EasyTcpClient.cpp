@@ -1,8 +1,11 @@
 #include "EasyTcpClient.h"
+#include "CELLNetwork.h"
 
 EasyTcpClient::EasyTcpClient()
 {
-	_sock = INVALID_SOCKET;
+	FD_ZERO(&_fdRead);
+	FD_ZERO(&_fdWrite);
+
 	_isConnected = false;
 }
 
@@ -13,30 +16,27 @@ EasyTcpClient::~EasyTcpClient()
 
 void EasyTcpClient::InitSocket()
 {
-#ifdef _WIN32
-	WORD ver = MAKEWORD(2, 2);
-	WSADATA data;
-	WSAStartup(ver, &data);
-#endif
+	CELLNetwork::Init();
 
-	if (_sock != INVALID_SOCKET)
+	if (_pClient.get())
 	{
 		printf("close old connection. \n");
 		Close();
 	}
 
-	_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKET _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
 	if (_sock == INVALID_SOCKET)
 		printf("[ERROR]create socket failed.\n");
 	else
 	{
-		//printf("create socket succeed.\n");
+		_pClient = std::shared_ptr<CELLClient>(new CELLClient(_sock));
 	}
 }
 
 int EasyTcpClient::Connect(const char* ip, unsigned short port)
 {
-	if (_sock == INVALID_SOCKET)
+	if (_pClient == NULL || _pClient.get() == nullptr)
 		InitSocket();
 
 	sockaddr_in _sin = {};
@@ -48,7 +48,7 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 #else
 	_sin.sin_addr.s_addr = inet_addr(ip);
 #endif
-	int ret = connect(_sock, (sockaddr*)&_sin, sizeof(sockaddr_in));
+	int ret = connect(_pClient->sockfd(), (sockaddr*)&_sin, sizeof(sockaddr_in));
 	if (ret == SOCKET_ERROR)
 	{
 		_isConnected = false;
@@ -57,7 +57,6 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 	else
 	{
 		_isConnected = true;
-		//printf("connect socket succeed.\n");
 	}
 
 	return ret;
@@ -66,18 +65,10 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 void EasyTcpClient::Close()
 {
 	printf("sock closed!\n");
-
-	if (_sock == INVALID_SOCKET) return;
-
-#ifdef _WIN32
-	closesocket(_sock);
-	WSACleanup();
-#else
-	close(_sock);
-#endif
-
-	_sock = INVALID_SOCKET;
 	_isConnected = false;
+
+	if (_pClient.get() == nullptr) return;
+	_pClient = NULL;
 }
 
 bool EasyTcpClient::OnRun()
@@ -85,24 +76,47 @@ bool EasyTcpClient::OnRun()
 	if (IsRun() == false)
 		return false;
 
-	fd_set fdReads;
-	FD_ZERO(&fdReads);
-	FD_SET(_sock, &fdReads);
+	SOCKET _sock = _pClient->sockfd();
 
-	timeval t = { 0, 0 };
-	int ret = select(_sock + 1, &fdReads, NULL, NULL, &t);
+	FD_ZERO(&_fdRead);
+	FD_SET(_sock, &_fdRead);
+
+	FD_ZERO(&_fdWrite);
+
+	timeval t = { 0, 1 };
+	int ret = 0;
+	if (_pClient->NeedWrite())
+	{
+		FD_SET(_sock, &_fdWrite);
+		int ret = select(_sock + 1, &_fdRead, &_fdWrite, nullptr, &t);
+	}
+	else
+	{
+		int ret = select(_sock + 1, &_fdRead, nullptr, nullptr, &t);
+	}
+
 	if (ret < 0)
 	{
 		printf("selcet task end...\n");
 		return false;
 	}
 
-	if (FD_ISSET(_sock, &fdReads))
+	if (FD_ISSET(_sock, &_fdRead))
 	{
-		FD_CLR(_sock, &fdReads);
-		if (RecvData() == -1)
+		if (RecvData() == SOCKET_ERROR)
 		{
-			printf("selcet task end...\n");
+			printf("[READ ERROR]selcet task end...\n");
+			Close();
+			return false;
+		}
+	}
+
+	if (FD_ISSET(_sock, &_fdWrite))
+	{
+		if (_pClient->SendDataImmediately() == SOCKET_ERROR)
+		{
+			printf("[WRITE ERROR]selcet task end...\n");
+			Close();
 			return false;
 		}
 	}
@@ -110,42 +124,26 @@ bool EasyTcpClient::OnRun()
 	return true;
 }
 
-int EasyTcpClient::SendData(netmsg_DataHeader* header, int nLen)
+int EasyTcpClient::SendData(const DataHeaderPtr& header)
 {
-	int ret = SOCKET_ERROR;
-	if (IsRun() && header)
-	{
-		ret = send(_sock, (const char*)header, nLen, 0);
-		if (ret == SOCKET_ERROR)
-		{
-			Close();
-		}
-	}
-	return ret;
+	if (IsRun() == false)
+		return SOCKET_ERROR;
+
+	return _pClient->SendData(header);
 }
+
 
 int EasyTcpClient::RecvData()
 {
-	char* szRecv = _szMsgBuf + _lastPos;
-	int nLen = (int)recv(_sock, szRecv, (RECV_BUFF_SIZE)-_lastPos, 0);
-	if (nLen <= 0)
-	{
-		printf("remote[%d] broken.\n", (int)_sock);
-		return -1;
-	}
-	//memcpy(_szMsgBuf + _lastPos, _szRecv, nLen);
-	_lastPos += nLen;
+	int len = _pClient->RecvData();
 
-	while (_lastPos >= sizeof(netmsg_DataHeader))
+	if (len > 0)
 	{
-		netmsg_DataHeader* header = (netmsg_DataHeader*)_szMsgBuf;
-		if (_lastPos < header->len)
-			break;
-
-		int pos = _lastPos - header->len;
-		OnNetMsg(header);
-		memcpy(_szMsgBuf, _szMsgBuf + header->len, _lastPos - header->len);
-		_lastPos = pos;
+		while (_pClient->HasMsg())
+		{
+			OnNetMsg(_pClient->front_msg());
+			_pClient->pop_front_msg();
+		}
 	}
 
 	return 0;

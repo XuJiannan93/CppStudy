@@ -73,22 +73,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
-    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
-    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
-    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
-    <LibraryPath>G:\_projects\CppStudy\src\Server1.0\Server\depends\dlllib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,7 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;G:\_projects\CppStudy\src\Server1.0\Server\depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\CellNet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,12 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Alloctor.cpp" />
     <ClCompile Include="MyServer.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\depends\CellNet\include\Cell.hpp" />
     <ClInclude Include="..\depends\CellNet\include\CELLBuffer.h" />
     <ClInclude Include="..\depends\CellNet\include\CELLClient.h" />
     <ClInclude Include="..\depends\CellNet\include\CELLLog.h" />
@@ -180,7 +178,7 @@
     <ClInclude Include="..\depends\CellNet\include\MemoryMgr.h" />
     <ClInclude Include="..\depends\CellNet\include\ObjectPoolBase.hpp" />
     <ClInclude Include="..\depends\CellNet\include\XPrintf.h" />
-    <ClInclude Include="Alloctor.h" />
+    <ClInclude Include="Alloctor.hpp" />
     <ClInclude Include="MyServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

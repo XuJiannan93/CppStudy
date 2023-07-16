@@ -4,7 +4,7 @@
 #include <chrono>
 using namespace std::chrono;
 
-class CELLTimestamp
+class __declspec(dllexport) CELLTimestamp
 {
 public:
 	CELLTimestamp();

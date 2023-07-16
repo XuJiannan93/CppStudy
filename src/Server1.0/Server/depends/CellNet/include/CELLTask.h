@@ -1,8 +1,9 @@
 #ifndef _CELL_TASK_H_
 #define _CELL_TASK_H_
 
+#include "Cell.hpp"
 
-class CELLTask
+class _X_UTILITY_API_ CELLTask
 {
 public:
 	CELLTask();

@@ -7,9 +7,10 @@
 #include <iostream>
 
 #include "xPrintf.h"
+#include "CELLLog.h"
 
 template<class Type, size_t nPoolSize>
-class CELLObjectPool
+class __declspec(dllexport) CELLObjectPool
 {
 private:
 	struct NodeHeader

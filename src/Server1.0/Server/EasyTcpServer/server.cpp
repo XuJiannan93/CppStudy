@@ -1,6 +1,6 @@
 //#include "EasyTcpServer.h"
 #include "XPrintf.h"
-#include "Alloctor.h"
+#include "Alloctor.hpp"
 #include "MyServer.h"
 #include "CELLLog.h"
 

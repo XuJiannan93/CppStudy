@@ -8,7 +8,7 @@
 
 #define MAX_MEMORY_SIZE 1024 
 
-class MemoryMgr
+class __declspec(dllexport) MemoryMgr
 {
 private:
 	MemoryMgr();

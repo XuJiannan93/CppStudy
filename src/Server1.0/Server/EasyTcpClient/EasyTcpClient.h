@@ -19,6 +19,7 @@
 #endif
 
 #include "MessageHeader.hpp"
+#include "CELLClient.h"
 
 #ifndef  RECV_BUFF_SIZE
 #define RECV_BUFF_SIZE 10240
@@ -26,12 +27,6 @@
 
 class EasyTcpClient
 {
-private:
-	SOCKET _sock;
-	bool _isConnected;
-	char _szRecv[RECV_BUFF_SIZE] = {};
-	char _szMsgBuf[RECV_BUFF_SIZE] = {};
-	int _lastPos = 0;
 
 public:
 	EasyTcpClient();
@@ -41,10 +36,20 @@ public:
 	int Connect(const char* ip, unsigned short port);
 	void Close();
 	bool OnRun();
-	bool IsRun() { return _sock != INVALID_SOCKET && _isConnected; }
-	int SendData(netmsg_DataHeader* header, int nLen);
+	bool IsRun() { return _isConnected; }
+	int SendData(const DataHeaderPtr& header);
 	int RecvData();
 	virtual void OnNetMsg(netmsg_DataHeader* header);
+
+private:
+
+private:
+	fd_set _fdRead;
+	fd_set _fdWrite;
+
+	CELLClientPtr _pClient;
+	char _szRecv[RECV_BUFF_SIZE] = {};
+	bool _isConnected;
 };
 
 #endif

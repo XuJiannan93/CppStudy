@@ -3,9 +3,10 @@
 
 #include <functional>
 
+#include "Cell.hpp"
 #include "CELLSemaphore.h"
 
-class CELLThread
+class _X_UTILITY_API_ CELLThread
 {
 private:
 	typedef std::function<void(CELLThread*)> EventCall;

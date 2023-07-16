@@ -3,7 +3,7 @@
 
 #include "Cell.hpp"
 
-class  CELLNetwork
+class _X_UTILITY_API_ CELLNetwork
 {
 private:
 	CELLNetwork();

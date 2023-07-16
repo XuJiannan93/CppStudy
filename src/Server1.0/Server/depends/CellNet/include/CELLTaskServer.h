@@ -6,9 +6,10 @@
 #include <list>
 #include <functional>
 
+#include "Cell.hpp"
 #include "CELLThread.h"
 
-class CELLTaskServer
+class _X_UTILITY_API_ CELLTaskServer
 {
 	typedef std::function<void()> CELLTask;
 

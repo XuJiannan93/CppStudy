@@ -5,7 +5,7 @@
 
 class CELLServer;
 
-class INetEvent
+class _X_UTILITY_API_ INetEvent
 {
 public:
 	virtual void OnNetJoin(CELLClientPtr& pClient) = 0;

@@ -15,7 +15,7 @@
 
 //#define _CELL_SERVER_THREAD_COUNT 4
 
-class EasyTcpServer : public INetEvent
+class _X_UTILITY_API_ EasyTcpServer : public INetEvent
 {
 public:
 	EasyTcpServer();

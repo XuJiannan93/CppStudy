@@ -101,4 +101,8 @@ int CELLClient::RecvData()
 	return _recvBuf.Read4Socket(_sockfd);
 }
 
+bool CELLClient::NeedWrite()
+{
+	return _sendBuf.NeedWrite();
+}
 

@@ -3,7 +3,7 @@
 
 #include <chrono>
 
-class CELLTime
+class __declspec(dllexport) CELLTime
 {
 public:
 	static time_t GetNowInMilliSec();

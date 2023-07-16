@@ -97,3 +97,8 @@ bool CELLBuffer::HasMsg()
 
 	return _nLast >= header->len;
 }
+
+bool CELLBuffer::NeedWrite()
+{
+	return _nLast > 0;
+}

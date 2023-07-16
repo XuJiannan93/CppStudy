@@ -4,7 +4,7 @@
 #include <mutex>
 #include <condition_variable>
 
-class CELLSemaphore
+class __declspec(dllexport) CELLSemaphore
 {
 public:
 	CELLSemaphore();

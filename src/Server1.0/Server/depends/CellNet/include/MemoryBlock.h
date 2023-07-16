@@ -3,7 +3,7 @@
 
 extern class MemoryAlloc;
 
-class MemoryBlock
+class __declspec(dllexport) MemoryBlock
 {
 public:
 	int nID;

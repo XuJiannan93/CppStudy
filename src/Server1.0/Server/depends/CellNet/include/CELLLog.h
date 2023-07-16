@@ -6,7 +6,7 @@
 
 #include "CELLTaskServer.h"
 
-class  CELLLog
+class _X_UTILITY_API_ CELLLog
 {
 public:
 	static CELLLog& Instance()

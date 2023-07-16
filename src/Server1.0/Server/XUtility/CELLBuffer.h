@@ -15,6 +15,7 @@ public:
 	int Write2Socket(SOCKET sockfd);
 	int Read4Socket(SOCKET sockfd);
 	bool HasMsg();
+	bool NeedWrite();
 
 private:
 	char* _pBuf = nullptr;

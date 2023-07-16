@@ -48,9 +48,6 @@
     <ClInclude Include="CELLSemaphore.h">
       <Filter>头文件\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Cell.hpp">
-      <Filter>头文件\CELLNet</Filter>
-    </ClInclude>
     <ClInclude Include="MemoryMgr.h">
       <Filter>头文件\Tools\MemoryPool</Filter>
     </ClInclude>

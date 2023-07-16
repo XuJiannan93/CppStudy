@@ -23,6 +23,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Protocols", "Protocols\Prot
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XUtility", "XUtility\XUtility.vcxproj", "{FF4C9588-3085-4083-9A8C-6730B266FA72}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "public", "public", "{6BDF010D-8E4F-4413-95F2-5C584F4E9BE2}"
+	ProjectSection(SolutionItems) = preProject
+		depends\Public\Cell.hpp = depends\Public\Cell.hpp
+		depends\Public\MessageHeader.hpp = depends\Public\MessageHeader.hpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

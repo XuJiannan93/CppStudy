@@ -3,7 +3,7 @@
 
 #include "Cell.hpp"
 
-class CELLBuffer
+class _X_UTILITY_API_ CELLBuffer
 {
 public:
 	CELLBuffer(int size = 8192);
@@ -15,6 +15,7 @@ public:
 	int Write2Socket(SOCKET sockfd);
 	int Read4Socket(SOCKET sockfd);
 	bool HasMsg();
+	bool NeedWrite();
 
 private:
 	char* _pBuf = nullptr;
