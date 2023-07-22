@@ -27,26 +27,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -73,18 +73,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
+    <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,13 +96,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_INFO;_WARRING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;CommonUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)..\bin\$(Platform)\$(Configuration)\$(TargetFileName) $(SolutionDir)depends\dlllib\ /Y</Command>
@@ -112,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_INFO;_WARRING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -120,7 +125,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;CommonUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)..\bin\$(Platform)\$(Configuration)\$(TargetFileName) $(SolutionDir)depends\dlllib\ /Y</Command>
@@ -132,13 +138,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_INFO;_WARRING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;CommonUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)..\bin\$(Platform)\$(Configuration)\$(TargetFileName) $(SolutionDir)depends\dlllib\ /Y</Command>
@@ -152,7 +159,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_INFO;_WARRING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;G:\_projects\CppStudy\src\Server1.0\Server\depends\Protocols;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\Public;$(SolutionDir)depends\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,15 +167,18 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;CommonUtility.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)..\bin\$(Platform)\$(Configuration)\$(TargetFileName) $(SolutionDir)depends\dlllib\ /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\depends\includes\Singleton.h" />
     <ClInclude Include="CELLBuffer.h" />
     <ClInclude Include="CELLClient.h" />
+    <ClInclude Include="CELLConfig.h" />
     <ClInclude Include="CELLLog.h" />
     <ClInclude Include="CELLMsgStream.h" />
     <ClInclude Include="CELLNetwork.h" />
@@ -193,6 +203,7 @@
   <ItemGroup>
     <ClCompile Include="CELLBuffer.cpp" />
     <ClCompile Include="CELLClient.cpp" />
+    <ClCompile Include="CELLConfig.cpp" />
     <ClCompile Include="CELLLog.cpp" />
     <ClCompile Include="CELLMsgStream.cpp" />
     <ClCompile Include="CELLNetwork.cpp" />

@@ -16,6 +16,12 @@
     <Filter Include="头文件\XUtility">
       <UniqueIdentifier>{ae5be2e2-6243-42cf-8cd4-1df9eb137fcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Common">
+      <UniqueIdentifier>{67e8b498-3100-4ecd-a503-9f7af79b4866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="运行">
+      <UniqueIdentifier>{34deac08-ff83-4065-b39f-76441eefe20c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -89,5 +95,16 @@
     <ClInclude Include="..\depends\CellNet\include\ObjectPoolBase.hpp">
       <Filter>头文件\XUtility</Filter>
     </ClInclude>
+    <ClInclude Include="..\depends\includes\Singleton.h">
+      <Filter>头文件\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLConfig.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EasyTcpServer.bat">
+      <Filter>运行</Filter>
+    </None>
   </ItemGroup>
 </Project>

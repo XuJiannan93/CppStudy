@@ -16,6 +16,12 @@
     <Filter Include="头文件\XUtility">
       <UniqueIdentifier>{dbcced01-779d-4482-916e-aa16486a3593}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Common">
+      <UniqueIdentifier>{4d33092b-b64c-4b78-9c3b-60fea5264f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="运行">
+      <UniqueIdentifier>{0039fcfc-957a-4f13-ae90-cb16dd5eb8b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp">
@@ -35,5 +41,16 @@
     <ClInclude Include="..\depends\CellNet\include\EasyTcpClient.h">
       <Filter>头文件\XUtility</Filter>
     </ClInclude>
+    <ClInclude Include="..\depends\includes\Singleton.h">
+      <Filter>头文件\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLConfig.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EasyTcpClient.bat">
+      <Filter>运行</Filter>
+    </None>
   </ItemGroup>
 </Project>

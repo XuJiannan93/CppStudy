@@ -83,25 +83,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)depends\Protocols;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)depends\Protocols;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)depends\Protocols;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)../bin/$(Platform)/$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)../temp/$(Platform)/$(Configuration)/$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)depends\Protocols;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)depends\dlllib;$(LibraryPath)</LibraryPath>
