@@ -35,6 +35,9 @@ private:
 	CELLSemaphore _sem;
 	bool _isRun = false;
 
+public:
+	static void Sleep(time_t dt);
+
 };
 
 #endif // !_CELL_THREAD_H_

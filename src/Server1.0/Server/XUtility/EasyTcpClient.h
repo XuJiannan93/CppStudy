@@ -32,11 +32,14 @@ public:
 	EasyTcpClient();
 	virtual ~EasyTcpClient();
 
-	void InitSocket();
+	void InitSocket(
+		int sendSize = SEND_BUFF_SIZE,
+		int recvSize = RECV_BUFF_SIZE);
 	int Connect(const char* ip, unsigned short port);
 	void Close();
 	bool OnRun();
 	bool IsRun() { return _isConnected; }
+	int SendData(const char* data, int len);
 	int SendData(const DataHeaderPtr& header);
 	int RecvData();
 	virtual void OnNetMsg(netmsg_DataHeader* header) = 0;

@@ -21,9 +21,9 @@ void CELLTaskServer::Start()
 
 void CELLTaskServer::Close()
 {
-	CELLLog::Info("CELLTaskServer[%d]::Close() 1\n", serverID);
+	CELLLog_Info("CELLTaskServer[%d]::Close() 1", serverID);
 	_thread.Close();
-	CELLLog::Info("CELLTaskServer[%d]::Close() 2\n", serverID);
+	CELLLog_Info("CELLTaskServer[%d]::Close() 2", serverID);
 }
 
 void CELLTaskServer::AddTask(CELLTask task)
@@ -68,5 +68,5 @@ void CELLTaskServer::OnRun(CELLThread* pThread)
 	}
 	_tasksBuf.clear();
 
-	CELLLog::Info("CELLTaskServer[%d]::OnRun() exit\n", serverID);
+	CELLLog_Info("CELLTaskServer[%d]::OnRun() exit", serverID);
 }

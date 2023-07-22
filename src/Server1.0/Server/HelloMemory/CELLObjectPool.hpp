@@ -86,7 +86,7 @@ public:
 			pReturn->nRef = 1;
 		}
 
-		xPrintf("alloc obj memory : %llx, id = %d, size = %d\n", pReturn, pReturn->nID, size);
+		xPrintf("alloc obj memory : %llx, id = %d, size = %d", pReturn, pReturn->nID, size);
 		return ((char*)pReturn + sizeof(NodeHeader));
 	}
 
@@ -96,7 +96,7 @@ public:
 		assert(pBlock->nRef == 1);
 
 
-		xPrintf("free obj memory : %llx, id = %d\n", pBlock, pBlock->nID);
+		xPrintf("free obj memory : %llx, id = %d", pBlock, pBlock->nID);
 
 		if (pBlock->bPool)
 		{

@@ -17,6 +17,7 @@ class _X_UTILITY_API_ CELLClient : public ObjectPoolBase<CELLClient, 10000>
 {
 public:
 	SOCKET sockfd();
+	int SendData(const char* data, int len);
 	int SendData(const DataHeaderPtr& header);
 	int RecvData();
 	int SendDataImmediately();
@@ -28,7 +29,10 @@ public:
 	void pop_front_msg();
 	bool NeedWrite();
 
-	CELLClient(SOCKET sockfd = INVALID_SOCKET);
+	CELLClient(
+		SOCKET sockfd = INVALID_SOCKET,
+		int sendSize = SEND_BUFF_SIZE,
+		int recvSize = RECV_BUFF_SIZE);
 	~CELLClient();
 
 private:

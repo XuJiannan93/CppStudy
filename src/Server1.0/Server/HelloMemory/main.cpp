@@ -29,12 +29,12 @@ public:
 ClassA::ClassA(int n)
 {
 	num = n;
-	printf("Class(%d)\n", n);
+	printf("Class(%d)", n);
 }
 
 ClassA::~ClassA()
 {
-	printf("~Class()\n");
+	printf("~Class()");
 }
 
 void workFun(int index)

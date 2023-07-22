@@ -14,23 +14,23 @@ EasyTcpClient::~EasyTcpClient()
 	Close();
 }
 
-void EasyTcpClient::InitSocket()
+void EasyTcpClient::InitSocket(int sendSize, int recvSize)
 {
 	CELLNetwork::Init();
 
 	if (_pClient.get())
 	{
-		CELLLog::Info("close old connection. \n");
+		CELLLog_Info("close old connection. ");
 		Close();
 	}
 
 	SOCKET _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (_sock == INVALID_SOCKET)
-		CELLLog::Info("[ERROR]create socket failed.\n");
+		CELLLog_Info("[ERROR]create socket failed.");
 	else
 	{
-		_pClient = std::shared_ptr<CELLClient>(new CELLClient(_sock));
+		_pClient = std::shared_ptr<CELLClient>(new CELLClient(_sock, sendSize, recvSize));
 	}
 }
 
@@ -52,7 +52,7 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 	if (ret == SOCKET_ERROR)
 	{
 		_isConnected = false;
-		CELLLog::Info("[ERROR]connect socket failed.\n");
+		CELLLog_Error("connect socket failed.");
 	}
 	else
 	{
@@ -64,7 +64,7 @@ int EasyTcpClient::Connect(const char* ip, unsigned short port)
 
 void EasyTcpClient::Close()
 {
-	CELLLog::Info("sock closed!\n");
+	CELLLog_Info("sock closed!");
 	_isConnected = false;
 
 	if (_pClient.get() == nullptr) return;
@@ -97,7 +97,7 @@ bool EasyTcpClient::OnRun()
 
 	if (ret < 0)
 	{
-		CELLLog::Info("[SELECT ERROR]selcet task end...\n");
+		CELLLog_Error("selcet[SELECT] task end...");
 		Close();
 		return false;
 	}
@@ -106,7 +106,7 @@ bool EasyTcpClient::OnRun()
 	{
 		if (RecvData() == SOCKET_ERROR)
 		{
-			CELLLog::Info("[READ ERROR]selcet task end...\n");
+			CELLLog_Error("selcet[READ] task end...");
 			Close();
 			return false;
 		}
@@ -116,13 +116,21 @@ bool EasyTcpClient::OnRun()
 	{
 		if (_pClient->SendDataImmediately() == SOCKET_ERROR)
 		{
-			CELLLog::Info("[WRITE ERROR]selcet task end...\n");
+			CELLLog_Error("selcet[WRITE] task end...");
 			Close();
 			return false;
 		}
 	}
 
 	return true;
+}
+
+int EasyTcpClient::SendData(const char* data, int len)
+{
+	if (IsRun() == false)
+		return SOCKET_ERROR;
+
+	return _pClient->SendData(data, len);
 }
 
 int EasyTcpClient::SendData(const DataHeaderPtr& header)
@@ -136,6 +144,9 @@ int EasyTcpClient::SendData(const DataHeaderPtr& header)
 
 int EasyTcpClient::RecvData()
 {
+	if (IsRun() == false)
+		return SOCKET_ERROR;
+
 	int len = _pClient->RecvData();
 
 	if (len > 0)
@@ -147,6 +158,6 @@ int EasyTcpClient::RecvData()
 		}
 	}
 
-	return 0;
+	return len;
 }
 

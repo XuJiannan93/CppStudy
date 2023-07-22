@@ -69,3 +69,9 @@ bool CELLThread::isRun()
 {
 	return _isRun;
 }
+
+void CELLThread::Sleep(time_t dt)
+{
+	std::chrono::milliseconds t(dt);
+	std::this_thread::sleep_for(t);
+}

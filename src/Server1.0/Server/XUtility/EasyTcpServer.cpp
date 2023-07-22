@@ -22,17 +22,17 @@ SOCKET EasyTcpServer::InitSocket()
 
 	if (_sock != INVALID_SOCKET)
 	{
-		CELLLog::Info("close old connection. \n");
+		CELLLog_Info("close old connection. ");
 		Close();
 	}
 
 	_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (_sock == INVALID_SOCKET)
 	{
-		CELLLog::Info("[ERROR]create socket failed.\n");
+		CELLLog_Info("[ERROR]create socket failed.");
 	}
 	else
-		CELLLog::Info("create socket succeed.\n");
+		CELLLog_Info("create socket succeed.");
 
 	return _sock;
 }
@@ -64,9 +64,9 @@ int EasyTcpServer::Bind(const char* ip, unsigned short port)
 	}
 	int ret = bind(_sock, (sockaddr*)&_sin, sizeof(sockaddr_in));
 	if (ret == SOCKET_ERROR)
-		CELLLog::Info("[ERROR]bind[%d] socket failed.\n", port);
+		CELLLog_Info("[ERROR]bind[%d] socket failed.", port);
 	else
-		CELLLog::Info("bind socket succeed.\n");
+		CELLLog_Info("bind socket succeed.");
 	return ret;
 }
 
@@ -74,9 +74,9 @@ int EasyTcpServer::Listen(int n)
 {
 	int ret = listen(_sock, n);
 	if (ret == SOCKET_ERROR)
-		CELLLog::Info("[ERROR]listen[%d] socket failed.\n", (int)_sock);
+		CELLLog_Info("[ERROR]listen[%d] socket failed.", (int)_sock);
 	else
-		CELLLog::Info("listen socket[%d] succeed.\n", (int)_sock);
+		CELLLog_Info("listen socket[%d] succeed.", (int)_sock);
 	return ret;
 }
 
@@ -104,7 +104,7 @@ SOCKET EasyTcpServer::Accept()
 	client = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
 
 	if (client == INVALID_SOCKET)
-		CELLLog::Info("[ERROR]accept socket failed.\n");
+		CELLLog_Info("[ERROR]accept socket failed.");
 	else
 	{
 		//ClientSocketPtr ptr = std::make_shared<ClientSocket>(client);
@@ -151,7 +151,7 @@ void EasyTcpServer::OnRun(CELLThread* pThread)
 		int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
 		if (ret < 0)
 		{
-			CELLLog::Info("select task end. \n");
+			CELLLog_Info("select task end. ");
 			pThread->Exit();
 			break;
 		}
@@ -178,7 +178,7 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 
 	if (t1 >= 1.0)
 	{
-		CELLLog::Info("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>\n", (int)_CELLServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), (int)(_msgCount / t1));
+		CELLLog_Info("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>", (int)_CELLServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), (int)(_msgCount / t1));
 		_recvCount = 0;
 		_msgCount = 0;
 		_tTime.Update();
@@ -207,7 +207,7 @@ void EasyTcpServer::OnNetRecv(CELLClientPtr& pClient)
 
 void EasyTcpServer::Close()
 {
-	CELLLog::Info("EasyTcpServer::Close() 1\n");
+	CELLLog_Info("EasyTcpServer::Close() 1");
 	_thread.Close();
 
 	if (_sock == INVALID_SOCKET) return;
@@ -220,5 +220,5 @@ void EasyTcpServer::Close()
 
 	_sock = INVALID_SOCKET;
 
-	CELLLog::Info("EasyTcpServer::Close() 2\n");
+	CELLLog_Info("EasyTcpServer::Close() 2");
 }

@@ -1,5 +1,6 @@
 #include "CELLBuffer.h"
 #include "MessageHeader.hpp"
+#include "CELLLog.h"
 
 CELLBuffer::CELLBuffer(int size)
 {
@@ -84,6 +85,11 @@ int CELLBuffer::Read4Socket(SOCKET sockfd)
 
 	char* szRecv = _pBuf + _nLast;
 	int len = (int)recv(sockfd, szRecv, _nSize - _nLast, 0);
+	if (len <= 0)
+	{
+		CELLLog_Info("CELLBuffer::Read4Socke(), len = %d", len);
+		return len;
+	}
 	_nLast += len;
 	return len;
 }

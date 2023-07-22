@@ -5,6 +5,8 @@
 
 enum CMD
 {
+	CMD_ERROR,
+
 	CMD_LOGIN,
 	CMD_LOGIN_RESULT,
 	CMD_LOGOUT,
@@ -12,7 +14,6 @@ enum CMD
 	CMD_NEW_USER_JOIN,
 	CMD_C2S_HEART_BEAT,
 	CMD_S2C_HEART_BEAT,
-	CMD_ERROR,
 };
 
 struct netmsg_DataHeader

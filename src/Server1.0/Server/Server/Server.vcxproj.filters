@@ -13,10 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\XUtility">
+      <UniqueIdentifier>{f92415d1-6b7d-49e7-bec2-fc8f89490dd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test.cpp">
+    <ClCompile Include="client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MyClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLNetwork.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\EasyTcpClient.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLStream.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLMsgStream.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

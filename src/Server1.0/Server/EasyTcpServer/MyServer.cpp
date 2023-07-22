@@ -1,15 +1,16 @@
 #include "MyServer.h"
+#include "CELLMsgStream.h"
 
 void MyServer::OnNetJoin(CELLClientPtr& pClient)
 {
 	EasyTcpServer::OnNetJoin(pClient);
-	//CELLLog::Info("client<%d> join\n", (int)pClient->sockfd());
+	//CELLLog_Info("client<%d> join", (int)pClient->sockfd());
 }
 
 void MyServer::OnNetLeave(CELLClientPtr& pClient)
 {
 	EasyTcpServer::OnNetLeave(pClient);
-	//CELLLog::Info("client<%d> leave\n", (int)pClient->sockfd());
+	//CELLLog_Info("client<%d> leave", (int)pClient->sockfd());
 }
 
 void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_DataHeader* header)
@@ -21,7 +22,7 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 	case CMD_LOGIN:
 	{
 		//Login* login = (Login*)header;
-		//CELLLog::Info("recv<%d> cmd len :login [%s][%s][%d] \n", (int)pClient->sockfd(), login->username, login->password, header->len);
+		//CELLLog_Info("recv<%d> cmd len :login [%s][%s][%d] ", (int)pClient->sockfd(), login->username, login->password, header->len);
 
 	/*	auto ret = std::make_shared<netmsg_LoginResult>();
 		pCELLServer->AddSendTask(pClient, (DataHeaderPtr&)ret);*/
@@ -34,11 +35,36 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 
 	case CMD_LOGOUT:
 	{
-		//Logout* logout = (Logout*)header;
-		//CELLLog::Info("recv<%d> cmd len :logout [%s][%d] \n", (int)_client, logout->username, header->len);
+		CELLReadStream r(header);
+		/*	r.ReadUint16();
+			r.GetNetCMD();*/
+		auto n1 = r.ReadInt8();
+		auto n2 = r.ReadInt16();
+		auto n3 = r.ReadInt32();
+		auto n4 = r.ReadDouble();
+		auto n5 = r.ReadFloat();
 
-	/*	LogoutResult ret;
-		pClient->SendData(&ret);*/
+		char arr1[32] = {};
+		auto len1 = r.ReadArrayChar(arr1, 32);
+		char arr2[32] = {};
+		auto len2 = r.ReadArrayChar(arr2, 32);
+		int arr3[10] = {};
+		auto len3 = r.ReadArrayInt32(arr3, 10);
+		//////////////////////////////////////////
+		CELLWriteStream s;
+		s.SetNetCMD(CMD_LOGOUT_RESULT);
+
+		s.WriteInt8(n1);
+		s.WriteInt16(n2);
+		s.WriteInt32(n3);
+		s.WriteDouble(n4);
+		s.WriteFloat(n5);
+
+		s.WriteArrayChar(arr1, len1);
+		s.WriteArrayChar(arr2, len2);
+		s.WriteArrayInt32(arr3, len3);
+		s.Finish();
+		pClient->SendData(s.data(), s.length());
 	}
 	break;
 
@@ -51,7 +77,7 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 	}
 
 	case CMD_ERROR:
-		CELLLog::Info("Recv Undefined Message! \n");
+		CELLLog::Error("Recv Undefined Message! ");
 		break;
 
 

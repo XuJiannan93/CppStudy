@@ -1,8 +1,9 @@
 #include "CELLClient.h"
 
-CELLClient::CELLClient(SOCKET sockfd)
-	:_sendBuf(SEND_BUFF_SIZE),
-	_recvBuf(RECV_BUFF_SIZE)
+CELLClient::CELLClient(
+	SOCKET sockfd, int sendSize, int recvSize)
+	:_sendBuf(sendSize),
+	_recvBuf(recvSize)
 {
 	_sockfd = sockfd;
 
@@ -34,7 +35,7 @@ bool CELLClient::CheckHeart(time_t dt)
 	if (_dtHeart < CLIENT_HEART_DEAD_TIME)
 		return false;
 
-	CELLLog::Info("CELLClient::CheckHeart() dead:%d, time:%d\n", (int)_sockfd, (int)_dtHeart);
+	CELLLog_Info("CELLClient::CheckHeart() dead:%d, time:%d", (int)_sockfd, (int)_dtHeart);
 
 	return true;
 }
@@ -50,10 +51,10 @@ bool CELLClient::CheckSend(time_t dt)
 	if (_dtSend < CLIENT_SEND_BUFFF_TIME)
 		return false;
 
-	//CELLLog::Info("CELLClient::CheckSend() time:%d\n", (int)_dtSend);
+	//CELLLog_Info("CELLClient::CheckSend() time:%d", (int)_dtSend);
 
 	if (SendDataImmediately() == SOCKET_ERROR)
-		CELLLog::Info("CELLClient::SendData failed\n");
+		CELLLog_Error("CELLClient::SendData failed");
 
 	return true;
 }
@@ -85,15 +86,16 @@ SOCKET CELLClient::sockfd()
 	return _sockfd;
 }
 
+int CELLClient::SendData(const char* data, int len)
+{
+	if (_sendBuf.Push(data, len))
+		return len;
+	return SOCKET_ERROR;
+}
+
 int CELLClient::SendData(const DataHeaderPtr& header)
 {
-	int nSendLen = header->len;
-	const char* pSendData = (const char*)header.get();
-
-	if (_sendBuf.Push(pSendData, nSendLen))
-		return nSendLen;
-
-	return SOCKET_ERROR;
+	return SendData((const char*)header.get(), header->len);
 }
 
 int CELLClient::RecvData()

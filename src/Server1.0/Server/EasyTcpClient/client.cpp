@@ -18,7 +18,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 		{
 			//client->Close();
 			g_bRun = false;
-			CELLLog::Info("exit the thread.\n");
+			CELLLog_Info("exit the thread.");
 			break;
 		}
 		//else if (strcmp(cmdbuf, "login") == 0)
@@ -36,7 +36,7 @@ void cmdThread(/*EasyTcpClient* client*/)
 		//}
 		else
 		{
-			CELLLog::Info("???\n");
+			CELLLog_Info("???");
 		}
 	}
 }
@@ -75,7 +75,7 @@ void sendThread(int id)
 		sum++;
 	}
 
-	CELLLog::Info("thread[%d] start,Connect sum [%d]\n", id, sum.load());
+	CELLLog_Info("thread[%d] start,Connect sum [%d]", id, sum.load());
 
 	readyCount++;
 	while (readyCount < tCount)
@@ -117,7 +117,7 @@ void sendThread(int id)
 		sum--;
 	}
 
-	CELLLog::Info("thread[%d] exit,Connect sum [%d]\n", id, sum.load());
+	CELLLog_Info("thread[%d] exit,Connect sum [%d]", id, sum.load());
 
 
 }
@@ -125,7 +125,7 @@ void sendThread(int id)
 
 int main()
 {
-	CELLLog::Instance().SetLogPath("../../bin/log/ClientLog.txt", "w");
+	CELLLog::Instance().Init("ClientLog", "w");
 
 	std::thread t1(cmdThread);
 	t1.detach();
@@ -144,14 +144,14 @@ int main()
 		auto t = tTime.GetElapsedSecond();
 		if (t >= 1.0)
 		{
-			CELLLog::Info("thread<%d>,clients<%d>,time<%lf>,send<%d>\n", tCount, cCount, t, (int)(sendCount.load() / t));
+			CELLLog_Info("thread<%d>,clients<%d>,time<%lf>,send<%d>", tCount, cCount, t, (int)(sendCount.load() / t));
 			tTime.Update();
 			sendCount = 0;
 		}
 		Sleep(1);
 	}
 
-	CELLLog::Info("client exit.\n");
+	CELLLog_Info("client exit.");
 	//getchar();
 
 	return 0;

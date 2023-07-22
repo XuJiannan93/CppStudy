@@ -16,9 +16,9 @@ CELLServer::CELLServer(int id)
 
 CELLServer::~CELLServer()
 {
-	CELLLog::Info("CELLServer[%d]::~CELLServer() 1\n", _id);
+	CELLLog_Info("CELLServer[%d]::~CELLServer() 1", _id);
 	Close();
-	CELLLog::Info("CELLServer[%d]::~CELLServer() 2\n", _id);
+	CELLLog_Info("CELLServer[%d]::~CELLServer() 2", _id);
 }
 
 void CELLServer::SetEventObj(INetEvent* evt)
@@ -68,7 +68,8 @@ void CELLServer::OnRun(CELLThread* pThread)
 			continue;
 		}
 
-		FD_ZERO(&_fdWrite);
+		_CheckTime();
+
 		//FD_ZERO(&_fdExc);
 
 		if (_clients_changed)
@@ -89,27 +90,42 @@ void CELLServer::OnRun(CELLThread* pThread)
 			memcpy(&_fdRead, &_fdRead_bak, sizeof(fd_set));
 		}
 
-		memcpy(&_fdWrite, &_fdRead_bak, sizeof(fd_set));
+		bool bNeedWrite = false;
+		FD_ZERO(&_fdWrite);
+		for (auto iter : _clients)
+		{
+			if (iter.second->NeedWrite())
+			{
+				bNeedWrite = true;
+				FD_SET(iter.second->sockfd(), &_fdWrite);
+			}
+		}
+
+		//memcpy(&_fdWrite, &_fdRead_bak, sizeof(fd_set));
 		//memcpy(&_fdExc, &_fdRead_bak, sizeof(fd_set));
 
-		timeval t = { 0, 0 };
-		int ret = select(_maxSock + 1, &_fdRead, &_fdWrite, nullptr, &t);
+		timeval t = { 0, 1 };
+		int ret = 0;
+		if (bNeedWrite)
+			ret = select(_maxSock + 1, &_fdRead, &_fdWrite, nullptr, &t);
+		else
+			ret = select(_maxSock + 1, &_fdRead, nullptr, nullptr, &t);
+
 		if (ret < 0)
 		{
-			CELLLog::Info("select task end. \n");
+			CELLLog_Info("select task end. ");
 			pThread->Exit();
 			break;
 		}
-		/*	else if (ret == 0) continue;*/
+		else if (ret == 0) continue;
 
 		_ReadData(_fdRead);
 		_WriteData(_fdWrite);
 		//_WriteData(_fdExc);
 
-		_CheckTime();
 	}
 
-	CELLLog::Info("CELLServer[%d]::OnRun() exit\n", _id);
+	CELLLog_Info("CELLServer[%d]::OnRun() exit", _id);
 }
 
 void CELLServer::_OnClientLeave(CELLClientPtr pClient)
@@ -168,22 +184,31 @@ void CELLServer::_WriteData(fd_set& fdWrite)
 		}
 	}
 #else
-	std::vector<ClientSocketPtr> temp;
-	for (auto iter : _clients)
+	for (auto iter = _clients.begin(); iter != _clients.end();)
 	{
-		if (FD_ISSET(iter.second->sockfd(), &fdWrite))
+		if (iter->second->NeetWrite() == false)
 		{
-			if (iter->second->SendDataImmediately() == -1)
-			{
-				_OnClientLeave(iter->second);
-				temp.push_back(iter.second);
-			}
+			iter++;
+			continue;
 		}
-	}
-	for (auto pClient : temp)
-	{
-		_clients.erase(pClient->sockfd());
-	}
+
+		if (FD_ISSET(iter->second->sockfd(), &fdWrite) == false)
+		{
+			iter++;
+			continue;
+		}
+
+		if (iter->second->SendDataImmediately() == -1)
+		{
+			_OnClientLeave(iter->second);
+			auto iterOld = iter;
+			iter++;
+			_clients.erase(iterOld);
+			continue;
+}
+
+		iter++;
+}
 #endif
 }
 
@@ -235,12 +260,12 @@ void CELLServer::OnNetMsg(CELLClientPtr& pClient, netmsg_DataHeader* header)
 void CELLServer::Close()
 {
 
-	CELLLog::Info("CELLServer[%d]::Close() 1\n", _id);
+	CELLLog_Info("CELLServer[%d]::Close() 1", _id);
 
 	_taskServer.Close();
 	_thread.Close();
 
-	CELLLog::Info("CELLServer[%d]::Close() 2\n", _id);
+	CELLLog_Info("CELLServer[%d]::Close() 2", _id);
 }
 
 void CELLServer::addClient(CELLClientPtr& pClient)
@@ -255,6 +280,6 @@ void CELLServer::AddSendTask(CELLClientPtr& pClient, DataHeaderPtr& header)
 		if (pClient->SendData(header) == SOCKET_ERROR)
 		{
 			//send buf full, msg not send
-			CELLLog::Info("socket[%d] send full\n", (int)pClient->sockfd());
+			CELLLog_Info("socket[%d] send full", (int)pClient->sockfd());
 		}});
 }

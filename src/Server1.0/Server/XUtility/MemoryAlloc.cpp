@@ -17,7 +17,7 @@ MemoryAlloc::~MemoryAlloc()
 
 void MemoryAlloc::InitMemory(MemoryAlloc* mem)
 {
-	xPrintf("MemoryAlloc::InitMemory[%d]\n", mem->_nSize);
+	//xPrintf("MemoryAlloc::InitMemory[%d]", mem->_nSize);
 
 	if (mem->_pBuf != nullptr) return;
 
@@ -60,7 +60,7 @@ void* MemoryAlloc::memory_alloc(size_t size)
 		pReturn = (MemoryBlock*)malloc(size + sizeof(MemoryBlock));
 		if (pReturn == nullptr)
 		{
-			xPrintf("MemoryAlloc::malloc failed: [%llx], size[%d]\n", pReturn, size);
+			//xPrintf("MemoryAlloc::malloc failed: [%llx], size[%d]", pReturn, size);
 			return nullptr;
 		}
 
@@ -70,7 +70,7 @@ void* MemoryAlloc::memory_alloc(size_t size)
 		pReturn->pAlloc = nullptr;
 		pReturn->pNext = nullptr;
 
-		xPrintf("MemoryAlloc::mem_alloc: [%llx], size[%d]\n", pReturn, size);
+		//xPrintf("MemoryAlloc::mem_alloc: [%llx], size[%d]", pReturn, size);
 	}
 	else
 	{
@@ -80,14 +80,14 @@ void* MemoryAlloc::memory_alloc(size_t size)
 		pReturn->nRef = 1;
 	}
 
-	xPrintf("MemoryAlloc::mem_alloc: [%llx] id=%d, size=%d\n", pReturn, pReturn->nID, size);
+	//xPrintf("MemoryAlloc::mem_alloc: [%llx] id=%d, size=%d", pReturn, pReturn->nID, size);
 	return (char*)pReturn + sizeof(MemoryBlock);
 }
 
 void MemoryAlloc::memory_free(void* pMem)
 {
 	MemoryBlock* pBlock = (MemoryBlock*)((char*)pMem - sizeof(MemoryBlock));
-	//xCELLLog::Info("MemoryAlloc::mem_free: [%llx] id=%d\n", pBlock, pBlock->nID);
+	//xCELLLog_Info("MemoryAlloc::mem_free: [%llx] id=%d", pBlock, pBlock->nID);
 	assert(pBlock->nRef == 1);
 
 	if (pBlock->bPool == false)
