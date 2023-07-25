@@ -7,10 +7,13 @@ CELLServer::CELLServer(int id)
 	_pNetEvent = nullptr;
 	_taskServer.serverID = id;
 	_maxSock = -1;
-	FD_ZERO(&_fdRead);
-	FD_ZERO(&_fdWrite);
+	//FD_ZERO(&_fdRead);
+	//FD_ZERO(&_fdWrite);
 	//FD_ZERO(&_fdExc);
-	FD_ZERO(&_fdRead_bak);
+	//FD_ZERO(&_fdRead_bak);
+	_fdRead.Zero();
+	_fdWrite.Zero();
+	_fdRead_bak.Zero();
 	_old_time = CELLTime::GetNowInMilliSec();
 }
 
@@ -60,69 +63,22 @@ void CELLServer::OnRun(CELLThread* pThread)
 
 		if (_clients.empty())
 		{
-			std::chrono::milliseconds t(1);
-			std::this_thread::sleep_for(t);
-
+			CELLThread::Sleep(1);
 			_old_time = CELLTime::GetNowInMilliSec();
 
 			continue;
 		}
 
 		_CheckTime();
-
-		//FD_ZERO(&_fdExc);
-
-		if (_clients_changed)
+		if (_DoSelect())
 		{
-			_clients_changed = false;
-			FD_ZERO(&_fdRead);
-			_maxSock = _clients.begin()->second->sockfd();
-			for (auto iter : _clients)
-			{
-				FD_SET(iter.second->sockfd(), &_fdRead);
-				if (_maxSock < iter.second->sockfd())
-					_maxSock = iter.second->sockfd();
-				memcpy(&_fdRead_bak, &_fdRead, sizeof(fd_set));
-			}
-		}
-		else
-		{
-			memcpy(&_fdRead, &_fdRead_bak, sizeof(fd_set));
+			_DoMsg();
+			continue;
 		}
 
-		bool bNeedWrite = false;
-		FD_ZERO(&_fdWrite);
-		for (auto iter : _clients)
-		{
-			if (iter.second->NeedWrite())
-			{
-				bNeedWrite = true;
-				FD_SET(iter.second->sockfd(), &_fdWrite);
-			}
-		}
-
-		//memcpy(&_fdWrite, &_fdRead_bak, sizeof(fd_set));
-		//memcpy(&_fdExc, &_fdRead_bak, sizeof(fd_set));
-
-		timeval t = { 0, 1 };
-		int ret = 0;
-		if (bNeedWrite)
-			ret = select(_maxSock + 1, &_fdRead, &_fdWrite, nullptr, &t);
-		else
-			ret = select(_maxSock + 1, &_fdRead, nullptr, nullptr, &t);
-
-		if (ret < 0)
-		{
-			CELLLog_Info("select task end. ");
-			pThread->Exit();
-			break;
-		}
-		else if (ret == 0) continue;
-
-		_ReadData(_fdRead);
-		_WriteData(_fdWrite);
-		//_WriteData(_fdExc);
-
+		_DoMsg();
+		pThread->Exit();
+		break;
 	}
 
 	CELLLog_Info("CELLServer[%d]::OnRun() exit", _id);
@@ -135,14 +91,86 @@ void CELLServer::_OnClientLeave(CELLClientPtr pClient)
 	_clients_changed = true;
 }
 
-void CELLServer::_ReadData(fd_set& fdRead)
+bool CELLServer::_DoSelect()
+{
+	if (_clients_changed)
+	{
+		_clients_changed = false;
+		//FD_ZERO(&_fdRead);
+		_fdRead.Zero();
+		_maxSock = _clients.begin()->second->sockfd();
+		for (auto iter : _clients)
+		{
+			//FD_SET(iter.second->sockfd(), &_fdRead);
+			_fdRead.Set(iter.second->sockfd());
+			if (_maxSock < iter.second->sockfd())
+				_maxSock = iter.second->sockfd();
+			//memcpy(&_fdRead_bak, _fdRead.Get(), sizeof(fd_set));
+			_fdRead_bak.Copy(_fdRead);
+		}
+	}
+	else
+	{
+		//memcpy(&_fdRead, _fdRead_bak.Get(), sizeof(fd_set));
+		_fdRead.Copy(_fdRead_bak);
+	}
+
+	bool bNeedWrite = false;
+	//FD_ZERO(&_fdWrite);
+	_fdWrite.Zero();
+	for (auto iter : _clients)
+	{
+		if (iter.second->NeedWrite())
+		{
+			bNeedWrite = true;
+			//FD_SET(iter.second->sockfd(), &_fdWrite);
+			_fdWrite.Set(iter.second->sockfd());
+		}
+	}
+
+	timeval t = { 0, 1 };
+	int ret = 0;
+	if (bNeedWrite)
+		ret = select(_maxSock + 1, _fdRead.Get(), _fdWrite.Get(), nullptr, &t);
+	else
+		ret = select(_maxSock + 1, _fdRead.Get(), nullptr, nullptr, &t);
+
+	if (ret < 0)
+	{
+		CELLLog_Info("select task end. ");
+		return false;
+	}
+	else if (ret == 0) return true;
+
+	_ReadData();
+	_WriteData();
+	//_WriteData(_fdExc);
+
+	return true;
+}
+
+void CELLServer::_DoMsg()
+{
+	for (auto itr : _clients)
+	{
+		auto client = itr.second;
+		while (client->HasMsg())
+		{
+			OnNetMsg(client, client->front_msg());
+			client->pop_front_msg();
+		}
+	}
+}
+
+void CELLServer::_ReadData()
 {
 #ifdef _WIN32
-	for (int n = 0; n < fdRead.fd_count; n++)
+	auto pfdset = _fdRead.Get();
+	for (int n = 0; n < pfdset->fd_count; n++)
 	{
-		auto iter = _clients.find(fdRead.fd_array[n]);
+		auto iter = _clients.find(pfdset->fd_array[n]);
 
-		if (RecvData(iter->second) == -1)
+		if (RecvData(iter->second) == SOCKET_ERROR)
 		{
 			_OnClientLeave(iter->second);
 			_clients.erase(iter);
@@ -152,9 +180,10 @@ void CELLServer::_ReadData(fd_set& fdRead)
 	std::vector<ClientSocketPtr> temp;
 	for (auto iter : _clients)
 	{
-		if (FD_ISSET(iter.second->sockfd(), &fdRead))
+		//if (FD_ISSET(iter.second->sockfd(), &fdRead))
+		if (_fdRead.IsSet(iter.second->sockfd()))
 		{
-			if (RecvData(iter.second) == -1)
+			if (RecvData(iter.second) == SOCKET_ERROR)
 			{
 				_OnClientLeave(iter->second);
 				temp.push_back(iter.second);
@@ -168,15 +197,16 @@ void CELLServer::_ReadData(fd_set& fdRead)
 #endif
 }
 
-void CELLServer::_WriteData(fd_set& fdWrite)
+void CELLServer::_WriteData()
 {
 #ifdef _WIN32
-	for (int n = 0; n < fdWrite.fd_count; n++)
+	auto pfdset = _fdWrite.Get();
+	for (int n = 0; n < pfdset->fd_count; n++)
 	{
-		auto iter = _clients.find(fdWrite.fd_array[n]);
+		auto iter = _clients.find(pfdset->fd_array[n]);
 		if (iter != _clients.end())
 		{
-			if (iter->second->SendDataImmediately() == -1)
+			if (iter->second->SendDataImmediately() == SOCKET_ERROR)
 			{
 				_OnClientLeave(iter->second);
 				_clients.erase(iter);
@@ -192,23 +222,24 @@ void CELLServer::_WriteData(fd_set& fdWrite)
 			continue;
 		}
 
-		if (FD_ISSET(iter->second->sockfd(), &fdWrite) == false)
+		//if (FD_ISSET(iter->second->sockfd(), &fdWrite) == false)
+		if (_fdWrite.IsSet(iter->second->sockfd()) == false)
 		{
 			iter++;
 			continue;
 		}
 
-		if (iter->second->SendDataImmediately() == -1)
+		if (iter->second->SendDataImmediately() == SOCKET_ERROR)
 		{
 			_OnClientLeave(iter->second);
 			auto iterOld = iter;
 			iter++;
 			_clients.erase(iterOld);
 			continue;
-}
+		}
 
 		iter++;
-}
+	}
 #endif
 }
 
@@ -238,18 +269,8 @@ void CELLServer::_CheckTime()
 int CELLServer::RecvData(CELLClientPtr client)
 {
 	int len = client->RecvData();
-
-	if (len <= 0) return -1;
-
 	_pNetEvent->OnNetRecv(client);
-
-	while (client->HasMsg())
-	{
-		OnNetMsg(client, client->front_msg());
-		client->pop_front_msg();
-	}
-
-	return 0;
+	return len;
 }
 
 void CELLServer::OnNetMsg(CELLClientPtr& pClient, netmsg_DataHeader* header)

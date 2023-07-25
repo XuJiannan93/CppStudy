@@ -40,9 +40,6 @@
     <Filter Include="源文件\CELLNet\Task">
       <UniqueIdentifier>{15218f88-eddd-452e-be60-ee48d144b1bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Common">
-      <UniqueIdentifier>{d5468dbb-b5e5-485c-8a45-6c41e9956ee3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XPrintf.h">
@@ -114,9 +111,6 @@
     <ClInclude Include="CELLConfig.h">
       <Filter>头文件\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\depends\includes\Singleton.h">
-      <Filter>头文件\Common</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CELLSemaphore.cpp">
@@ -175,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="CELLConfig.cpp">
       <Filter>源文件\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLFDSet.h">
+      <Filter>头文件\CELLNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CELLFDSet.cpp">
+      <Filter>源文件\CELLNet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

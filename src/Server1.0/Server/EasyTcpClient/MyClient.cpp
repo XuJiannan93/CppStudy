@@ -1,4 +1,11 @@
 #include "MyClient.h"
+#include "CELLConfig.h"
+
+MyClient::MyClient(int id)
+{
+	_id = id;
+	_bCheckMsgID = CELLConfig::Instance().HasKey("-checkMsgID");
+}
 
 void MyClient::OnNetMsg(netmsg_DataHeader* header)
 {
@@ -8,7 +15,15 @@ void MyClient::OnNetMsg(netmsg_DataHeader* header)
 	case CMD_LOGIN_RESULT:
 	{
 		//netmsg_LoginResult* rst = (netmsg_LoginResult*)header;
-		CELLLog_Info("recv<%d> cmd[LOGIN] len[%d] ", _pClient->sockfd(), header->len);
+		if (_bCheckMsgID)
+		{
+			if (header->msgID != _nRecvMsgID)
+			{
+				CELLLog_Error("MyClient::OnNetMsg() recv msg id<%d>, expect msg id<%d>", header->msgID, _nRecvMsgID);
+			}
+			++_nRecvMsgID;
+		}
+		//CELLLog_Info("recv<%d> cmd[LOGIN] len[%d] ", _pClient->sockfd(), header->len);
 	}
 	break;
 
@@ -42,5 +57,34 @@ void MyClient::OnNetMsg(netmsg_DataHeader* header)
 	}
 	break;
 	}
+}
 
+int MyClient::SendTest(netmsg_Login* header)
+{
+	if (_nSendCount == 0)
+		return 0;
+
+	auto login = std::make_shared<netmsg_Login>();
+	login->msgID = _nSendMsgID;
+
+	int ret = SendData(login);
+	if (ret == SOCKET_ERROR)
+		return ret;
+
+	_nSendMsgID++;
+	_nSendCount--;
+
+	return ret;
+}
+
+bool MyClient::CheckSend(time_t dt)
+{
+	_tRestTime += dt;
+	if (_tRestTime < nSendSleep)
+		return _nSendCount > 0;
+
+	_tRestTime -= nSendSleep;
+	_nSendCount = nMsg;
+
+	return _nSendCount > 0;
 }

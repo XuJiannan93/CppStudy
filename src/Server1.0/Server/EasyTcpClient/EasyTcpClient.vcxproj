@@ -177,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="..\depends\CellNet\include\CELLConfig.h" />
     <ClInclude Include="..\depends\CellNet\include\CELLNetwork.h" />
+    <ClInclude Include="..\depends\CellNet\include\CELLTime.h" />
     <ClInclude Include="..\depends\CellNet\include\EasyTcpClient.h" />
     <ClInclude Include="..\depends\includes\Singleton.h" />
     <ClInclude Include="MyClient.h" />

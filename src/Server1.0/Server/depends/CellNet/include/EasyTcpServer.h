@@ -12,6 +12,7 @@
 #include "CELLServer.h"
 #include "INetEvent.hpp"
 #include "CELLThread.h"
+#include "CELLFDSet.h"
 
 //#define _CELL_SERVER_THREAD_COUNT 4
 
@@ -38,19 +39,23 @@ private:
 	void OnRun(CELLThread* pThread);
 	virtual void time4msg(/*SOCKET client, DataHeader* header*/);
 
-private:
-	SOCKET _sock;
-	char _szRecv[RECV_BUFF_SIZE] = {};
-	//std::vector<ClientSocketPtr> _clients;
-	std::vector<CELLServerPtr> _CELLServers;
-	CELLTimestamp _tTime;
-	std::mutex _mutex;
-	CELLThread _thread;
-
 protected:
 	std::atomic_int _msgCount;
 	std::atomic_int _recvCount;
 	std::atomic_int _clientCount;
+
+private:
+	SOCKET _sock;
+	char _szRecv[RECV_BUFF_SIZE] = {};
+	CELLFDSet fdRead;
+	//std::vector<ClientSocketPtr> _clients;
+	std::vector<CELLServerPtr> _cellServers;
+	CELLTimestamp _tTime;
+	std::mutex _mutex;
+	CELLThread _thread;
+	int _nSendBufSize;
+	int _nRecvBufSize;
+	int _nMaxClient;
 
 };
 

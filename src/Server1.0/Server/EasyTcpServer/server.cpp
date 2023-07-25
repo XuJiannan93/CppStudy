@@ -63,7 +63,6 @@ int main(int argc, char* args[])
 	const char* strIP = CELLConfig::Instance().GetString("strIP", "any");
 	uint16_t nPort = CELLConfig::Instance().GetInt("nPort", 4567);
 	uint16_t nThread = CELLConfig::Instance().GetInt("nThread", 4);
-	uint16_t nClient = CELLConfig::Instance().GetInt("nClient", 1);
 
 	std::string path = CELLConfig::Instance().GetExePath();
 	std::string exe = ".exe";
@@ -86,7 +85,7 @@ int main(int argc, char* args[])
 	auto server = std::make_shared<MyServer>();
 	server->InitSocket();
 	server->Bind(strIP, nPort);
-	server->Listen(5);
+	server->Listen(64);
 	server->Start(nThread);
 
 	//std::thread t(cmdThread);
@@ -98,7 +97,6 @@ int main(int argc, char* args[])
 		if (strcmp(cmdbuf, "exit") == 0)
 		{
 			server->Close();
-			CELLLog_Info("exit the thread.");
 			break;
 		}
 		else
@@ -106,6 +104,7 @@ int main(int argc, char* args[])
 			CELLLog_Info("???");
 		}
 	}
+	CELLLog_Info("exit");
 
 	return 0;
 }

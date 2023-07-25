@@ -2,13 +2,18 @@
 
 #include "EasyTcpServer.h"
 #include "CELLNetwork.h"
+#include "CELLConfig.h"
 
 EasyTcpServer::EasyTcpServer()
 {
 	_sock = INVALID_SOCKET;
+	fdRead.Zero();
 	_recvCount = 0;
 	_clientCount = 0;
 	_msgCount = 0;
+	_nSendBufSize = CELLConfig::Instance().GetInt("nSendBufSize", SEND_BUFF_SIZE);
+	_nRecvBufSize = CELLConfig::Instance().GetInt("nRecvBufSize", SEND_BUFF_SIZE);
+	_nMaxClient = CELLConfig::Instance().GetInt("nMaxClient", FD_SETSIZE);
 }
 
 EasyTcpServer::~EasyTcpServer()
@@ -29,10 +34,13 @@ SOCKET EasyTcpServer::InitSocket()
 	_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (_sock == INVALID_SOCKET)
 	{
-		CELLLog_Info("[ERROR]create socket failed.");
+		CELLLog_Error("create socket failed.");
 	}
 	else
+	{
+		CELLNetwork::Make_ReuseAddr(_sock);
 		CELLLog_Info("create socket succeed.");
+	}
 
 	return _sock;
 }
@@ -84,8 +92,8 @@ void EasyTcpServer::AddClientToCELLServer(CELLClientPtr& pclient)
 {
 	//_clients.push_back(pclient);
 
-	auto pMinServer = _CELLServers[0];
-	for (auto pCELLServer : _CELLServers)
+	auto pMinServer = _cellServers[0];
+	for (auto pCELLServer : _cellServers)
 	{
 		if (pMinServer->GetClientCount() > pCELLServer->GetClientCount())
 			pMinServer = pCELLServer;
@@ -104,12 +112,24 @@ SOCKET EasyTcpServer::Accept()
 	client = accept(_sock, (sockaddr*)&clientAddr, (socklen_t*)&nAddrLen);
 
 	if (client == INVALID_SOCKET)
-		CELLLog_Info("[ERROR]accept socket failed.");
+		CELLLog_Error("accept socket failed.");
 	else
 	{
-		//ClientSocketPtr ptr = std::make_shared<ClientSocket>(client);
-		std::shared_ptr<CELLClient> ptr(new CELLClient(client));
-		AddClientToCELLServer(ptr);
+		if (_clientCount < _nMaxClient)
+		{
+			std::shared_ptr<CELLClient> ptr(new CELLClient(client));
+			AddClientToCELLServer(ptr);
+		}
+		else
+		{
+#ifdef  _WIN32
+			closesocket(client);
+#else
+			close(client);
+#endif //  _WIN32
+
+			CELLLog_Warring("Accept too much client[%d/%d]", _clientCount.load(), _nMaxClient - 1);
+		}
 	}
 
 	return client;
@@ -122,7 +142,7 @@ void EasyTcpServer::Start(int nCELLServer)
 			for (int n = 0; n < nCELLServer; n++)
 			{
 				std::shared_ptr<CELLServer> ser(new CELLServer(n + 1));
-				_CELLServers.push_back(ser);
+				_cellServers.push_back(ser);
 				ser->SetEventObj(this);
 				ser->Start();
 			}
@@ -133,7 +153,7 @@ void EasyTcpServer::Start(int nCELLServer)
 		},
 		[this](CELLThread* pThread)
 		{
-			_CELLServers.clear();
+			_cellServers.clear();
 		});
 }
 
@@ -143,12 +163,13 @@ void EasyTcpServer::OnRun(CELLThread* pThread)
 	{
 		time4msg();
 
-		fd_set fdRead;
-		FD_ZERO(&fdRead);
-		FD_SET(_sock, &fdRead);
+		//FD_ZERO(&fdRead);
+		//FD_SET(_sock, &fdRead);
+		fdRead.Zero();
+		fdRead.Set(_sock);
 
 		timeval t = { 0, 0 };
-		int ret = select(_sock + 1, &fdRead, nullptr, nullptr, &t);
+		int ret = select(_sock + 1, fdRead.Get(), nullptr, nullptr, &t);
 		if (ret < 0)
 		{
 			CELLLog_Info("select task end. ");
@@ -156,9 +177,10 @@ void EasyTcpServer::OnRun(CELLThread* pThread)
 			break;
 		}
 
-		if (FD_ISSET(_sock, &fdRead))
+		if (fdRead.IsSet(_sock))
 		{
-			FD_CLR(_sock, &fdRead);
+			//FD_CLR(_sock, &fdRead);
+			//fdRead.Clear();
 			Accept();
 		}
 	}
@@ -178,7 +200,7 @@ void EasyTcpServer::time4msg(/*SOCKET _client, DataHeader* header*/)
 
 	if (t1 >= 1.0)
 	{
-		CELLLog_Info("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>", (int)_CELLServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), (int)(_msgCount / t1));
+		CELLLog_Info("thread<%d>,time<%f>,socket<%d>,client<%d>,recv<%d>,msg<%d>", (int)_cellServers.size(), t1, (int)_sock, _clientCount.load(), (int)(_recvCount / t1), _msgCount.load());
 		_recvCount = 0;
 		_msgCount = 0;
 		_tTime.Update();

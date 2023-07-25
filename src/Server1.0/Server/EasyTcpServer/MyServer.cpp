@@ -1,5 +1,14 @@
 #include "MyServer.h"
 #include "CELLMsgStream.h"
+#include "CELLConfig.h"
+#include "CELLLog.h"
+
+MyServer::MyServer()
+{
+	_bSendBack = CELLConfig::Instance().HasKey("-sendback");
+	_bSendFull = CELLConfig::Instance().HasKey("-sendfull");
+	_bCheckMsgID = CELLConfig::Instance().HasKey("-checkMsgID");
+}
 
 void MyServer::OnNetJoin(CELLClientPtr& pClient)
 {
@@ -27,9 +36,41 @@ void MyServer::OnNetMsg(CELLServer* pCELLServer, CELLClientPtr& pClient, netmsg_
 	/*	auto ret = std::make_shared<netmsg_LoginResult>();
 		pCELLServer->AddSendTask(pClient, (DataHeaderPtr&)ret);*/
 
+		//pClient->ResetDTHeard();
+		//auto ret = std::make_shared<netmsg_s2c_Heart>();
+		//pCELLServer->AddSendTask(pClient, (DataHeaderPtr&)ret);
+
 		pClient->ResetDTHeard();
-		auto ret = std::make_shared<netmsg_s2c_Heart>();
-		pCELLServer->AddSendTask(pClient, (DataHeaderPtr&)ret);
+		if (_bCheckMsgID)
+		{
+			if (header->msgID != pClient->nRecvMsgID)
+			{
+				CELLLog_Error("MyServer::OnNetMsg() recv msg id<%d>, expect msg id<%d>",
+					header->msgID, pClient->nRecvMsgID);
+			}
+			pClient->nRecvMsgID++;
+		}
+
+		if (_bSendBack)
+		{
+			auto ret = std::make_shared<netmsg_LoginResult>();
+			ret->msgID = pClient->nSendMsgID;
+			if (pClient->SendData(ret) == SOCKET_ERROR)
+			{
+				if (_bSendFull)
+				{
+					//发送缓冲区满了，消息没发出去，目前直接抛弃了
+					//客户端消息太多，需要考虑应对策略
+					//正常连接，业务客户端不会有这么多消息
+					//模拟并发测试时是否发送频率过高
+					CELLLog_Warring("<socket=%d> Send Full", pClient->sockfd());
+				}
+			}
+			else
+			{
+				pClient->nSendMsgID++;
+			}
+		}
 	}
 	break;
 

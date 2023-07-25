@@ -11,6 +11,7 @@ private:
 
 public:
 	static void Init();
+	static int Make_ReuseAddr(SOCKET fd);
 
 };
 

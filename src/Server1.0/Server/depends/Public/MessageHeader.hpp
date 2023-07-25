@@ -18,11 +18,13 @@ enum CMD
 
 struct netmsg_DataHeader
 {
+	int msgID;
 	short len;
 	short cmd;
 
 	netmsg_DataHeader()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_DataHeader);
 		cmd = CMD_ERROR;
 	}
@@ -32,6 +34,7 @@ struct netmsg_Login : public netmsg_DataHeader
 {
 	netmsg_Login()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_Login);
 		cmd = CMD_LOGIN;
 	}
@@ -45,6 +48,7 @@ struct netmsg_LoginResult : public netmsg_DataHeader
 {
 	netmsg_LoginResult()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_LoginResult);
 		cmd = CMD_LOGIN_RESULT;
 		result = 0;
@@ -57,6 +61,7 @@ struct netmsg_Logout : public netmsg_DataHeader
 {
 	netmsg_Logout()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_Logout);
 		cmd = CMD_LOGOUT;
 	}
@@ -67,6 +72,7 @@ struct netmsg_LogoutResult : public netmsg_DataHeader
 {
 	netmsg_LogoutResult()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_LogoutResult);
 		cmd = CMD_LOGOUT_RESULT;
 		result = 0;
@@ -78,6 +84,7 @@ struct netmsg_NewUserJoin : public netmsg_DataHeader
 {
 	netmsg_NewUserJoin()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_NewUserJoin);
 		cmd = CMD_NEW_USER_JOIN;
 		sock = 0;
@@ -90,6 +97,7 @@ struct netmsg_c2s_Heart : public netmsg_DataHeader
 {
 	netmsg_c2s_Heart()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_c2s_Heart);
 		cmd = CMD_C2S_HEART_BEAT;
 	}
@@ -99,6 +107,7 @@ struct netmsg_s2c_Heart : public netmsg_DataHeader
 {
 	netmsg_s2c_Heart()
 	{
+		msgID = 0;
 		len = sizeof(netmsg_s2c_Heart);
 		cmd = CMD_S2C_HEART_BEAT;
 	}

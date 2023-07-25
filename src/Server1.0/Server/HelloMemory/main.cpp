@@ -7,6 +7,7 @@
 #include "Alloctor.h"
 #include "CELLTimestamp.h"
 #include "ObjectPoolBase.hpp"
+#include "MessageHeader.hpp"
 
 using namespace std;
 
@@ -29,12 +30,12 @@ public:
 ClassA::ClassA(int n)
 {
 	num = n;
-	printf("Class(%d)", n);
+	printf("Class(%d)\n", n);
 }
 
 ClassA::~ClassA()
 {
-	printf("~Class()");
+	printf("~Class()\n");
 }
 
 void workFun(int index)
@@ -50,7 +51,7 @@ void workFun(int index)
 	for (size_t i = 0; i < nCount; i++)
 	{
 		//delete[] data[i];
-		printf("delete data[%d]", data[i]->num);
+		printf("delete data[%d]\n", data[i]->num);
 		ClassA::DestroyObject(data[i]);
 	}
 }
@@ -75,12 +76,27 @@ int main()
 	//delete a;
 
 	{
+		std::shared_ptr<ClassA> a = std::make_shared<ClassA>(5);
+	}
+
+	printf("****************************************\n");
+
+	{
 		std::shared_ptr<ClassA> b = std::make_shared<ClassA>(5);
 	}
+
+	printf("****************************************\n");
+
 	{
-		std::shared_ptr<ClassA> ptr1(new ClassA(6));
-		std::shared_ptr<ClassA> ptr2(new ClassA(7));
-		std::shared_ptr<ClassA> ptr3(new ClassA(8));
+		std::shared_ptr<ClassA> ptr1(new ClassA(5));
+		/*	std::shared_ptr<ClassA> ptr2(new ClassA(7));
+			std::shared_ptr<ClassA> ptr3(new ClassA(8));*/
+	}
+
+	printf("****************************************\n");
+
+	{
+		auto msg = std::make_shared<netmsg_Login>();
 	}
 
 	//ClassA* a1 = new ClassA(1);

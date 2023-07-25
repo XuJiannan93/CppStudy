@@ -72,9 +72,16 @@ int CELLBuffer::Write2Socket(SOCKET sockfd)
 	if (sockfd == INVALID_SOCKET) return 0;
 
 	int ret = send(sockfd, _pBuf, _nLast, 0);
-	_nLast = 0;
+	if (ret <= 0)
+		return SOCKET_ERROR;
+	if (ret == _nLast)
+		_nLast = 0;
+	else
+	{
+		_nLast -= ret;
+		memcpy(_pBuf, _pBuf + ret, _nLast);
+	}
 	_fullCount = 0;
-
 	return ret;
 }
 
@@ -88,7 +95,7 @@ int CELLBuffer::Read4Socket(SOCKET sockfd)
 	if (len <= 0)
 	{
 		CELLLog_Info("CELLBuffer::Read4Socke(), len = %d", len);
-		return len;
+		return SOCKET_ERROR;
 	}
 	_nLast += len;
 	return len;

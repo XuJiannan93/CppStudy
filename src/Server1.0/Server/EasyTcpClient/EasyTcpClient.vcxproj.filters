@@ -47,6 +47,9 @@
     <ClInclude Include="..\depends\CellNet\include\CELLConfig.h">
       <Filter>头文件\XUtility</Filter>
     </ClInclude>
+    <ClInclude Include="..\depends\CellNet\include\CELLTime.h">
+      <Filter>头文件\XUtility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="EasyTcpClient.bat">

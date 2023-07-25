@@ -2,11 +2,14 @@
 #define _CELL_HPP_
 
 #ifdef _WIN32
-#define FD_SETSIZE 1024
+
+#define FD_SETSIZE	65535 
 #define WIN32_LEAN_AND_MEAN
 #define _CRT_SECURE_NO_WARNINGS
+
 #include <Windows.h>
 #include <WinSock2.h>
+#pragma comment(lib,"ws2_32.lib")
 
 #ifndef socklen_t
 #define socklen_t int

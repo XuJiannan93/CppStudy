@@ -1,4 +1,5 @@
 ﻿#include "CELLNetwork.h"
+#include "CELLLog.h"
 
 CELLNetwork::CELLNetwork()
 {
@@ -25,4 +26,17 @@ CELLNetwork::~CELLNetwork()
 void CELLNetwork::Init()
 {
 	static CELLNetwork obj;
+}
+
+int CELLNetwork::Make_ReuseAddr(SOCKET fd)
+{
+	int flag = 1;
+	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&flag, sizeof(flag)) == SOCKET_ERROR)
+	{
+		CELLLog_Warring("setsockopt socket<%d> SO_REUSEADDR failed.", (int)fd);
+		return SOCKET_ERROR;
+	}
+
+	return 0;
+
 }

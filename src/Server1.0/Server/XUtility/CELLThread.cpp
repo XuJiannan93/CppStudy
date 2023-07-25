@@ -63,6 +63,7 @@ void CELLThread::OnWork()
 		_onDestroy(this);
 
 	_sem.Wakeup();
+	_isRun = false;
 }
 
 bool CELLThread::isRun()

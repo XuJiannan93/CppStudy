@@ -38,6 +38,10 @@ public:
 private:
 	void _ResetDTSend();
 
+public:
+	int nRecvMsgID = 1;
+	int nSendMsgID = 1;
+
 private:
 	SOCKET _sockfd;
 	CELLBuffer _recvBuf;

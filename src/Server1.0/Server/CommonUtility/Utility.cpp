@@ -6,7 +6,7 @@
 
 namespace util
 {
-	void static Sleep(time_t dt)
+	void _declspec(dllexport) Sleep(time_t dt)
 	{
 		std::chrono::milliseconds t(dt);
 		std::this_thread::sleep_for(t);

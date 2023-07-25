@@ -3,8 +3,10 @@
 
 EasyTcpClient::EasyTcpClient()
 {
-	FD_ZERO(&_fdRead);
-	FD_ZERO(&_fdWrite);
+	//FD_ZERO(&_fdRead);
+	//FD_ZERO(&_fdWrite);
+	_fdRead.Zero();
+	_fdWrite.Zero();
 
 	_isConnected = false;
 }
@@ -14,7 +16,7 @@ EasyTcpClient::~EasyTcpClient()
 	Close();
 }
 
-void EasyTcpClient::InitSocket(int sendSize, int recvSize)
+SOCKET EasyTcpClient::InitSocket(int sendSize, int recvSize)
 {
 	CELLNetwork::Init();
 
@@ -24,20 +26,26 @@ void EasyTcpClient::InitSocket(int sendSize, int recvSize)
 		Close();
 	}
 
-	SOCKET _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	if (_sock == INVALID_SOCKET)
-		CELLLog_Info("[ERROR]create socket failed.");
+	if (sock == INVALID_SOCKET)
+		CELLLog_Error("create socket failed.");
 	else
 	{
-		_pClient = std::shared_ptr<CELLClient>(new CELLClient(_sock, sendSize, recvSize));
+		CELLNetwork::Make_ReuseAddr(sock);
+		_pClient = std::shared_ptr<CELLClient>(new CELLClient(sock, sendSize, recvSize));
 	}
+
+	return sock;
 }
 
 int EasyTcpClient::Connect(const char* ip, unsigned short port)
 {
-	if (_pClient == NULL || _pClient.get() == nullptr)
-		InitSocket();
+	if (_pClient == NULL)
+	{
+		if (InitSocket() == INVALID_SOCKET)
+			return SOCKET_ERROR;
+	}
 
 	sockaddr_in _sin = {};
 	_sin.sin_family = AF_INET;
@@ -71,28 +79,32 @@ void EasyTcpClient::Close()
 	_pClient = NULL;
 }
 
-bool EasyTcpClient::OnRun()
+bool EasyTcpClient::OnRun(int microseconds)
 {
 	if (IsRun() == false)
 		return false;
 
 	SOCKET _sock = _pClient->sockfd();
 
-	FD_ZERO(&_fdRead);
-	FD_SET(_sock, &_fdRead);
+	//FD_ZERO(&_fdRead);
+	//FD_ZERO(&_fdWrite);
+	//FD_SET(_sock, &_fdRead);
 
-	FD_ZERO(&_fdWrite);
+	_fdRead.Zero();
+	_fdWrite.Zero();
+	_fdRead.Set(_sock);
 
-	timeval t = { 0, 1 };
+	timeval t = { 0, microseconds };
 	int ret = 0;
 	if (_pClient->NeedWrite())
 	{
-		FD_SET(_sock, &_fdWrite);
-		int ret = select(_sock + 1, &_fdRead, &_fdWrite, nullptr, &t);
+		//FD_SET(_sock, &_fdWrite);
+		_fdWrite.Set(_sock);
+		int ret = select(_sock + 1, _fdRead.Get(), _fdWrite.Get(), nullptr, &t);
 	}
 	else
 	{
-		int ret = select(_sock + 1, &_fdRead, nullptr, nullptr, &t);
+		int ret = select(_sock + 1, _fdRead.Get(), nullptr, nullptr, &t);
 	}
 
 	if (ret < 0)
@@ -102,7 +114,8 @@ bool EasyTcpClient::OnRun()
 		return false;
 	}
 
-	if (FD_ISSET(_sock, &_fdRead))
+	//if (FD_ISSET(_sock, &_fdRead))
+	if (_fdRead.IsSet(_sock))
 	{
 		if (RecvData() == SOCKET_ERROR)
 		{
@@ -112,7 +125,8 @@ bool EasyTcpClient::OnRun()
 		}
 	}
 
-	if (FD_ISSET(_sock, &_fdWrite))
+	//if (FD_ISSET(_sock, &_fdWrite))
+	if (_fdWrite.IsSet(_sock))
 	{
 		if (_pClient->SendDataImmediately() == SOCKET_ERROR)
 		{

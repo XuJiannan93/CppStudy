@@ -20,6 +20,7 @@
 
 #include "MessageHeader.hpp"
 #include "CELLClient.h"
+#include "CELLFDSet.h"
 
 #ifndef  RECV_BUFF_SIZE
 #define RECV_BUFF_SIZE 10240
@@ -32,12 +33,12 @@ public:
 	EasyTcpClient();
 	virtual ~EasyTcpClient();
 
-	void InitSocket(
+	SOCKET InitSocket(
 		int sendSize = SEND_BUFF_SIZE,
 		int recvSize = RECV_BUFF_SIZE);
 	int Connect(const char* ip, unsigned short port);
 	void Close();
-	bool OnRun();
+	bool OnRun(int microseconds = 1);
 	bool IsRun() { return _isConnected; }
 	int SendData(const char* data, int len);
 	int SendData(const DataHeaderPtr& header);
@@ -48,8 +49,8 @@ protected:
 	CELLClientPtr _pClient;
 
 private:
-	fd_set _fdRead;
-	fd_set _fdWrite;
+	CELLFDSet _fdRead;
+	CELLFDSet _fdWrite;
 
 	char _szRecv[RECV_BUFF_SIZE] = {};
 	bool _isConnected;

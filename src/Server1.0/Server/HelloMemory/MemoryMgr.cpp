@@ -41,7 +41,7 @@ void* MemoryMgr::mem_alloc(size_t nSize)
 		pReturn->nRef = 1;
 		pReturn->pAlloc = nullptr;
 		pReturn->pNext = nullptr;
-		//xPrintf("MemoryMgr::mem_alloc: [%llx] id=%d, size=%d", pReturn, pReturn->nID, nSize);
+		xPrintf("MemoryMgr::mem_alloc: [%llx] id=%d, size=%d\n", pReturn, pReturn->nID, nSize);
 
 		return (char*)pReturn + sizeof(MemoryBlock);
 	}
@@ -50,7 +50,7 @@ void* MemoryMgr::mem_alloc(size_t nSize)
 void MemoryMgr::mem_free(void* pMem)
 {
 	MemoryBlock* pBlock = (MemoryBlock*)((char*)pMem - sizeof(MemoryBlock));
-	//xPrintf("MemoryMgr::mem_alloc: [%llx] id=%d", pBlock, pBlock->nID);
+	xPrintf("MemoryMgr::mem_alloc: [%llx] id=%d\n", pBlock, pBlock->nID);
 
 	if (pBlock->bPool)
 		pBlock->pAlloc->memory_free(pMem);

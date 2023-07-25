@@ -15,6 +15,7 @@
 #include "INetEvent.hpp"
 #include "CELLTaskServer.h"
 #include "CELLSemaphore.h"
+#include "CELLFDSet.h"
 
 class _X_UTILITY_API_ CELLServer
 {
@@ -34,10 +35,12 @@ public:
 	void AddSendTask(CELLClientPtr& pClient, DataHeaderPtr& header);
 
 private:
-	void _ReadData(fd_set& fdRead);
-	void _WriteData(fd_set& fdWrite);
+	void _ReadData();
+	void _WriteData();
 	void _CheckTime();
 	void _OnClientLeave(CELLClientPtr pClient);
+	bool _DoSelect();
+	void _DoMsg();
 
 private:
 	//SOCKET _sock;
@@ -47,10 +50,10 @@ private:
 	std::mutex _mutex;
 	INetEvent* _pNetEvent;
 
-	fd_set _fdRead;
-	fd_set _fdWrite;
+	CELLFDSet _fdRead;
+	CELLFDSet _fdWrite;
 	//fd_set _fdExc;
-	fd_set _fdRead_bak;
+	CELLFDSet _fdRead_bak;
 
 	SOCKET _maxSock;
 	CELLTaskServer _taskServer;
